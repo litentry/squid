@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es6",
     "module": "commonjs",
-    "declaration": true,
-    "declarationMap": true,
-    "declarationDir": "./lib/types",
-    "sourceMap": true,
-    "outDir": "./lib",
+    "target": "es2020",
+    "outDir": "lib",
     "strict": true,
-    "moduleResolution": "node",
-    "types": ["node"],
+    "declaration": false,
+    "sourceMap": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true
   },
-  "include": ["./src/**/*"],
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
