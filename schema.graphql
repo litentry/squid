@@ -1,0 +1,29 @@
+type Identity @entity {
+  address: String! @unique
+  # judgements: [Judgement] @derivedFrom(field: "address")
+  deposit: BigInt!
+  display: String!
+  legal: String
+  web: String
+  riot: String
+  email: String
+  image: String
+  twitter: String
+  pgpFingerprint: String
+  additional: [String]
+}
+
+# type Judgement @jsonField {
+#   registrarIndex: Int!
+#   judgement: String!
+# }
+
+# enum IdentityJudgement {
+#   KnownGood = "KnownGood"
+#   Reasonable = "Reasonable"
+#   Unknown = "Unknown"
+#   FeePaid = "FeePaid"
+#   OutOfDate = "OutOfDate"
+#   LowQuality = "LowQuality"
+#   Erroneous = "Erroneous"
+# }

@@ -1,0 +1,39 @@
+{
+  "name": "subsquid-mappings",
+  "version": "1.0.0",
+  "description": "Litentry's Subsquid Mappings",
+  "main": "lib/index.js",
+  "repository": "git@github.com:litentry/subsquid-mappings.git",
+  "author": "Ben Mason <ben@wattmason.co.uk>",
+  "license": "Apache",
+  "private": true,
+  "scripts": {
+    "typegen": "hydra-typegen typegen manifest.yml",
+    "codegen": "hydra-cli codegen",
+    "build": "rm -rf lib && tsc",
+    "db:create": "hydra-cli db:create",
+    "db:drop": "hydra-cli db:drop",
+    "db:create-migration": "hydra-cli db:create-migration",
+    "db:migrate": "hydra-cli db:migrate",
+    "db:revert": "hydra-cli db:revert",
+    "db:reset": "hydra-cli db:drop && hydra-cli db:create && hydra-processor migrate && hydra-cli db:migrate",
+    "processor:migrate": "hydra-processor migrate",
+    "processor:start-debug": "DEBUG=hydra-processor:mappings-executor hydra-processor run",
+    "processor:start": "hydra-processor run",
+    "query-node:start": "node ./lib/generated/server.js"
+  },
+  "dependencies": {
+    "@polkadot/api": "^6.11.1",
+    "@subsquid/hydra-common": "^5.0.0-alpha.14"
+  },
+  "devDependencies": {
+    "@subsquid/hydra-cli": "5.0.0-alpha.14",
+    "@subsquid/hydra-typegen": "5.0.0-alpha.14",
+    "@typescript-eslint/eslint-plugin": "4.22.1",
+    "@typescript-eslint/parser": "4.22.1",
+    "eslint": "7.26.0",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.5.2"
+  }
+}
