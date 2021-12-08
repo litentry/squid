@@ -25,8 +25,8 @@
   "dependencies": {
     "@polkadot/api": "^6.11.1",
     "@polkadot/types": "^6.11.1",
-    "@subsquid/hydra-common": "^5.0.0-alpha.13",
-    "@subsquid/hydra-processor": "^5.0.0-alpha.13",
+    "@subsquid/hydra-common": "^5.0.0-alpha.14",
+    "@subsquid/hydra-processor": "^5.0.0-alpha.14",
     "@subsquid/openreader": "^0.2.1",
     "axios": "^0.23.0",
     "axios-retry": "^3.2.4",
@@ -34,8 +34,8 @@
     "typeorm": "0.2.38"
   },
   "devDependencies": {
-    "@subsquid/hydra-cli": "5.0.0-alpha.13",
-    "@subsquid/hydra-typegen": "5.0.0-alpha.13",
+    "@subsquid/hydra-cli": "5.0.0-alpha.14",
+    "@subsquid/hydra-typegen": "5.0.0-alpha.14",
     "@types/inflected": "^1.1.29",
     "@types/pg": "^8.6.1",
     "@typescript-eslint/eslint-plugin": "4.22.1",
