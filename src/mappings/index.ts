@@ -1,13 +1,15 @@
 import { EventContext, StoreContext } from '@subsquid/hydra-common';
 import { u8aToString } from '@polkadot/util';
-import { Identity } from './generated/model';
-import getOrCreate from './utils/getOrCreate';
-import getApi from './utils/getApi';
+import { Identity } from '../generated/model';
+import { Identity as I } from '../types';
+import getOrCreate from '../utils/getOrCreate';
+import getApi from '../utils/getApi';
 
 export async function handleIdentitySet({
   store,
   event,
 }: EventContext & StoreContext) {
+  const [account] = new I.IdentitySetEvent(event).params
   const identity = await getOrCreate<Identity>(
     store,
     Identity,
@@ -38,9 +40,11 @@ export async function handleIdentitySet({
   identity.riot = u8aToString(upwrapped.info.riot.asRaw);
   identity.twitter = u8aToString(upwrapped.info.twitter.asRaw);
   identity.web = u8aToString(upwrapped.info.web.asRaw);
-  identity.additional = upwrapped.info.additional.map((item) =>
+  identity.additional = upwrapped.info.additional.map((item:any) =>
     item.toString()
   );
+
+  identity.address=account.toHuman()
 
   store.save<Identity>(identity);
 }
