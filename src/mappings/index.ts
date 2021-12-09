@@ -9,7 +9,7 @@ export async function handleIdentitySet({
   store,
   event,
 }: EventContext & StoreContext) {
-  const [account] = new I.IdentitySetEvent(event).params
+  const [account] = new I.IdentitySetEvent(event).params;
   const identity = await getOrCreate<Identity>(
     store,
     Identity,
@@ -17,9 +17,7 @@ export async function handleIdentitySet({
   );
 
   const api = await getApi();
-  const chainData = await api.query.identity.identityOf(
-    event.params[0].value as string
-  );
+  const chainData = await api.query.identity.identityOf(account.toHuman());
   const upwrapped = chainData.unwrapOr(null);
 
   if (!upwrapped) {
@@ -40,11 +38,11 @@ export async function handleIdentitySet({
   identity.riot = u8aToString(upwrapped.info.riot.asRaw);
   identity.twitter = u8aToString(upwrapped.info.twitter.asRaw);
   identity.web = u8aToString(upwrapped.info.web.asRaw);
-  identity.additional = upwrapped.info.additional.map((item:any) =>
+  identity.additional = upwrapped.info.additional.map((item: any) =>
     item.toString()
   );
 
-  identity.address=account.toHuman()
+  identity.address = account.toHuman();
 
   store.save<Identity>(identity);
 }
