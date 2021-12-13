@@ -1,0 +1,20 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Auth Subsquid
+        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 auth -k ${{ secrets.SQD_KEY }}
+      - name: Delete Existing
+        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 app:delete --name "litentry" --version "1"
+      - name: Deploy New
+        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 app:deploy --name "litentry" --version "1" --url "https://github.com/litentry/subsquid-mappings.git#main"
