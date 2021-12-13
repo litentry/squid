@@ -4,7 +4,7 @@ Litentry mappings as defined here: https://docs.subsquid.io/mappings. To be host
 
 ## Overview
 
-Subsquid are currently providing us a fully managed hosting service.
+Subsquid are currently providing us a fully managed hosting service. The GraphQL API is available on https://app.gc.subsquid.io/beta/litentry/1/graphql.
 
 We are responsible for writing the mappings (logic to handle event and extrinsic data from the chain) and writing the Graphql schema (`hydra-cli codegen` converts our Graphql schema to Postgres automatically).
 
