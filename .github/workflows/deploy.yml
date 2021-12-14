@@ -15,6 +15,6 @@ jobs:
       - name: Auth Subsquid
         run: npx @subsquid/hydra-cli@5.0.0-alpha.14 auth -k ${{ secrets.SQD_KEY }}
       - name: Delete Existing
-        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 app:delete --name "litentry" --version "1"
+        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 app:delete --name "litentry" --version "2"
       - name: Deploy New
-        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 app:deploy --name "litentry" --version "1" --url "https://github.com/litentry/subsquid-mappings.git#main"
+        run: npx @subsquid/hydra-cli@5.0.0-alpha.14 app:deploy --name "litentry" --version "2" --url "https://github.com/litentry/subsquid-mappings.git#main"
