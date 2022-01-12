@@ -3,17 +3,17 @@ description: Litentry Subsquid manifest
 
 typegen:
   metadata:
-    source: wss://rpc.polkadot.io
+    source: wss://khala.api.onfinality.io/public-ws
   outDir: src/types
   events:
-    - identity.IdentitySet
+    - balances.Transfer
   calls:
 
 mappings:
   mappingsModule: lib/mappings
   eventHandlers:
-    - event: identity.IdentitySet
-      handler: handleIdentitySet
+    - event: balances.Transfer
+      handler: handleTransfer
   extrinsicHandlers:
   preBlockHooks:
   postBlockHooks:
