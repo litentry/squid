@@ -5,7 +5,7 @@ let api: ApiPromise;
 export default async function getApi(): Promise<ApiPromise> {
   if (!api) {
     api = await ApiPromise.create({
-      provider: new WsProvider('wss://rpc.polkadot.io'),
+      provider: new WsProvider(process.env.CHAIN_NODE),
     });
 
     await api.isReady;

@@ -1,29 +1,26 @@
-type Identity @entity {
-  address: String! @unique
-  # judgements: [Judgement] @derivedFrom(field: "address")
-  deposit: BigInt!
-  display: String!
-  legal: String
-  web: String
-  riot: String
-  email: String
-  image: String
-  twitter: String
-  pgpFingerprint: String
-  additional: [String]
+type KhalaAccount @entity {
+  id: ID!
+
+  firstTransferInTimestamp: BigInt
+  firstTransferInBlockNumber: BigInt
+
+  firstTransferOutTimestamp: BigInt
+  firstTransferOutBlockNumber: BigInt
+
+  lastTransferInTimestamp: BigInt
+  lastTransferInBlockNumber: BigInt
+
+  lastTransferOutTimestamp: BigInt
+  lastTransferOutBlockNumber: BigInt
+
+  transfersTo: [KhalaTransfer] @derivedFrom(field: "to")
+  transfersFrom: [KhalaTransfer] @derivedFrom(field: "from")
 }
 
-# type Judgement @jsonField {
-#   registrarIndex: Int!
-#   judgement: String!
-# }
-
-# enum IdentityJudgement {
-#   KnownGood = "KnownGood"
-#   Reasonable = "Reasonable"
-#   Unknown = "Unknown"
-#   FeePaid = "FeePaid"
-#   OutOfDate = "OutOfDate"
-#   LowQuality = "LowQuality"
-#   Erroneous = "Erroneous"
-# }
+type KhalaTransfer @entity {
+  to: KhalaAccount!
+  from: KhalaAccount!
+  amount: Float!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
