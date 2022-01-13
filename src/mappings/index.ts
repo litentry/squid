@@ -26,7 +26,7 @@ export async function handleTransfer({
 
   if (!accountFrom.firstTransferOutBlockNumber) {
     accountFrom.firstTransferOutBlockNumber = blockNumber;
-    accountFrom.lastTransferOutTimestamp = timestamp;
+    accountFrom.firstTransferOutTimestamp = timestamp;
   }
 
   // receiver
@@ -41,7 +41,7 @@ export async function handleTransfer({
 
   if (!accountTo.firstTransferInBlockNumber) {
     accountTo.firstTransferInBlockNumber = blockNumber;
-    accountTo.lastTransferInTimestamp = timestamp;
+    accountTo.firstTransferInTimestamp = timestamp;
   }
 
   // transfer
