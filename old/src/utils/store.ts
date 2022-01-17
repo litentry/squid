@@ -1,11 +1,11 @@
-import { Store } from '@subsquid/substrate-processor';
+import { DatabaseManager } from '@subsquid/hydra-common';
 
 export async function getOrCreate<T extends { id: string }>(
-  store: Store,
+  store: DatabaseManager,
   entityConstructor: EntityConstructor<T>,
   id: string
 ): Promise<T> {
-  let e = await store.get<T>(entityConstructor, {
+  let e = await store.get(entityConstructor, {
     where: { id },
   });
 
@@ -18,11 +18,11 @@ export async function getOrCreate<T extends { id: string }>(
 }
 
 export async function createIfNotExists<T extends { id: string }>(
-  store: Store,
+  store: DatabaseManager,
   entityConstructor: EntityConstructor<T>,
   id: string
 ): Promise<T> {
-  let e = await store.get<T>(entityConstructor, {
+  let e = await store.get(entityConstructor, {
     where: { id },
   });
 

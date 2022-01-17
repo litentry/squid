@@ -1,16 +1,16 @@
 type KhalaAccount @entity {
   id: ID!
 
-  firstTransferInDate: DateTime
+  firstTransferInTimestamp: BigInt
   firstTransferInBlockNumber: BigInt
 
-  firstTransferOutDate: DateTime
+  firstTransferOutTimestamp: BigInt
   firstTransferOutBlockNumber: BigInt
 
-  lastTransferInDate: DateTime
+  lastTransferInTimestamp: BigInt
   lastTransferInBlockNumber: BigInt
 
-  lastTransferOutDate: DateTime
+  lastTransferOutTimestamp: BigInt
   lastTransferOutBlockNumber: BigInt
 
   transfersTo: [KhalaTransfer] @derivedFrom(field: "to")
@@ -22,5 +22,5 @@ type KhalaTransfer @entity {
   from: KhalaAccount!
   amount: Float!
   blockNumber: BigInt!
-  date: DateTime!
+  timestamp: BigInt!
 }

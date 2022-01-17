@@ -1,0 +1,7 @@
+{
+  "outDir": "src/types",
+  "chainVersions": "khalaVersions.json",
+  "typesBundle": "typeDefs.json",
+  "events": ["balances.Transfer"],
+  "calls": []
+}
