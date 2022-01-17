@@ -1,12 +1,12 @@
 {
-  "name": "kusama-balances",
+  "name": "khala-identity",
   "private": true,
   "scripts": {
     "build": "rm -rf lib && tsc",
     "init": "node db/init.js",
     "db:migrate": "node db/init.js",
     "processor:migrate": "echo skip",
-    "processor:start": "node lib/processor.js",
+    "processor:start": "node -r dotenv/config lib/processor.js",
     "query-node:start": "squid-graphql-server"
   },
   "dependencies": {
