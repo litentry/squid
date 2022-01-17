@@ -9,7 +9,7 @@ import getApi from './utils/getApi';
 import { KhalaAccount, KhalaTransfer } from './model';
 import { BalancesTransferEvent } from './types/events';
 
-const processor = new SubstrateProcessor('khala_identity');
+const processor = new SubstrateProcessor('litentry-squid-khala');
 
 processor.setTypesBundle('typeDefs.json');
 processor.setBatchSize(500);
