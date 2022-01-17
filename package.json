@@ -2,6 +2,7 @@
   "name": "khala-identity",
   "private": true,
   "scripts": {
+    "deploy": "sqd squid:release identity-squid-khala@0 --source https://github.com/litentry/subsquid-mappings-khala#main",
     "build": "rm -rf lib && tsc",
     "init": "node db/init.js",
     "db:migrate": "node db/init.js",
