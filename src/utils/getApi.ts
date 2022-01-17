@@ -5,7 +5,7 @@ let api: ApiPromise;
 export default async function getApi(): Promise<ApiPromise> {
   if (!api) {
     api = await ApiPromise.create({
-      provider: new WsProvider(process.env.CHAIN_NODE),
+      provider: new WsProvider('wss://khala.api.onfinality.io/public-ws'),
     });
 
     await api.isReady;
