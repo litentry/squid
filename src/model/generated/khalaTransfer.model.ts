@@ -8,6 +8,9 @@ export class KhalaTransfer {
     Object.assign(this, props)
   }
 
+  /**
+   * blockNumber-eventIndex
+   */
   @PrimaryColumn_()
   id!: string
 

@@ -24,8 +24,6 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
   const blockNumber = BigInt(ctx.event.blockNumber);
   const timestamp = new Date(ctx.event.blockTimestamp);
   const transfer = getTransferEvent(ctx);
-  // const from = transfer.from.toString();
-  // const to = transfer.to.toString();
   const from = ss58.codec('phala').encode(transfer.from);
   const to = ss58.codec('phala').encode(transfer.to);
   const amount = transfer.amount;
@@ -65,7 +63,9 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
   await ctx.store.save<KhalaAccount>(accountTo);
 
   // transfer
-  const transferModel = new KhalaTransfer();
+  const transferModel = new KhalaTransfer({
+    id: `${blockNumber.toString()}-${ctx.event.indexInBlock}`,
+  });
   transferModel.blockNumber = blockNumber;
   transferModel.date = new Date(timestamp);
   transferModel.to = accountTo;

@@ -8,6 +8,9 @@ export class KhalaAccount {
     Object.assign(this, props)
   }
 
+  /**
+   * address
+   */
   @PrimaryColumn_()
   id!: string
 
