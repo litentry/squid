@@ -1,5 +1,8 @@
 import * as ss58 from '@subsquid/ss58';
-import { SubstrateProcessor } from '@subsquid/substrate-processor';
+import {
+  SubstrateProcessor,
+  EventHandlerContext,
+} from '@subsquid/substrate-processor';
 import BigNumber from 'bignumber.js';
 import { getOrCreate } from './utils/store';
 import getApi from './utils/getApi';
@@ -20,16 +23,18 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
   const api = await getApi();
   const blockNumber = BigInt(ctx.event.blockNumber);
   const timestamp = new Date(ctx.event.blockTimestamp);
-  const transfer = new BalancesTransferEvent(ctx).asLatest;
-  const from = ss58.codec('khala').encode(transfer.from);
-  const to = ss58.codec('khala').encode(transfer.to);
+  const transfer = getTransferEvent(ctx);
+  // const from = transfer.from.toString();
+  // const to = transfer.to.toString();
+  const from = ss58.codec('phala').encode(transfer.from);
+  const to = ss58.codec('phala').encode(transfer.to);
   const amount = transfer.amount;
 
   // sender
   const accountFrom = await getOrCreate<KhalaAccount>(
     ctx.store,
     KhalaAccount,
-    from.toString()
+    from
   );
 
   accountFrom.lastTransferOutBlockNumber = blockNumber;
@@ -40,11 +45,13 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
     accountFrom.firstTransferOutDate = timestamp;
   }
 
+  await ctx.store.save<KhalaAccount>(accountFrom);
+
   // receiver
   const accountTo = await getOrCreate<KhalaAccount>(
     ctx.store,
     KhalaAccount,
-    to.toString()
+    to
   );
 
   accountTo.lastTransferInBlockNumber = blockNumber;
@@ -54,6 +61,8 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
     accountTo.firstTransferInBlockNumber = blockNumber;
     accountTo.firstTransferInDate = timestamp;
   }
+
+  await ctx.store.save<KhalaAccount>(accountTo);
 
   // transfer
   const transferModel = new KhalaTransfer();
@@ -65,10 +74,23 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
     .shiftedBy(-api.registry.chainDecimals[0])
     .toNumber();
 
-  // persist
-  ctx.store.save<KhalaAccount>(accountFrom);
-  ctx.store.save<KhalaAccount>(accountTo);
-  ctx.store.save<KhalaTransfer>(transferModel);
+  await ctx.store.save<KhalaTransfer>(transferModel);
 });
 
 processor.run();
+
+interface TransferEvent {
+  from: Uint8Array;
+  to: Uint8Array;
+  amount: bigint;
+}
+
+function getTransferEvent(ctx: EventHandlerContext): TransferEvent {
+  let event = new BalancesTransferEvent(ctx);
+  if (event.isV1) {
+    let [from, to, amount] = event.asV1;
+    return { from, to, amount };
+  } else {
+    return event.asLatest;
+  }
+}
