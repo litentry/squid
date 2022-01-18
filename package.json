@@ -2,7 +2,8 @@
   "name": "khala-identity",
   "private": true,
   "scripts": {
-    "deploy": "sqd squid:release litentry-squid-khala@1 --source https://github.com/litentry/subsquid-mappings-khala#main",
+    "start": "make down && make up && make migrate && make build && make process",
+    "deploy": "sqd squid:release litentry-squid-khala@2 --source https://github.com/litentry/subsquid-mappings-khala#main",
     "build": "rm -rf lib && tsc",
     "init": "node db/init.js",
     "db:migrate": "node db/init.js",
