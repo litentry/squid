@@ -24,6 +24,7 @@ COPY --from=deps /squid/package.json .
 COPY --from=deps /squid/package-lock.json .
 COPY --from=deps /squid/node_modules node_modules
 COPY --from=builder /squid/lib lib
+ADD typeDefs.json typeDefs.json
 ADD db db
 ADD schema.graphql .
 # TODO: use shorter PROMETHEUS_PORT
@@ -38,3 +39,7 @@ CMD ["npm", "run", "processor:start"]
 
 FROM squid AS query-node
 CMD ["npm", "run", "query-node:start"]
+
+FROM squid AS migrate
+RUN npm i "@subsquid/cli"
+CMD ["npx", "sqd", "db", "migrate"]
