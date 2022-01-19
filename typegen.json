@@ -3,5 +3,5 @@
   "chainVersions": "khalaVersions.json",
   "typesBundle": "typeDefs.json",
   "events": ["balances.Transfer"],
-  "calls": []
+  "calls": ["democracy.vote"]
 }

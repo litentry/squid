@@ -1,18 +1,22 @@
 
-export type AccountId32 = Uint8Array
-
 export type AccountVote = AccountVote_Standard | AccountVote_Split
 
 export interface AccountVote_Standard {
   __kind: 'Standard'
-  vote: Vote
-  balance: bigint
+  value: AccountVoteStandard
 }
 
 export interface AccountVote_Split {
   __kind: 'Split'
+  value: AccountVoteSplit
+}
+
+export interface AccountVoteStandard {
+  vote: Uint8Array
+  balance: bigint
+}
+
+export interface AccountVoteSplit {
   aye: bigint
   nay: bigint
 }
-
-export type Vote = number

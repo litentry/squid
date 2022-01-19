@@ -16,6 +16,9 @@ type KhalaAccount @entity {
 
   transfersTo: [KhalaTransfer] @derivedFrom(field: "to")
   transfersFrom: [KhalaTransfer] @derivedFrom(field: "from")
+
+  votes: [KhalaVote] @derivedFrom(field: "account")
+  totalVotes: Int # if required will it default to 0?
 }
 
 type KhalaTransfer @entity {
@@ -24,6 +27,15 @@ type KhalaTransfer @entity {
   to: KhalaAccount!
   from: KhalaAccount!
   amount: Float!
+  blockNumber: BigInt!
+  date: DateTime!
+}
+
+type KhalaVote @entity {
+  id: ID!
+  account: KhalaAccount!
+  # referendumIndex: BigInt! # maybe int?
+  # amount: Float!
   blockNumber: BigInt!
   date: DateTime!
 }
