@@ -2,12 +2,14 @@ import * as ss58 from '@subsquid/ss58';
 import {
   SubstrateProcessor,
   EventHandlerContext,
+  ExtrinsicHandlerContext,
 } from '@subsquid/substrate-processor';
 import BigNumber from 'bignumber.js';
 import { getOrCreate } from './utils/store';
 import getApi from './utils/getApi';
-import { KhalaAccount, KhalaTransfer } from './model';
+import { KhalaAccount, KhalaTransfer, KhalaVote } from './model';
 import { BalancesTransferEvent } from './types/events';
+import { DemocracyVoteCall } from './types/calls';
 
 const processor = new SubstrateProcessor('litentry-squid-khala');
 
@@ -17,6 +19,39 @@ processor.setBatchSize(500);
 processor.setDataSource({
   archive: 'https://khala.indexer.gc.subsquid.io/v4/graphql',
   chain: 'wss://khala.api.onfinality.io/public-ws',
+});
+
+processor.addExtrinsicHandler('democracy.vote', async (ctx) => {
+  const successful = Boolean(
+    ctx.block.events.find((event) => event.name === 'system.ExtrinsicSuccess')
+  );
+
+  if (!successful) {
+    return;
+  }
+
+  const blockNumber = BigInt(ctx.block.height);
+  const date = new Date(ctx.block.timestamp);
+
+  const account = await getOrCreate<KhalaAccount>(
+    ctx.store,
+    KhalaAccount,
+    ctx.extrinsic.signer
+  );
+  account.totalVotes = (account.totalVotes || 0) + 1;
+
+  await ctx.store.save<KhalaAccount>(account);
+
+  const vote = new KhalaVote({
+    id: `${blockNumber.toString()}-${ctx.extrinsic.indexInBlock}`,
+    blockNumber,
+    date,
+    account,
+  });
+
+  await ctx.store.save<KhalaVote>(vote);
+
+  // const vote = getVoteExtrinsic(ctx);
 });
 
 processor.addEventHandler('balances.Transfer', async (ctx) => {
@@ -92,5 +127,14 @@ function getTransferEvent(ctx: EventHandlerContext): TransferEvent {
     return { from, to, amount };
   } else {
     return event.asLatest;
+  }
+}
+
+function getVoteExtrinsic(ctx: ExtrinsicHandlerContext) {
+  let extrinsic = new DemocracyVoteCall(ctx);
+  if (extrinsic.isV1) {
+    return extrinsic.asV1;
+  } else {
+    return extrinsic.asLatest;
   }
 }

@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {KhalaTransfer} from "./khalaTransfer.model"
+import {KhalaVote} from "./khalaVote.model"
 
 @Entity_()
 export class KhalaAccount {
@@ -43,4 +44,10 @@ export class KhalaAccount {
 
   @OneToMany_(() => KhalaTransfer, e => e.from)
   transfersFrom!: KhalaTransfer[]
+
+  @OneToMany_(() => KhalaVote, e => e.account)
+  votes!: KhalaVote[]
+
+  @Column_("integer", {nullable: true})
+  totalVotes!: number | undefined | null
 }
