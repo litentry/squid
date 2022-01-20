@@ -1,19 +1,24 @@
-import * as ss58 from "@subsquid/ss58";
-import { EventHandlerContext, ExtrinsicHandlerContext, SubstrateProcessor } from "@subsquid/substrate-processor";
-import BigNumber from "bignumber.js";
-import { KhalaAccount, KhalaTransfer, KhalaVote } from "./model";
-import { DemocracyVoteCall } from "./types/calls";
-import { BalancesTransferEvent } from "./types/events";
-import * as v1090 from "./types/v1090"
-import { getOrCreate } from "./utils/store";
-const addressCodec = ss58.codec(30) // system.ss58Prefix constant
-const decimals = ss58.registry.get('phala').decimals[0]
+import * as ss58 from '@subsquid/ss58';
+import {
+  EventHandlerContext,
+  ExtrinsicHandlerContext,
+  SubstrateProcessor,
+} from '@subsquid/substrate-processor';
+import BigNumber from 'bignumber.js';
+import { KhalaAccount, KhalaTransfer, KhalaVote } from './model';
+import { DemocracyVoteCall } from './types/calls';
+import { BalancesTransferEvent } from './types/events';
+import * as v1090 from './types/v1090';
+import { getOrCreate } from './utils/store';
+
+const registry = ss58.registry.get('phala');
+const addressCodec = ss58.codec(registry.prefix);
+const decimals = registry.decimals[0];
 
 const processor = new SubstrateProcessor('litentry_squid_khala');
 
 processor.setTypesBundle('khala');
 processor.setBatchSize(500);
-
 processor.setDataSource({
   archive: 'https://khala.indexer.gc.subsquid.io/v4/graphql',
   chain: 'wss://khala.api.onfinality.io/public-ws',
@@ -41,7 +46,7 @@ processor.addExtrinsicHandler('democracy.vote', async (ctx) => {
 
   await ctx.store.save(vote);
 
-  getVoteExtrinsic(ctx);
+  // getVoteExtrinsic(ctx);
 });
 
 processor.addEventHandler('balances.Transfer', async (ctx) => {
@@ -53,11 +58,7 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
   const amount = transfer.amount;
 
   // sender
-  const accountFrom = await getOrCreate(
-    ctx.store,
-    KhalaAccount,
-    from
-  );
+  const accountFrom = await getOrCreate(ctx.store, KhalaAccount, from);
 
   accountFrom.lastTransferOutBlockNumber = blockNumber;
   accountFrom.lastTransferOutDate = timestamp;
@@ -70,11 +71,7 @@ processor.addEventHandler('balances.Transfer', async (ctx) => {
   await ctx.store.save(accountFrom);
 
   // receiver
-  const accountTo = await getOrCreate(
-    ctx.store,
-    KhalaAccount,
-    to
-  );
+  const accountTo = await getOrCreate(ctx.store, KhalaAccount, to);
 
   accountTo.lastTransferInBlockNumber = blockNumber;
   accountTo.lastTransferInDate = timestamp;
@@ -120,20 +117,20 @@ function getTransferEvent(ctx: EventHandlerContext): TransferEvent {
 }
 
 interface VoteCall {
-  refIndex: number
-  vote: v1090.AccountVote
+  refIndex: number;
+  vote: v1090.AccountVote;
 }
 
 function getVoteExtrinsic(ctx: ExtrinsicHandlerContext): VoteCall {
   const extrinsic = new DemocracyVoteCall(ctx);
   if (extrinsic.isV1) {
-    const {refIndex, vote} = extrinsic.asV1;
+    const { refIndex, vote } = extrinsic.asV1;
     // switch is required to convince the compiler in correct type
-    switch(vote.__kind) {
+    switch (vote.__kind) {
       case 'Standard':
-        return {refIndex, vote: {__kind: vote.__kind, ...vote.value}}
+        return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
       case 'Split':
-        return {refIndex, vote: {__kind: vote.__kind, ...vote.value}}
+        return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
     }
   } else {
     return extrinsic.asLatest;
