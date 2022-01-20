@@ -3,12 +3,6 @@
   "private": true,
   "scripts": {
     "start": "make down && make up && make build && make migrate && make process",
-    "deploy": "sqd squid:release litentry-squid-khala@2 --source https://github.com/litentry/subsquid-mappings-khala#main",
-    "build": "rm -rf lib && tsc",
-    "init": "node db/init.js",
-    "db:migrate": "node db/init.js",
-    "processor:migrate": "echo skip",
-    "processor:start": "node -r dotenv/config lib/processor.js",
     "query-node:start": "squid-graphql-server"
   },
   "dependencies": {
