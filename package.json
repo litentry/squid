@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start": "make down && make up && make build && make migrate && make process",
+    "build": "rm -rf lib && tsc",
     "query-node:start": "squid-graphql-server"
   },
   "dependencies": {
