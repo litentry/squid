@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start": "make down && make up && make build && make migrate && make process",
+    "processor:start": "node lib/processor.js",
     "build": "rm -rf lib && tsc",
     "query-node:start": "squid-graphql-server"
   },
