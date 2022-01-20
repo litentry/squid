@@ -12,7 +12,7 @@ export interface AccountVote_Split {
 }
 
 export interface AccountVoteStandard {
-  vote: Uint8Array
+  vote: number
   balance: bigint
 }
 
