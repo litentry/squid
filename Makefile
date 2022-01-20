@@ -44,5 +44,9 @@ up:
 down:
 	@docker-compose down
 
+deploy:
+	@docker-compose -f docker-compose.prod.yml stop \
+		&& git pull \
+		&& docker-compose -f docker-compose.prod.yml up --build -d
 
 .PHONY: process serve start codegen migration migrate up down
