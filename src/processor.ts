@@ -17,7 +17,8 @@ const decimals = registry.decimals[0];
 
 const processor = new SubstrateProcessor('litentry_squid_khala');
 
-processor.setTypesBundle('khala');
+processor.setTypesBundle('typeDefs.json');
+// processor.setTypesBundle('khala'); # todo, get this working
 processor.setBatchSize(500);
 processor.setDataSource({
   archive: 'https://khala.indexer.gc.subsquid.io/v4/graphql',
