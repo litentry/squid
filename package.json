@@ -10,19 +10,20 @@
   "dependencies": {
     "@polkadot/api": "^6.11.1",
     "@polkadot/types": "^6.11.1",
-    "@subsquid/graphql-server": "^0.1.0",
-    "@subsquid/ss58": "^0.0.0",
-    "@subsquid/substrate-processor": "^0.2.1",
+    "@subsquid/graphql-server": "^0.1.2",
+    "@subsquid/ss58": "^0.0.2",
+    "@subsquid/substrate-processor": "^0.2.3",
     "bignumber.js": "^9.0.2",
     "dotenv": "^10.0.0",
     "pg": "^8.7.1",
     "typeorm": "^0.2.41"
   },
   "devDependencies": {
-    "@subsquid/cli": "^0.0.4",
-    "@subsquid/substrate-metadata-explorer": "^0.0.4",
-    "@subsquid/substrate-typegen": "^0.0.4",
+    "@subsquid/cli": "^0.0.6",
+    "@subsquid/substrate-metadata-explorer": "^0.0.6",
+    "@subsquid/substrate-typegen": "^0.0.6",
     "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
     "eslint": "7.26.0",
     "prettier": "^2.3.2",
     "typescript": "~4.5.4"

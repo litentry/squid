@@ -20,7 +20,7 @@ export class DemocracyVoteCall {
    *  Weight: `O(R)` where R is the number of referendums the voter has voted on.
    */
   get isV1(): boolean {
-    return this.ctx._chain.getCallHash('democracy.vote') === '64c04ce539aa34049d49a095346229024b1c8dd4220973c98d4b66a943dc278c'
+    return this.ctx._chain.getCallHash('democracy.vote') === '6bfa127b84551fd23ec837abe1448e6ee63897b294838e9a20c810a259872b20'
   }
 
   /**
