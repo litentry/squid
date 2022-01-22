@@ -15,6 +15,9 @@ export class KhalaAccount {
   @PrimaryColumn_()
   id!: string
 
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  balance!: bigint
+
   @Column_("timestamp with time zone", {nullable: true})
   firstTransferInDate!: Date | undefined | null
 

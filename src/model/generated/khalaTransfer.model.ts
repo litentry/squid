@@ -22,8 +22,11 @@ export class KhalaTransfer {
   @ManyToOne_(() => KhalaAccount, {nullable: false})
   from!: KhalaAccount
 
-  @Column_("numeric", {nullable: false})
-  amount!: number
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  tip!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint
