@@ -4,7 +4,6 @@ import {
   ExtrinsicHandlerContext,
   SubstrateProcessor,
 } from '@subsquid/substrate-processor';
-import BigNumber from 'bignumber.js';
 import { KhalaAccount, KhalaTransfer, KhalaVote } from './model';
 import { DemocracyVoteCall } from './types/calls';
 import { BalancesTransferEvent } from './types/events';
@@ -13,7 +12,6 @@ import { getOrCreate } from './utils/store';
 
 const registry = ss58.registry.get('phala');
 const addressCodec = ss58.codec(registry.prefix);
-const decimals = registry.decimals[0];
 
 const processor = new SubstrateProcessor('litentry_squid_khala');
 
@@ -52,49 +50,55 @@ processor.addExtrinsicHandler('democracy.vote', async (ctx) => {
 
 processor.addEventHandler('balances.Transfer', async (ctx) => {
   const blockNumber = BigInt(ctx.event.blockNumber);
-  const timestamp = new Date(ctx.event.blockTimestamp);
+  const date = new Date(ctx.event.blockTimestamp);
   const transfer = getTransferEvent(ctx);
-  const from = addressCodec.encode(transfer.from);
-  const to = addressCodec.encode(transfer.to);
+  const fromAddress = addressCodec.encode(transfer.from);
+  const toAddress = addressCodec.encode(transfer.to);
   const amount = transfer.amount;
+  const tip = ctx.extrinsic?.tip || 0n;
 
   // sender
-  const accountFrom = await getOrCreate(ctx.store, KhalaAccount, from);
+  const from = await getOrCreate(ctx.store, KhalaAccount, fromAddress);
+  from.balance = from.balance || 0n;
+  from.balance -= transfer.amount;
+  from.balance -= tip;
 
-  accountFrom.lastTransferOutBlockNumber = blockNumber;
-  accountFrom.lastTransferOutDate = timestamp;
+  from.lastTransferOutBlockNumber = blockNumber;
+  from.lastTransferOutDate = date;
 
-  if (!accountFrom.firstTransferOutBlockNumber) {
-    accountFrom.firstTransferOutBlockNumber = blockNumber;
-    accountFrom.firstTransferOutDate = timestamp;
+  if (!from.firstTransferOutBlockNumber) {
+    from.firstTransferOutBlockNumber = blockNumber;
+    from.firstTransferOutDate = date;
   }
 
-  await ctx.store.save(accountFrom);
+  await ctx.store.save(from);
 
   // receiver
-  const accountTo = await getOrCreate(ctx.store, KhalaAccount, to);
+  const to = await getOrCreate(ctx.store, KhalaAccount, toAddress);
 
-  accountTo.lastTransferInBlockNumber = blockNumber;
-  accountTo.lastTransferInDate = timestamp;
+  to.balance = to.balance || 0n;
+  to.balance += transfer.amount;
 
-  if (!accountTo.firstTransferInBlockNumber) {
-    accountTo.firstTransferInBlockNumber = blockNumber;
-    accountTo.firstTransferInDate = timestamp;
+  to.lastTransferInBlockNumber = blockNumber;
+  to.lastTransferInDate = date;
+
+  if (!to.firstTransferInBlockNumber) {
+    to.firstTransferInBlockNumber = blockNumber;
+    to.firstTransferInDate = date;
   }
 
-  await ctx.store.save(accountTo);
+  await ctx.store.save(to);
 
   // transfer
   const transferModel = new KhalaTransfer({
     id: `${blockNumber.toString()}-${ctx.event.indexInBlock}`,
+    blockNumber,
+    date,
+    to,
+    from,
+    amount,
+    tip,
   });
-  transferModel.blockNumber = blockNumber;
-  transferModel.date = new Date(timestamp);
-  transferModel.to = accountTo;
-  transferModel.from = accountFrom;
-  transferModel.amount = new BigNumber(amount.toString())
-    .shiftedBy(decimals)
-    .toNumber();
 
   await ctx.store.save(transferModel);
 });
