@@ -46,14 +46,14 @@ down:
 
 deploy:
 	@git pull \
-		&& docker-compose -f docker-compose.prod.yml -p khala_$(git rev-parse --short HEAD) up --build -d
+		&& docker-compose -f docker-compose.prod.yml -p khala_$$(git rev-parse --short HEAD) up --build -d
 
 go-live:
 	@make reload-nginx \
-		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v $(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
+		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v $$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
 		&& reload-nginx
 
 reload-nginx:
-	@docker exec $(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload
+	@docker exec $$(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload
 
 .PHONY: process serve start codegen migration migrate up down
