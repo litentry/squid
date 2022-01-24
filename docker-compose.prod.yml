@@ -1,8 +1,11 @@
 version: "3"
 
 networks:
-  default:
-    name: api-gateway
+  subsquid-mappings-khala_web_network:
+    external: true
+    driver: bridge
+  db_network:
+    driver: bridge
 
 services:
   query-node:
@@ -10,10 +13,13 @@ services:
       context: .
       target: query-node
     ports:
-      - 4000:4000
+      - 4000
     environment:
       DB_HOST: db
     restart: unless-stopped
+    networks:
+      - subsquid-mappings-khala_web_network
+      - db_network
 
   processor:
      build:
@@ -22,6 +28,8 @@ services:
      environment:
        DB_HOST: db
      restart: unless-stopped
+     networks:
+       - db_network
 
   migrate:
     build:
@@ -31,6 +39,8 @@ services:
       DB_HOST: db
     depends_on:
       - db
+    networks:
+      - db_network
 
   db:
     image: postgres:12
@@ -38,4 +48,6 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "${DB_PORT}:5432"
+      - 5432
+    networks:
+      - db_network
