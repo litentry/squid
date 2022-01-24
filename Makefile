@@ -56,6 +56,4 @@ go-live:
 reload-nginx:
 	@docker exec $(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload
 
-subsquid-mappings-khala_nginx_1
-
 .PHONY: process serve start codegen migration migrate up down
