@@ -47,7 +47,8 @@ down:
 deploy:
 	@git pull \
 		&& docker-compose -f docker-compose.prod.yml -p khala_$$(git rev-parse --short HEAD) up --build -d \
-		&& bash -c 'until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress); echo Indexing $$(($$progress*100))% complete. Waiting...; sleep 10; done' \
+		&& progress=0 \
+		&& bash -c 'until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress); echo Indexing $$progress complete. Waiting...; sleep 10; done' \
 		&& make go-live
 
 get-progress:
