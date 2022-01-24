@@ -51,7 +51,7 @@ deploy:
 go-live:
 	@make reload-nginx \
 		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v $$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
-		&& reload-nginx
+		&& make reload-nginx
 
 reload-nginx:
 	@docker exec $$(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload
