@@ -43,14 +43,22 @@ up:
 
 down:
 	@docker-compose down
+projectName := khala_$$(git rev-parse --short HEAD)
 
 deploy:
 	@git pull \
-		&& docker-compose -f docker-compose.prod.yml -p khala_$$(git rev-parse --short HEAD) up --build -d
+		&& $(eval projectName=khala_$$(git rev-parse --short HEAD)) \
+		&& docker-compose -f docker-compose.prod.yml -p $(projectName) up --build -d \
+		&& progress=$$(make get-progress) \
+		&& until [ "$$progress" == "1" ]; do progress=make get-progress; echo Indexing $$(($$progress*100))% complete. Waiting...; sleep 10; done; \
+		&& make go-live
+
+get-progress:
+	@curl -s http://$$(docker ps -f name=$(projectName)_processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
 
 go-live:
 	@make reload-nginx \
-		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v $$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
+		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v $(make project-name) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
 		&& make reload-nginx
 
 reload-nginx:
