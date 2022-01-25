@@ -1,5 +1,5 @@
 process: migrate
-	@node -r dotenv/config lib/processor.js
+	@node -r dotenv/config lib/processors/khala.js
 
 
 serve:
