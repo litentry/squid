@@ -33,9 +33,14 @@ EXPOSE 3000
 EXPOSE 4000
 
 
-FROM squid AS processor
+FROM squid AS khalaProcessor
 CMD ["npm", "run", "processor:khala:start"]
 
+FROM squid AS kusamaProcessor
+CMD ["npm", "run", "processor:kusama:start"]
+
+FROM squid AS polkadotProcessor
+CMD ["npm", "run", "processor:polkadot:start"]
 
 FROM squid AS query-node
 CMD ["npm", "run", "query-node:start"]

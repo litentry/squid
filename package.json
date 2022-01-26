@@ -1,11 +1,13 @@
 {
-  "name": "khala-identity",
+  "name": "substrate-identity-squid",
   "private": true,
   "scripts": {
     "start:khala": "make down && make up && make build && make migrate && make processKhala",
     "start:polkadot": "make down && make up && make build && make migrate && make processPolkadot",
+    "start:kusama": "make down && make up && make build && make migrate && make processKusama",
     "processor:khala:start": "node lib/processors/khalaProcessor.js",
     "processor:polkadot:start": "node lib/processors/polkadotProcessor.js",
+    "processor:kusama:start": "node lib/processors/kusamaProcessor.js",
     "build": "rm -rf lib && tsc",
     "query-node:start": "squid-graphql-server"
   },

@@ -3,7 +3,7 @@ import {
   SubstrateAccount,
   SubstrateCrowdloanContribution,
   SubstrateNetwork,
-  SubstrateRootAccount, SubstrateTransfer
+  SubstrateRootAccount
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
 import { CrowdloanContributedEvent } from '../types/polkadot/events';
