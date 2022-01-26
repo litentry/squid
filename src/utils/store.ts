@@ -3,7 +3,8 @@ import { Store } from '@subsquid/substrate-processor';
 export async function getOrCreate<T extends { id: string }>(
   store: Store,
   entityConstructor: EntityConstructor<T>,
-  id: string
+  id: string,
+  save?: boolean
 ): Promise<T> {
   let e = await store.get<T>(entityConstructor, {
     where: { id },
@@ -12,24 +13,10 @@ export async function getOrCreate<T extends { id: string }>(
   if (e == null) {
     e = new entityConstructor();
     e.id = id;
-  }
 
-  return e;
-}
-
-export async function createIfNotExists<T extends { id: string }>(
-  store: Store,
-  entityConstructor: EntityConstructor<T>,
-  id: string
-): Promise<T> {
-  let e = await store.get<T>(entityConstructor, {
-    where: { id },
-  });
-
-  if (e == null) {
-    e = new entityConstructor();
-    e.id = id;
-    await store.save(e);
+    if (save) {
+      await store.save(e);
+    }
   }
 
   return e;
