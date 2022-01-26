@@ -236,6 +236,29 @@ It is possible to extend `squid-graphql-server(1)` with custom
 [type-graphql](https://typegraphql.com) resolvers and to add request validation.
 More details will be added later.
 
+## Deployments
+
+### Prerequisites
+- docker 
+- docker-compose
+- make
+
+### Initial deployment
+- Checkout the project on the server
+- Run `./init-letsencrypt.sh` to fetch an SSL certificate
+- Run `docker-compose -f docker-compose.nginx.yml up -d` to spin up nginx and certbot
+- Run `make deploy`
+
+### Subsequent deployments
+- Run `make deploy`
+
+Make deploy should be a 'no-downtime' deployment. It will spin up new instances of the app and database and once its finished indexing it will switch nginx over to the new containers and tear down the old ones.
+
+### Useful commands
+- `docker ps` - list all running containers
+- `docker logs *container name*` - output container logs
+- `docker exec -it *container name* psql -U postgres` - log into postgres
+
 ## Disclaimer
 
 This is alpha-quality software. Expect some bugs and incompatible changes in coming weeks.
