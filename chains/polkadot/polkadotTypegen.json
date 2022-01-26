@@ -1,0 +1,7 @@
+{
+  "outDir": "../../src/types/polkadot",
+  "chainVersions": "polkadotVersions.json",
+  "typesBundle": "polkadotTypeDefs.json",
+  "events": ["crowdloan.Contributed"],
+  "calls": []
+}

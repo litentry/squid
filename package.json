@@ -2,8 +2,10 @@
   "name": "khala-identity",
   "private": true,
   "scripts": {
-    "start": "make down && make up && make build && make migrate && make process",
-    "processor:start": "node lib/processors/khala.js",
+    "start:khala": "make down && make up && make build && make migrate && make processKhala",
+    "start:polkadot": "make down && make up && make build && make migrate && make processPolkadot",
+    "processor:khala:start": "node lib/processors/khalaProcessor.js",
+    "processor:polkadot:start": "node lib/processors/polkadotProcessor.js",
     "build": "rm -rf lib && tsc",
     "query-node:start": "squid-graphql-server"
   },

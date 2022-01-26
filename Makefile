@@ -1,6 +1,8 @@
-process: migrate
-	@node -r dotenv/config lib/processors/khala.js
+processKhala: migrate
+	@node -r dotenv/config lib/processors/khalaProcessor.js
 
+processPolkadot: migrate
+	@node -r dotenv/config lib/processors/polkadotProcessor.js
 
 serve:
 	@npx squid-graphql-server
@@ -22,20 +24,24 @@ codegen:
 	@npx sqd codegen
 
 
-typegen: khalaVersions.json
-	@npx squid-substrate-typegen typegen.json
+typegenKhala: chains/khala/khalaVersions.json
+	@npx squid-substrate-typegen chains/khala/khalaTypegen.json
 
 
-khalaVersions.json:
-	@make explore
-
-
-explore:
+exploreKhala:
 	@npx squid-substrate-metadata-explorer \
 		--chain wss://khala.api.onfinality.io/public-ws \
 		--archive https://khala.indexer.gc.subsquid.io/v4/graphql \
-		--out khalaVersions.json
+		--out chains/khala/khalaVersions.json
 
+typegenPolkadot: chains/polkadot/polkadotVersions.json
+	@npx squid-substrate-typegen chains/polkadot/polkadotTypegen.json
+
+explorePolkadot:
+	@npx squid-substrate-metadata-explorer \
+		--chain wss://rpc.polkadot.io \
+		--archive https://polkadot.indexer.gc.subsquid.io/v4/graphql \
+		--out chains/polkadot/polkadotVersions.json
 
 up:
 	@docker-compose up -d

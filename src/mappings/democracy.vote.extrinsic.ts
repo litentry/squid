@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import { DemocracyVoteCall } from '../types/calls';
-import * as v1090 from '../types/v1090';
+import { DemocracyVoteCall } from '../types/khala/calls';
+import * as v1090 from '../types/khala/v1090';
 import {
   SubstrateAccount,
   SubstrateNetwork,

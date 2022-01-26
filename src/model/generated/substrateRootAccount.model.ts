@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, O
 import {SubstrateAccount} from "./substrateAccount.model"
 import {SubstrateBalance} from "./substrateBalance.model"
 import {SubstrateVote} from "./substrateVote.model"
+import {SubstrateCrowdloanContribution} from "./substrateCrowdloanContribution.model"
 
 @Entity_()
 export class SubstrateRootAccount {
@@ -23,4 +24,7 @@ export class SubstrateRootAccount {
 
   @OneToMany_(() => SubstrateVote, e => e.rootAccount)
   votes!: SubstrateVote[]
+
+  @OneToMany_(() => SubstrateCrowdloanContribution, e => e.rootAccount)
+  crowdloanContributions!: SubstrateCrowdloanContribution[]
 }

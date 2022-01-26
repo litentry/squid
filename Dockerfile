@@ -34,7 +34,7 @@ EXPOSE 4000
 
 
 FROM squid AS processor
-CMD ["npm", "run", "processor:start"]
+CMD ["npm", "run", "processor:khala:start"]
 
 
 FROM squid AS query-node
