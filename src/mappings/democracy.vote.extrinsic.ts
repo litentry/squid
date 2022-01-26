@@ -50,18 +50,18 @@ interface VoteCall {
   vote: v1090.AccountVote;
 }
 
-function getVoteExtrinsic(ctx: ExtrinsicHandlerContext): VoteCall {
-  const extrinsic = new DemocracyVoteCall(ctx);
-  if (extrinsic.isV1) {
-    const { refIndex, vote } = extrinsic.asV1;
-    // switch is required to convince the compiler in correct type
-    switch (vote.__kind) {
-      case 'Standard':
-        return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
-      case 'Split':
-        return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
-    }
-  } else {
-    return extrinsic.asLatest;
-  }
-}
+// function getVoteExtrinsic(ctx: ExtrinsicHandlerContext): VoteCall {
+//   const extrinsic = new DemocracyVoteCall(ctx);
+//   if (extrinsic.isV1) {
+//     const { refIndex, vote } = extrinsic.asV1;
+//     // switch is required to convince the compiler in correct type
+//     switch (vote.__kind) {
+//       case 'Standard':
+//         return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
+//       case 'Split':
+//         return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
+//     }
+//   } else {
+//     return extrinsic.asLatest;
+//   }
+// }
