@@ -1,44 +1,78 @@
-type KhalaAccount @entity {
-  "address"
-  id: ID!
-
-  balance: BigInt!
-
-  firstTransferInDate: DateTime
-  firstTransferInBlockNumber: BigInt
-
-  firstTransferOutDate: DateTime
-  firstTransferOutBlockNumber: BigInt
-
-  lastTransferInDate: DateTime
-  lastTransferInBlockNumber: BigInt
-
-  lastTransferOutDate: DateTime
-  lastTransferOutBlockNumber: BigInt
-
-  transfersTo: [KhalaTransfer] @derivedFrom(field: "to")
-  transfersFrom: [KhalaTransfer] @derivedFrom(field: "from")
-
-  votes: [KhalaVote] @derivedFrom(field: "account")
-  totalVotes: Int # if required will it default to 0?
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
 }
 
-type KhalaTransfer @entity {
-  "blockNumber-eventIndex"
+type SubstrateRootAccount @entity {
+  "hex address"
   id: ID!
-  to: KhalaAccount!
-  from: KhalaAccount!
+  accounts: [SubstrateAccount] @derivedFrom(field: "rootAccount")
+  balances: [SubstrateBalance] @derivedFrom(field: "rootAccount")
+  votes: [SubstrateVote] @derivedFrom(field: "rootAccount")
+}
+
+type SubstrateAccount @entity {
+  "address"
+  id: ID!
+  "hex address"
+  rootAccount: SubstrateRootAccount!
+  network: SubstrateNetwork! @index
+  prefix: Int!
+  balances: [SubstrateBalance] @derivedFrom(field: "account")
+  votes: [SubstrateVote] @derivedFrom(field: "account")
+  totalVotes: Int
+}
+
+# this has to be 1 SubstrateAccount to many SubstrateBalance as a chain can have multiple tokens
+type SubstrateBalance @entity {
+  "address:tokenSymbol"
+  id: ID!
+  "address"
+  account: SubstrateAccount!
+  "hex address"
+  rootAccount: SubstrateRootAccount!
+  network: SubstrateNetwork! @index
+  symbol: String!
+  decimals: Int!
+  balance: BigInt!
+  firstTransferInDate: DateTime
+  firstTransferInBlockNumber: BigInt
+  firstTransferOutDate: DateTime
+  firstTransferOutBlockNumber: BigInt
+  lastTransferInDate: DateTime
+  lastTransferInBlockNumber: BigInt
+  lastTransferOutDate: DateTime
+  lastTransferOutBlockNumber: BigInt
+  totalTransfers: Int
+  transfersTo: [SubstrateTransfer] @derivedFrom(field: "to")
+  transfersFrom: [SubstrateTransfer] @derivedFrom(field: "from")
+}
+
+type SubstrateTransfer @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork! @index
+  symbol: String!
+  decimals: Int!
+  toAccountBalanceAtBlock: BigInt!
+  fromAccountBalanceAtBlock: BigInt!
+  to: SubstrateBalance!
+  from: SubstrateBalance!
   amount: BigInt!
   tip: BigInt!
   blockNumber: BigInt!
   date: DateTime!
 }
 
-type KhalaVote @entity {
+type SubstrateVote @entity {
+  "network:block:index"
   id: ID!
-  account: KhalaAccount!
-  # referendumIndex: BigInt! # maybe int?
-  # amount: BigInt!
+  network: SubstrateNetwork! @index
+  account: SubstrateAccount!
+  rootAccount: SubstrateRootAccount!
   blockNumber: BigInt!
   date: DateTime!
+  # referendumIndex: BigInt! # maybe int?
+  # amount: BigInt!
 }
