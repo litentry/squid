@@ -3,7 +3,7 @@ import {
   SubstrateAccount,
   SubstrateCrowdloanContribution,
   SubstrateNetwork,
-  SubstrateRootAccount
+  SubstrateRootAccount,
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
 import { CrowdloanContributedEvent } from '../types/polkadot/events';
@@ -29,14 +29,12 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       true
     );
 
-    const account = await getOrCreate(
-      ctx.store,
-      SubstrateAccount,
-      address
-    );
+    const account = await getOrCreate(ctx.store, SubstrateAccount, address);
     account.rootAccount = rootAccount;
     account.network = network;
     account.prefix = prefix;
+    account.totalCrowdloanContributions =
+      (account.totalCrowdloanContributions || 0) + 1;
     await ctx.store.save(account);
 
     const contribution = new SubstrateCrowdloanContribution({
@@ -49,7 +47,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       amount,
       paraId,
       account,
-      rootAccount
+      rootAccount,
     });
 
     await ctx.store.save(contribution);

@@ -10,7 +10,8 @@ type SubstrateRootAccount @entity {
   accounts: [SubstrateAccount] @derivedFrom(field: "rootAccount")
   balances: [SubstrateBalance] @derivedFrom(field: "rootAccount")
   votes: [SubstrateVote] @derivedFrom(field: "rootAccount")
-  crowdloanContributions: [SubstrateCrowdloanContribution] @derivedFrom(field: "rootAccount")
+  crowdloanContributions: [SubstrateCrowdloanContribution]
+    @derivedFrom(field: "rootAccount")
 }
 
 type SubstrateAccount @entity {
@@ -22,8 +23,10 @@ type SubstrateAccount @entity {
   prefix: Int!
   balances: [SubstrateBalance] @derivedFrom(field: "account")
   votes: [SubstrateVote] @derivedFrom(field: "account")
-  crowdloanContributions: [SubstrateCrowdloanContribution] @derivedFrom(field: "account")
+  crowdloanContributions: [SubstrateCrowdloanContribution]
+    @derivedFrom(field: "account")
   totalVotes: Int
+  totalCrowdloanContributions: Int
 }
 
 # this has to be 1 SubstrateAccount to many SubstrateBalance as a chain can have multiple tokens

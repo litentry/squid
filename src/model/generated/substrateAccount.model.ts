@@ -42,4 +42,7 @@ export class SubstrateAccount {
 
   @Column_("integer", {nullable: true})
   totalVotes!: number | undefined | null
+
+  @Column_("integer", {nullable: true})
+  totalCrowdloanContributions!: number | undefined | null
 }
