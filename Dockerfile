@@ -24,7 +24,7 @@ COPY --from=deps /squid/package.json .
 COPY --from=deps /squid/package-lock.json .
 COPY --from=deps /squid/node_modules node_modules
 COPY --from=builder /squid/lib lib
-ADD typeDefs.json typeDefs.json
+ADD chains chains
 ADD db db
 ADD schema.graphql .
 # TODO: use shorter PROMETHEUS_PORT
@@ -33,9 +33,14 @@ EXPOSE 3000
 EXPOSE 4000
 
 
-FROM squid AS processor
-CMD ["npm", "run", "processor:start"]
+FROM squid AS khalaProcessor
+CMD ["npm", "run", "processor:khala:start"]
 
+FROM squid AS kusamaProcessor
+CMD ["npm", "run", "processor:kusama:start"]
+
+FROM squid AS polkadotProcessor
+CMD ["npm", "run", "processor:polkadot:start"]
 
 FROM squid AS query-node
 CMD ["npm", "run", "query-node:start"]

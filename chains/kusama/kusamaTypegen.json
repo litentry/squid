@@ -1,0 +1,7 @@
+{
+  "outDir": "../../src/types/kusama",
+  "chainVersions": "kusamaVersions.json",
+  "typesBundle": "kusamaTypeDefs.json",
+  "events": ["crowdloan.Contributed"],
+  "calls": []
+}

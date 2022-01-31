@@ -1,0 +1,7 @@
+{
+  "outDir": "../../src/types/khala",
+  "chainVersions": "khalaVersions.json",
+  "typesBundle": "khalaTypeDefs.json",
+  "events": ["balances.Transfer"],
+  "calls": ["democracy.vote"]
+}

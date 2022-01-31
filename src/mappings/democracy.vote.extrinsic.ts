@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import { DemocracyVoteCall } from '../types/calls';
-import * as v1090 from '../types/v1090';
+import { DemocracyVoteCall } from '../types/khala/calls';
+import * as v1090 from '../types/khala/v1090';
 import {
   SubstrateAccount,
   SubstrateNetwork,
@@ -50,18 +50,18 @@ interface VoteCall {
   vote: v1090.AccountVote;
 }
 
-function getVoteExtrinsic(ctx: ExtrinsicHandlerContext): VoteCall {
-  const extrinsic = new DemocracyVoteCall(ctx);
-  if (extrinsic.isV1) {
-    const { refIndex, vote } = extrinsic.asV1;
-    // switch is required to convince the compiler in correct type
-    switch (vote.__kind) {
-      case 'Standard':
-        return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
-      case 'Split':
-        return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
-    }
-  } else {
-    return extrinsic.asLatest;
-  }
-}
+// function getVoteExtrinsic(ctx: ExtrinsicHandlerContext): VoteCall {
+//   const extrinsic = new DemocracyVoteCall(ctx);
+//   if (extrinsic.isV1) {
+//     const { refIndex, vote } = extrinsic.asV1;
+//     // switch is required to convince the compiler in correct type
+//     switch (vote.__kind) {
+//       case 'Standard':
+//         return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
+//       case 'Split':
+//         return { refIndex, vote: { __kind: vote.__kind, ...vote.value } };
+//     }
+//   } else {
+//     return extrinsic.asLatest;
+//   }
+// }

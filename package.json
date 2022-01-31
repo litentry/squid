@@ -1,9 +1,13 @@
 {
-  "name": "khala-identity",
+  "name": "substrate-identity-squid",
   "private": true,
   "scripts": {
-    "start": "make down && make up && make build && make migrate && make process",
-    "processor:start": "node lib/processors/khala.js",
+    "start:khala": "make down && make up && make build && make migrate && make processKhala",
+    "start:polkadot": "make down && make up && make build && make migrate && make processPolkadot",
+    "start:kusama": "make down && make up && make build && make migrate && make processKusama",
+    "processor:khala:start": "node lib/processors/khalaProcessor.js",
+    "processor:polkadot:start": "node lib/processors/polkadotProcessor.js",
+    "processor:kusama:start": "node lib/processors/kusamaProcessor.js",
     "build": "rm -rf lib && tsc",
     "query-node:start": "squid-graphql-server"
   },
@@ -20,7 +24,7 @@
   },
   "devDependencies": {
     "@subsquid/cli": "^0.1.0",
-    "@subsquid/substrate-metadata-explorer": "^0.0.1",
+    "@subsquid/substrate-metadata-explorer": "^0.0.6",
     "@subsquid/substrate-typegen": "^0.1.0",
     "@types/node": "^16.11.17",
     "@typescript-eslint/eslint-plugin": "^5.10.0",

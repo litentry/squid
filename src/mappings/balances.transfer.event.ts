@@ -7,7 +7,7 @@ import {
   SubstrateTransfer,
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
-import { BalancesTransferEvent } from '../types/events';
+import { BalancesTransferEvent } from '../types/khala/events';
 import { getOrCreate } from '../utils/store';
 import getAccountHex from '../utils/getAccountHex';
 

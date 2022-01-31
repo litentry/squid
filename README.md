@@ -24,7 +24,7 @@ docker compose up -d
 npx sqd db migrate
 
 # 5. Now start the processor
-node -r dotenv/config lib/processors/khala.js
+node -r dotenv/config lib/processors/khalaProcessor.js
 
 # 6. The above command will block the terminal
 #    being busy with fetching the chain data,

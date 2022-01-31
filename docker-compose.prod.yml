@@ -21,10 +21,10 @@ services:
       - subsquid-mappings-khala_web_network
       - db_network
 
-  processor:
+  khala-processor:
      build:
        context: .
-       target: processor
+       target: khalaProcessor
      environment:
        DB_HOST: db
      ports:
@@ -32,6 +32,30 @@ services:
      restart: unless-stopped
      networks:
        - db_network
+
+  kusama-processor:
+    build:
+      context: .
+      target: kusamaProcessor
+    environment:
+      DB_HOST: db
+    ports:
+      - 3000
+    restart: unless-stopped
+    networks:
+      - db_network
+
+  polkadot-processor:
+    build:
+      context: .
+      target: polkadotProcessor
+    environment:
+      DB_HOST: db
+    ports:
+      - 3000
+    restart: unless-stopped
+    networks:
+      - db_network
 
   migrate:
     build:

@@ -1,6 +1,11 @@
-process: migrate
-	@node -r dotenv/config lib/processors/khala.js
+processKhala: migrate
+	@node -r dotenv/config lib/processors/khalaProcessor.js
 
+processPolkadot: migrate
+	@node -r dotenv/config lib/processors/polkadotProcessor.js
+
+processKusama: migrate
+	@node -r dotenv/config lib/processors/kusamaProcessor.js
 
 serve:
 	@npx squid-graphql-server
@@ -22,20 +27,32 @@ codegen:
 	@npx sqd codegen
 
 
-typegen: khalaVersions.json
-	@npx squid-substrate-typegen typegen.json
+typegenKusama: chains/kusama/kusamaVersions.json
+	@npx squid-substrate-typegen chains/kusama/kusamaTypegen.json
 
+exploreKusama:
+	@npx squid-substrate-metadata-explorer \
+		--chain wss://kusama-rpc.polkadot.io \
+		--archive https://kusama.indexer.gc.subsquid.io/v4/graphql \
+		--out chains/kusama/kusamaVersions.json
 
-khalaVersions.json:
-	@make explore
+typegenKhala: chains/khala/khalaVersions.json
+	@npx squid-substrate-typegen chains/khala/khalaTypegen.json
 
-
-explore:
+exploreKhala:
 	@npx squid-substrate-metadata-explorer \
 		--chain wss://khala.api.onfinality.io/public-ws \
 		--archive https://khala.indexer.gc.subsquid.io/v4/graphql \
-		--out khalaVersions.json
+		--out chains/khala/khalaVersions.json
 
+typegenPolkadot: chains/polkadot/polkadotVersions.json
+	@npx squid-substrate-typegen chains/polkadot/polkadotTypegen.json
+
+explorePolkadot:
+	@npx squid-substrate-metadata-explorer \
+		--chain wss://rpc.polkadot.io \
+		--archive https://polkadot.indexer.gc.subsquid.io/v4/graphql \
+		--out chains/polkadot/polkadotVersions.json
 
 up:
 	@docker-compose up -d
@@ -46,16 +63,23 @@ down:
 
 deploy:
 	@git pull \
-		&& docker-compose -f docker-compose.prod.yml -p khala_$$(git rev-parse --short HEAD) up --build -d \
-		&& bash -c 'progress=$$(make -s get-progress); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress); echo Indexing $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
+		&& docker-compose -f docker-compose.prod.yml -p squid_$$(git rev-parse --short HEAD) up --build -d \
+		&& bash -c 'progress=$$(make -s get-progress-khala); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-khala); echo Indexing Khala $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
+		&& bash -c 'progress=$$(make -s get-progress-kusama); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-kusama); echo Indexing Kusama $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
 		&& make go-live
 
-get-progress:
-	@curl -s http://$$(docker ps -f name=khala_$$(git rev-parse --short HEAD)_processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
+get-progress-polkadot:
+	@curl -s http://$$(docker ps -f name=squid_$$(git rev-parse --short HEAD)_polkadot-processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
+
+get-progress-khala:
+	@curl -s http://$$(docker ps -f name=squid_$$(git rev-parse --short HEAD)_khala-processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
+
+get-progress-kusama:
+	@curl -s http://$$(docker ps -f name=squid_$$(git rev-parse --short HEAD)_kusama-processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
 
 go-live:
 	@make reload-nginx \
-		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v khala_$$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
+		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v squid_$$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
 		&& make reload-nginx
 
 reload-nginx:
