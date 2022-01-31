@@ -50,7 +50,7 @@ typegenPolkadot: chains/polkadot/polkadotVersions.json
 
 explorePolkadot:
 	@npx squid-substrate-metadata-explorer \
-		--chain wss://rpc.polkadot.io \
+		--chain wss://polkadot.api.onfinality.io/public-ws \
 		--archive https://polkadot-squid-archive.litentry.io/graphql/v1/graphql \
 		--out chains/polkadot/polkadotVersions.json
 
