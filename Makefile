@@ -51,7 +51,7 @@ typegenPolkadot: chains/polkadot/polkadotVersions.json
 explorePolkadot:
 	@npx squid-substrate-metadata-explorer \
 		--chain wss://rpc.polkadot.io \
-		--archive https://polkadot.indexer.gc.subsquid.io/v4/graphql \
+		--archive https://polkadot-squid-archive.litentry.io/graphql/v1/graphql \
 		--out chains/polkadot/polkadotVersions.json
 
 up:

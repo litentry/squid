@@ -9,8 +9,8 @@ processor.setTypesBundle('chains/polkadot/polkadotTypeDefs.json');
 processor.setBatchSize(500);
 
 processor.setDataSource({
-  archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
-  chain: 'wss://rpc.polkadot.io',
+  archive: 'https://polkadot-squid-archive.litentry.io/graphql/v1/graphql',
+  chain: 'wss://polkadot.api.onfinality.io/public-ws',
 });
 
 processor.addEventHandler(
