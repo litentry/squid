@@ -10,7 +10,7 @@ processor.setTypesBundle('chains/khala/khalaTypeDefs.json');
 processor.setBatchSize(500);
 
 processor.setDataSource({
-  archive: 'https://khala.indexer.gc.subsquid.io/v4/graphql',
+  archive: 'https://khala-squid-archive.litentry.io/graphql/v1/graphql',
   chain: 'wss://khala.api.onfinality.io/public-ws',
 });
 

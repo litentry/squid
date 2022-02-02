@@ -32,7 +32,7 @@ typegenKusama: chains/kusama/kusamaVersions.json
 
 exploreKusama:
 	@npx squid-substrate-metadata-explorer \
-		--chain wss://kusama-rpc.polkadot.io \
+		--chain wss://kusama.api.onfinality.io/public-ws \
 		--archive https://kusama.indexer.gc.subsquid.io/v4/graphql \
 		--out chains/kusama/kusamaVersions.json
 
@@ -42,7 +42,7 @@ typegenKhala: chains/khala/khalaVersions.json
 exploreKhala:
 	@npx squid-substrate-metadata-explorer \
 		--chain wss://khala.api.onfinality.io/public-ws \
-		--archive https://khala.indexer.gc.subsquid.io/v4/graphql \
+		--archive https://khala-squid-archive.litentry.io/graphql/v1/graphql \
 		--out chains/khala/khalaVersions.json
 
 typegenPolkadot: chains/polkadot/polkadotVersions.json

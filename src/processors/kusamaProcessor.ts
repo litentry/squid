@@ -10,7 +10,7 @@ processor.setBatchSize(500);
 
 processor.setDataSource({
   archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
-  chain: 'wss://kusama-rpc.polkadot.io',
+  chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
 
 processor.addEventHandler(
