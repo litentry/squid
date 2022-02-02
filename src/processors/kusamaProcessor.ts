@@ -4,7 +4,7 @@ import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_polkadot');
 
-processor.setTypesBundle('chains/kusama/kusamaTypeDefs.json');
+processor.setTypesBundle('kusama');
 
 processor.setBatchSize(500);
 

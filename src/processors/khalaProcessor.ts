@@ -5,7 +5,7 @@ import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_khala');
 
-processor.setTypesBundle('chains/khala/khalaTypeDefs.json');
+processor.setTypesBundle('khala');
 
 processor.setBatchSize(500);
 

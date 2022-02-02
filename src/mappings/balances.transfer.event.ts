@@ -137,6 +137,7 @@ function getTransferEvent(ctx: EventHandlerContext): TransferEvent {
     const [from, to, amount] = event.asV1;
     return { from, to, amount };
   } else {
+    console.log(ctx._chain.getEventHash('balances.Transfer'));
     return event.asLatest;
   }
 }

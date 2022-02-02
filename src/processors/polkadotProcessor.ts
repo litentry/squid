@@ -4,7 +4,7 @@ import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_polkadot');
 
-processor.setTypesBundle('chains/polkadot/polkadotTypeDefs.json');
+processor.setTypesBundle('polkadot');
 
 processor.setBatchSize(500);
 
