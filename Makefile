@@ -65,9 +65,9 @@ deploy:
 	@git pull \
 		&& docker-compose -f docker-compose.prod.yml -p squid_$$(git rev-parse --short HEAD) up --build -d \
 		&& bash -c 'progress=$$(make -s get-progress-khala); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-khala); echo Indexing Khala $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
+		&& make go-live
 		# && bash -c 'progress=$$(make -s get-progress-kusama); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-kusama); echo Indexing Kusama $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
 		# && bash -c 'progress=$$(make -s get-progress-polkadot); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-polkadot); echo Indexing Polkadot $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
-		&& make go-live
 
 get-progress-polkadot:
 	@curl -s http://$$(docker ps -f name=squid_$$(git rev-parse --short HEAD)_polkadot-processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
