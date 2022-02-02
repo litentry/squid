@@ -36,8 +36,8 @@ EXPOSE 4000
 FROM squid AS khalaProcessor
 CMD ["yarn", "processor:khala:start"]
 
-FROM squid AS kusamaProcessor
-CMD ["yarn", "processor:kusama:start"]
+# FROM squid AS kusamaProcessor
+# CMD ["yarn", "processor:kusama:start"]
 
 FROM squid AS polkadotProcessor
 CMD ["yarn", "processor:polkadot:start"]
