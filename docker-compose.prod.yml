@@ -37,19 +37,19 @@ services:
     networks:
       - db_network
 
-  kusama-processor:
-    build:
-      context: .
-      target: kusamaProcessor
-    environment:
-      DB_HOST: db
-    ports:
-      - 3000
-    restart: unless-stopped
-    depends_on:
-      - db
-    networks:
-      - db_network
+  # kusama-processor:
+  #   build:
+  #     context: .
+  #     target: kusamaProcessor
+  #   environment:
+  #     DB_HOST: db
+  #   ports:
+  #     - 3000
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - db_network
 
   polkadot-processor:
     build:
