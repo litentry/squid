@@ -46,5 +46,5 @@ FROM squid AS query-node
 CMD ["yarn", "query-node:start"]
 
 FROM squid AS migrate
-RUN yarn i "@subsquid/cli"
+RUN yarn add "@subsquid/cli"
 CMD ["yarn", "sqd", "db", "migrate"]
