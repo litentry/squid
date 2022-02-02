@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 networks:
   subsquid-mappings-khala_web_network:
@@ -17,21 +17,25 @@ services:
     environment:
       DB_HOST: db
     restart: unless-stopped
+    depends_on:
+      - db
     networks:
       - subsquid-mappings-khala_web_network
       - db_network
 
   khala-processor:
-     build:
-       context: .
-       target: khalaProcessor
-     environment:
-       DB_HOST: db
-     ports:
-       - 3000
-     restart: unless-stopped
-     networks:
-       - db_network
+    build:
+      context: .
+      target: khalaProcessor
+    environment:
+      DB_HOST: db
+    ports:
+      - 3000
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - db_network
 
   kusama-processor:
     build:
@@ -42,6 +46,8 @@ services:
     ports:
       - 3000
     restart: unless-stopped
+    depends_on:
+      - db
     networks:
       - db_network
 
@@ -54,6 +60,8 @@ services:
     ports:
       - 3000
     restart: unless-stopped
+    depends_on:
+      - db
     networks:
       - db_network
 
