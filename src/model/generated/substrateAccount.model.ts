@@ -1,5 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
-import {SubstrateRootAccount} from "./substrateRootAccount.model"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateBalance} from "./substrateBalance.model"
 import {SubstrateVote} from "./substrateVote.model"
@@ -21,8 +20,8 @@ export class SubstrateAccount {
    * hex address
    */
   @Index_()
-  @ManyToOne_(() => SubstrateRootAccount, {nullable: false})
-  rootAccount!: SubstrateRootAccount
+  @Column_("text", {nullable: false})
+  rootAccount!: string
 
   @Index_()
   @Column_("varchar", {length: 8, nullable: false})

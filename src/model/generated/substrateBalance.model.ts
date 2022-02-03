@@ -1,7 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateAccount} from "./substrateAccount.model"
-import {SubstrateRootAccount} from "./substrateRootAccount.model"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateTransfer} from "./substrateTransfer.model"
 
@@ -28,8 +27,8 @@ export class SubstrateBalance {
    * hex address
    */
   @Index_()
-  @ManyToOne_(() => SubstrateRootAccount, {nullable: false})
-  rootAccount!: SubstrateRootAccount
+  @Column_("text", {nullable: false})
+  rootAccount!: string
 
   @Index_()
   @Column_("varchar", {length: 8, nullable: false})

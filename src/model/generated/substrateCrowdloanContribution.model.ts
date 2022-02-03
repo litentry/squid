@@ -2,7 +2,6 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateAccount} from "./substrateAccount.model"
-import {SubstrateRootAccount} from "./substrateRootAccount.model"
 
 @Entity_()
 export class SubstrateCrowdloanContribution {
@@ -25,8 +24,8 @@ export class SubstrateCrowdloanContribution {
   account!: SubstrateAccount
 
   @Index_()
-  @ManyToOne_(() => SubstrateRootAccount, {nullable: false})
-  rootAccount!: SubstrateRootAccount
+  @Column_("text", {nullable: false})
+  rootAccount!: string
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint

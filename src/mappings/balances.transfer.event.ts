@@ -3,7 +3,6 @@ import {
   SubstrateAccount,
   SubstrateBalance,
   SubstrateNetwork,
-  SubstrateRootAccount,
   SubstrateTransfer,
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
@@ -24,12 +23,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
 
     // sender
     const fromAddress = encodeAddress(network, transfer.from);
-    const rootFromAccount = await getOrCreate(
-      ctx.store,
-      SubstrateRootAccount,
-      getAccountHex(transfer.from),
-      true
-    );
+    const rootFromAccount = getAccountHex(transfer.from);
 
     const fromAccount = await getOrCreate(
       ctx.store,
@@ -69,12 +63,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
 
     // receiver
     const toAddress = encodeAddress(network, transfer.to);
-    const rootToAccount = await getOrCreate(
-      ctx.store,
-      SubstrateRootAccount,
-      getAccountHex(transfer.to),
-      true
-    );
+    const rootToAccount = getAccountHex(transfer.to);
 
     const toAccount = await getOrCreate(ctx.store, SubstrateAccount, toAddress);
     toAccount.rootAccount = rootToAccount;

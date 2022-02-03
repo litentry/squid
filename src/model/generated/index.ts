@@ -1,4 +1,3 @@
-export * from "./substrateRootAccount.model"
 export * from "./substrateAccount.model"
 export * from "./_substrateNetwork"
 export * from "./substrateBalance.model"
