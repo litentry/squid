@@ -6,23 +6,27 @@ FROM node AS node-with-gyp
 FROM node-with-gyp AS builder
 WORKDIR /squid
 ADD package.json .
-ADD package-lock.json .
-RUN npm ci
+ADD yarn.lock .
+RUN yarn install --pure-lockfile --non-interactive
 ADD tsconfig.json .
 ADD src src
-RUN npm run build
+RUN yarn build
 
 FROM node-with-gyp AS deps
 WORKDIR /squid
 ADD package.json .
-ADD package-lock.json .
-RUN npm ci --production
+ADD yarn.lock .
+# temp
+ADD hack.js .
+RUN yarn install --pure-lockfile --non-interactive
 
 FROM node AS squid
 WORKDIR /squid
 COPY --from=deps /squid/package.json .
-COPY --from=deps /squid/package-lock.json .
+COPY --from=deps /squid/yarn.lock .
 COPY --from=deps /squid/node_modules node_modules
+# temp
+COPY --from=deps /squid/hack.js node_modules/@subsquid/substrate-processor/lib/db.js
 COPY --from=builder /squid/lib lib
 ADD chains chains
 ADD db db
@@ -34,17 +38,17 @@ EXPOSE 4000
 
 
 FROM squid AS khalaProcessor
-CMD ["npm", "run", "processor:khala:start"]
+CMD ["yarn", "processor:khala:start"]
 
 FROM squid AS kusamaProcessor
-CMD ["npm", "run", "processor:kusama:start"]
+CMD ["yarn", "processor:kusama:start"]
 
 FROM squid AS polkadotProcessor
-CMD ["npm", "run", "processor:polkadot:start"]
+CMD ["yarn", "processor:polkadot:start"]
 
 FROM squid AS query-node
-CMD ["npm", "run", "query-node:start"]
+CMD ["yarn", "query-node:start"]
 
 FROM squid AS migrate
-RUN npm i "@subsquid/cli"
-CMD ["npx", "sqd", "db", "migrate"]
+RUN yarn add "@subsquid/cli"
+CMD ["yarn", "sqd", "db", "migrate"]

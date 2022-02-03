@@ -8,48 +8,48 @@ processKusama: migrate
 	@node -r dotenv/config lib/processors/kusamaProcessor.js
 
 serve:
-	@npx squid-graphql-server
+	@yarn squid-graphql-server
 
 
 migrate:
-	@npx sqd db:migrate
+	@yarn sqd db:migrate
 
 
 migration:
-	@npx sqd db:create-migration Data
+	@yarn sqd db:create-migration Data
 
 
 build:
-	@npm run build
+	@yarn build
 
 
 codegen:
-	@npx sqd codegen
+	@yarn sqd codegen
 
 
 typegenKusama: chains/kusama/kusamaVersions.json
-	@npx squid-substrate-typegen chains/kusama/kusamaTypegen.json
+	@yarn squid-substrate-typegen chains/kusama/kusamaTypegen.json
 
 exploreKusama:
-	@npx squid-substrate-metadata-explorer \
+	@yarn squid-substrate-metadata-explorer \
 		--chain wss://kusama.api.onfinality.io/public-ws \
 		--archive https://kusama.indexer.gc.subsquid.io/v4/graphql \
 		--out chains/kusama/kusamaVersions.json
 
 typegenKhala: chains/khala/khalaVersions.json
-	@npx squid-substrate-typegen chains/khala/khalaTypegen.json
+	@yarn squid-substrate-typegen chains/khala/khalaTypegen.json
 
 exploreKhala:
-	@npx squid-substrate-metadata-explorer \
+	@yarn squid-substrate-metadata-explorer \
 		--chain wss://khala.api.onfinality.io/public-ws \
 		--archive https://khala-squid-archive.litentry.io/graphql/v1/graphql \
 		--out chains/khala/khalaVersions.json
 
 typegenPolkadot: chains/polkadot/polkadotVersions.json
-	@npx squid-substrate-typegen chains/polkadot/polkadotTypegen.json
+	@yarn squid-substrate-typegen chains/polkadot/polkadotTypegen.json
 
 explorePolkadot:
-	@npx squid-substrate-metadata-explorer \
+	@yarn squid-substrate-metadata-explorer \
 		--chain wss://polkadot.api.onfinality.io/public-ws \
 		--archive https://polkadot-squid-archive.litentry.io/graphql/v1/graphql \
 		--out chains/polkadot/polkadotVersions.json

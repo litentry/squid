@@ -3,7 +3,6 @@ import {
   SubstrateAccount,
   SubstrateCrowdloanContribution,
   SubstrateNetwork,
-  SubstrateRootAccount,
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
 import { CrowdloanContributedEvent } from '../types/polkadot/events';
@@ -22,12 +21,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     const { amount, paraId, address: rawAddress } = getContributedEvent(ctx);
 
     const address = encodeAddress(network, rawAddress);
-    const rootAccount = await getOrCreate(
-      ctx.store,
-      SubstrateRootAccount,
-      getAccountHex(rawAddress),
-      true
-    );
+    const rootAccount = getAccountHex(rawAddress);
 
     const account = await getOrCreate(ctx.store, SubstrateAccount, address);
     account.rootAccount = rootAccount;

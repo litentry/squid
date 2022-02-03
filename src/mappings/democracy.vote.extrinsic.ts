@@ -1,12 +1,7 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { DemocracyVoteCall } from '../types/khala/calls';
 import * as v1090 from '../types/khala/v1090';
-import {
-  SubstrateAccount,
-  SubstrateNetwork,
-  SubstrateRootAccount,
-  SubstrateVote,
-} from '../model';
+import { SubstrateAccount, SubstrateNetwork, SubstrateVote } from '../model';
 import { getOrCreate } from '../utils/store';
 import getAccountHex from '../utils/getAccountHex';
 
@@ -15,12 +10,7 @@ export default (network: SubstrateNetwork) =>
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
 
-    const rootAccount = await getOrCreate(
-      ctx.store,
-      SubstrateRootAccount,
-      getAccountHex(ctx.extrinsic.signer),
-      true
-    );
+    const rootAccount = getAccountHex(ctx.extrinsic.signer);
 
     const account = await getOrCreate(
       ctx.store,
