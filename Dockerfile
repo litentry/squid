@@ -16,6 +16,8 @@ FROM node-with-gyp AS deps
 WORKDIR /squid
 ADD package.json .
 ADD yarn.lock .
+# temp
+ADD hack.js .
 RUN yarn install --pure-lockfile --non-interactive
 
 FROM node AS squid
@@ -23,6 +25,8 @@ WORKDIR /squid
 COPY --from=deps /squid/package.json .
 COPY --from=deps /squid/yarn.lock .
 COPY --from=deps /squid/node_modules node_modules
+# temp
+COPY --from=deps /squid/hack.js node_modules/@subsquid/substrate-processor/lib/db.js
 COPY --from=builder /squid/lib lib
 ADD chains chains
 ADD db db
