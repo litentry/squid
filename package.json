@@ -3,13 +3,14 @@
   "description": "Squid processors for substrate.",
   "private": true,
   "scripts": {
-    "start:khala": "make down && make up && make build && make migrate && make processKhala",
-    "start:polkadot": "make down && make up && make build && make migrate && make processPolkadot",
-    "start:kusama": "make down && make up && make build && make migrate && make processKusama",
+    "start:khala": "yarn restartdb && make processKhala",
+    "start:polkadot": "yarn restartdb && make processPolkadot",
+    "start:kusama": "yarn restartdb && make processKusama",
     "processor:khala:start": "node lib/processors/khalaProcessor.js",
     "processor:polkadot:start": "node lib/processors/polkadotProcessor.js",
     "processor:kusama:start": "node lib/processors/kusamaProcessor.js",
     "build": "rm -rf lib && tsc",
+    "restartdb": "make down && make up && make build && make migrate",
     "query-node:start": "squid-graphql-server"
   },
   "dependencies": {
