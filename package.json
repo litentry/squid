@@ -1,5 +1,6 @@
 {
-  "name": "substrate-identity-squid",
+  "name": "squid",
+  "description": "Squid processors for substrate.",
   "private": true,
   "scripts": {
     "start:khala": "make down && make up && make build && make migrate && make processKhala",
