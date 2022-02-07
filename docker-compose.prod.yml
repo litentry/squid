@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     networks:
-      - subsquid-mappings-khala_web_network
+      - squid_web_network
       - db_network
 
   khala-processor:
