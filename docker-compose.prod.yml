@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  subsquid-mappings-khala_web_network:
+  squid_web_network:
     external: true
     driver: bridge
   db_network:
