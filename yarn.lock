@@ -928,13 +928,13 @@
   dependencies:
     websocket "^1.0.34"
 
-"@subsquid/scale-codec-json@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@subsquid/scale-codec-json/-/scale-codec-json-0.1.0.tgz#3a124b451fb8c710f81c3b3f408e9389f2320484"
-  integrity sha512-n8PfRATxEzMBsReS3r4auNvptf9zaYsVYswBOCjLGlXQ9amQ/aN9iXU8ebElub//1ibdQc34KA8xMFLSxOLB1A==
+"@subsquid/scale-codec-json@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@subsquid/scale-codec-json/-/scale-codec-json-0.1.1.tgz#59496e317a7203ed1afbaf8c92a4a2b01232c382"
+  integrity sha512-FiuKl/W0bG7UkW7CUlXwGlFEZBu5QVnVe97SajSd02PaxZD+aDUevD18iH6WoaE+z5HFtAgettDf0rKimUJHpQ==
   dependencies:
-    "@subsquid/scale-codec" "^0.3.0"
-    "@subsquid/ss58-codec" "^0.0.3"
+    "@subsquid/scale-codec" "^0.3.1"
+    "@subsquid/ss58-codec" "^0.1.0"
 
 "@subsquid/scale-codec@^0.3.0":
   version "0.3.0"
@@ -943,10 +943,25 @@
   dependencies:
     "@subsquid/ss58-codec" "^0.0.3"
 
+"@subsquid/scale-codec@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@subsquid/scale-codec/-/scale-codec-0.3.1.tgz#27fc989510c0c3f93eec67d7522c76f7ea0d020a"
+  integrity sha512-IIjAikQ76/jKci5lLMoBTRnckICjJo1Xsb9jwxh9VMdgYZUzfpaTMl/ENfp1EXBmS1OcrnvbCbgiLhqNc+U8Ew==
+  dependencies:
+    "@subsquid/ss58-codec" "^0.1.0"
+
 "@subsquid/ss58-codec@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@subsquid/ss58-codec/-/ss58-codec-0.0.3.tgz#facf1055772b83ed812fac9afd91d35d8a502085"
   integrity sha512-H+fy+hkUOwbUeg+YhdxZSa4thY8Ffohg6kOpQP2NeBM1BbzRxERaUgd/IzzGUtMogLd9Go96NsSoHAnR6THxXw==
+  dependencies:
+    base-x "^3.0.9"
+    blake2b "^2.1.4"
+
+"@subsquid/ss58-codec@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@subsquid/ss58-codec/-/ss58-codec-0.1.0.tgz#9c68b3da8b9dc05b3fd5ba12126f098f3ab82641"
+  integrity sha512-MXXc2xGYm/Mqok6v8QaR6vpamTIgS3bCWf8iYG4lVbVBYzL8wZhPZCAOm1Z7dmgLFTEnyOWbc+Bt4wv4HL2+GA==
   dependencies:
     base-x "^3.0.9"
     blake2b "^2.1.4"
@@ -975,14 +990,22 @@
     "@subsquid/scale-codec" "^0.3.0"
     "@subsquid/util" "^0.0.4"
 
-"@subsquid/substrate-processor@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@subsquid/substrate-processor/-/substrate-processor-0.2.6.tgz#28a9d63f5fc4935903f2a287714c110d58110c55"
-  integrity sha512-rEPehPS4CqnHa9cQaKHRWaahW7Dat+I0PQTwtOhHwySswYQJBR0rysCsdH6VcI8GuqVVOQnjoEuj+1EaeqRKbw==
+"@subsquid/substrate-metadata@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@subsquid/substrate-metadata/-/substrate-metadata-0.3.0.tgz#7bc3e877f17a244ecb7a053057a7057e1c5b504d"
+  integrity sha512-wgAtvLBDfT4byIcKLwoaabi+LLcsUKAAv5a15wfc3eeHUrz58Autd7TguwfQiRXP0dFJsAviKxp6wKwalvu0kw==
+  dependencies:
+    "@subsquid/scale-codec" "^0.3.1"
+    "@subsquid/util" "^0.0.4"
+
+"@subsquid/substrate-processor@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@subsquid/substrate-processor/-/substrate-processor-0.3.0.tgz#0d83cf18b9b10db033e201f15f5b2a7c9f85a283"
+  integrity sha512-txXqb2zJ8agDbr9/4SIH5wB1HLn9N/dkxL2Og0IQyljz0uF7INT0Tvq6KAB4cPrw7k/we0e6BuwjtWVvk9gKjg==
   dependencies:
     "@subsquid/rpc-client" "^0.1.3"
-    "@subsquid/scale-codec-json" "^0.1.0"
-    "@subsquid/substrate-metadata" "^0.2.0"
+    "@subsquid/scale-codec-json" "^0.1.1"
+    "@subsquid/substrate-metadata" "^0.3.0"
     "@subsquid/typeorm-config" "^0.0.4"
     "@subsquid/util" "^0.0.4"
     node-fetch "^2.6.7"
