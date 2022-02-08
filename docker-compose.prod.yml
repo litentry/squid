@@ -11,7 +11,7 @@ services:
   query-node:
     build:
       context: .
-      target: query-node
+      target: queryNode
     ports:
       - 4000
     environment:

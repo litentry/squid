@@ -34,17 +34,17 @@ EXPOSE 4000
 
 
 FROM squid AS khalaProcessor
-CMD ["yarn", "processor:khala:start"]
+CMD ["yarn", "process:khala"]
 
 FROM squid AS kusamaProcessor
-CMD ["yarn", "processor:kusama:start"]
+CMD ["yarn", "process:kusama"]
 
 FROM squid AS polkadotProcessor
-CMD ["yarn", "processor:polkadot:start"]
+CMD ["yarn", "process:polkadot"]
 
-FROM squid AS query-node
-CMD ["yarn", "query-node:start"]
+FROM squid AS queryNode
+CMD ["yarn", "query-node"]
 
 FROM squid AS migrate
 RUN yarn add "@subsquid/cli"
-CMD ["yarn", "sqd", "db", "migrate"]
+CMD ["yarn", "migrate"]
