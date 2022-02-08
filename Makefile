@@ -1,32 +1,3 @@
-processKhala: migrate
-	@node -r dotenv/config lib/processors/khalaProcessor.js
-
-processPolkadot: migrate
-	@node -r dotenv/config lib/processors/polkadotProcessor.js
-
-processKusama: migrate
-	@node -r dotenv/config lib/processors/kusamaProcessor.js
-
-serve:
-	@yarn squid-graphql-server
-
-
-migrate:
-	@yarn sqd db:migrate
-
-
-migration:
-	@yarn sqd db:create-migration Data
-
-
-build:
-	@yarn build
-
-
-codegen:
-	@yarn sqd codegen
-
-
 typegenKusama: chains/kusama/kusamaVersions.json
 	@yarn squid-substrate-typegen chains/kusama/kusamaTypegen.json
 
@@ -57,7 +28,6 @@ explorePolkadot:
 up:
 	@docker-compose up -d
 
-
 down:
 	@docker-compose down
 
@@ -85,5 +55,3 @@ go-live:
 
 reload-nginx:
 	@docker exec $$(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload
-
-.PHONY: process serve start codegen migration migrate up down

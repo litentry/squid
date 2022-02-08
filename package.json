@@ -3,15 +3,19 @@
   "description": "Squid processors for substrate.",
   "private": true,
   "scripts": {
-    "start:khala": "yarn restartdb && make processKhala",
-    "start:polkadot": "yarn restartdb && make processPolkadot",
-    "start:kusama": "yarn restartdb && make processKusama",
-    "processor:khala:start": "node lib/processors/khalaProcessor.js",
-    "processor:polkadot:start": "node lib/processors/polkadotProcessor.js",
-    "processor:kusama:start": "node lib/processors/kusamaProcessor.js",
+    "db:init": "make down && make up && yarn build && yarn migrate",
+    "dev:khala": "node -r dotenv/config lib/processors/khalaProcessor.js",
+    "dev:polkadot": "node -r dotenv/config lib/processors/polkadotProcessor.js",
+    "dev:kusama": "node -r dotenv/config lib/processors/kusamaProcessor.js",
+    "process:khala": "node lib/processors/khalaProcessor.js",
+    "process:polkadot": "node lib/processors/polkadotProcessor.js",
+    "process:kusama": "node lib/processors/kusamaProcessor.js",
+    "query-node": "squid-graphql-server",
     "build": "rm -rf lib && tsc",
-    "restartdb": "make down && make up && make build && make migrate",
-    "query-node:start": "squid-graphql-server"
+    "codegen": "sqd codegen",
+    "migrate": "sqd db:migrate",
+    "migrate:revert": "sqd db revert",
+    "migration": "sqd db:create-migration Data"
   },
   "dependencies": {
     "@polkadot/api": "^6.11.1",
