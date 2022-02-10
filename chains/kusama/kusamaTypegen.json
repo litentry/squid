@@ -2,6 +2,6 @@
   "outDir": "../../src/types/kusama",
   "chainVersions": "kusamaVersions.json",
   "typesBundle": "kusama",
-  "events": ["crowdloan.Contributed"],
+  "events": ["crowdloan.Contributed", "balances.Transfer"],
   "calls": []
 }
