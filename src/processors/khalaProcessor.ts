@@ -1,6 +1,6 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import balanceTransferHandler from '../mappings/balances.transfer.event';
-import democracyVoteHandler from '../mappings/democracy.vote.extrinsic';
+import balanceTransferHandler from '../handlers/balances.transfer.event';
+import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_khala');
