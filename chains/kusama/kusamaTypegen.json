@@ -3,5 +3,5 @@
   "chainVersions": "kusamaVersions.json",
   "typesBundle": "kusama",
   "events": ["crowdloan.Contributed", "balances.Transfer"],
-  "calls": []
+  "calls": ["democracy.vote"]
 }

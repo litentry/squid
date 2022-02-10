@@ -3,5 +3,5 @@
   "chainVersions": "polkadotVersions.json",
   "typesBundle": "polkadot",
   "events": ["crowdloan.Contributed", "balances.Transfer"],
-  "calls": []
+  "calls": ["democracy.vote"]
 }
