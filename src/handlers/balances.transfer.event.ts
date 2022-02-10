@@ -92,9 +92,6 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       network,
       prefix,
     });
-    fromAccount.rootAccount = rootFromAccount;
-    fromAccount.network = network;
-    fromAccount.prefix = prefix;
     await ctx.store.save(fromAccount);
 
     const fromBalanceAccount = await getOrCreate(
