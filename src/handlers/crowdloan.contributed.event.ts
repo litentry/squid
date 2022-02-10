@@ -55,6 +55,12 @@ interface ContributedEvent {
 
 function getContributedEvent(ctx: EventHandlerContext): ContributedEvent {
   const event = new CrowdloanContributedEvent(ctx);
-  const [address, paraId, amount] = event.asLatest;
-  return { address, paraId, amount };
+
+  if (event.isV9110) {
+    const [address, paraId, amount] = event.asV9110;
+    return { address, paraId, amount };
+  } else {
+    const [address, paraId, amount] = event.asLatest;
+    return { address, paraId, amount };
+  }
 }
