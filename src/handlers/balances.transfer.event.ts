@@ -6,15 +6,45 @@ import {
   SubstrateTransfer,
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
-import { BalancesTransferEvent } from '../types/khala/events';
+import { BalancesTransferEvent as KhalaBalancesTransferEvent } from '../types/khala/events';
 import { getOrCreate } from '../utils/store';
 import getAccountHex from '../utils/getAccountHex';
+
+interface TransferEvent {
+  from: Uint8Array;
+  to: Uint8Array;
+  amount: bigint;
+}
+
+function getTransferEvent(
+  ctx: EventHandlerContext,
+  network: SubstrateNetwork
+): TransferEvent {
+  switch (network) {
+    case SubstrateNetwork.phala: {
+      const event = new KhalaBalancesTransferEvent(ctx);
+
+      if (event.isV1) {
+        const [from, to, amount] = event.asV1;
+        return { from, to, amount };
+      } else if (event.isV1090) {
+        return event.asV1090;
+      } else {
+        return event.asLatest;
+      }
+    }
+
+    default: {
+      throw new Error('getTransferEvent::network not supported');
+    }
+  }
+}
 
 export default (network: SubstrateNetwork, tokenIndex: number) =>
   async (ctx: EventHandlerContext) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const transfer = getTransferEvent(ctx);
+    const transfer = getTransferEvent(ctx, network);
     const amount = transfer.amount;
     const tip = ctx.extrinsic?.tip || 0n;
     const symbol = getRegistry(network).symbols[tokenIndex];
@@ -113,20 +143,3 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
 
     await ctx.store.save(transferModel);
   };
-
-interface TransferEvent {
-  from: Uint8Array;
-  to: Uint8Array;
-  amount: bigint;
-}
-
-function getTransferEvent(ctx: EventHandlerContext): TransferEvent {
-  const event = new BalancesTransferEvent(ctx);
-  if (event.isV1) {
-    const [from, to, amount] = event.asV1;
-    return { from, to, amount };
-  } else {
-    console.log(ctx._chain.getEventHash('balances.Transfer'));
-    return event.asLatest;
-  }
-}

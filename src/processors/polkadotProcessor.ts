@@ -1,5 +1,5 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import crowdloanContributedHandler from '../mappings/crowdloan.contributed.event';
+import crowdloanContributedHandler from '../handlers/crowdloan.contributed.event';
 import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_polkadot');
