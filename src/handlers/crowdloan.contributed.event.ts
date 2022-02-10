@@ -7,7 +7,7 @@ import {
 import { encodeAddress, getRegistry } from '../utils/registry';
 import { CrowdloanContributedEvent as PolkadotCrowdloanContributedEvent } from '../types/polkadot/events';
 import { CrowdloanContributedEvent as KusamaCrowdloanContributedEvent } from '../types/kusama/events';
-import { getOrCreate } from '../utils/store';
+import { getOrCreateAccount } from '../utils/store';
 import getAccountHex from '../utils/getAccountHex';
 
 interface ContributedEvent {
@@ -79,13 +79,14 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     const address = encodeAddress(network, rawAddress);
     const rootAccount = getAccountHex(rawAddress);
 
-    const account = await getOrCreate(ctx.store, SubstrateAccount, address);
-    account.rootAccount = rootAccount;
-    account.network = network;
-    account.prefix = prefix;
+    const account = await getOrCreateAccount(ctx.store, SubstrateAccount, {
+      id: address,
+      rootAccount,
+      network,
+      prefix,
+    });
     account.totalCrowdloanContributions =
       (account.totalCrowdloanContributions || 0) + 1;
-
     await ctx.store.save(account);
 
     const contribution = new SubstrateCrowdloanContribution({
