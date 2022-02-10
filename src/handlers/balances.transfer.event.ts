@@ -7,7 +7,9 @@ import {
 } from '../model';
 import { encodeAddress, getRegistry } from '../utils/registry';
 import { BalancesTransferEvent as KhalaBalancesTransferEvent } from '../types/khala/events';
-import { getOrCreate } from '../utils/store';
+import { BalancesTransferEvent as PolkadotBalancesTransferEvent } from '../types/polkadot/events';
+import { BalancesTransferEvent as KusamaBalancesTransferEvent } from '../types/kusama/events';
+import { getOrCreate, getOrCreateAccount } from '../utils/store';
 import getAccountHex from '../utils/getAccountHex';
 
 interface TransferEvent {
@@ -34,6 +36,35 @@ function getTransferEvent(
       }
     }
 
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotBalancesTransferEvent(ctx);
+
+      if (event.isV0) {
+        const [from, to, amount] = event.asV0;
+        return { from, to, amount };
+      } else if (event.isV9140) {
+        return event.asV9140;
+      } else {
+        return event.asLatest;
+      }
+    }
+
+    case SubstrateNetwork.kusama: {
+      const event = new KusamaBalancesTransferEvent(ctx);
+
+      if (event.isV1020) {
+        const [from, to, amount] = event.asV1020;
+        return { from, to, amount };
+      } else if (event.isV1050) {
+        const [from, to, amount] = event.asV1050;
+        return { from, to, amount };
+      } else if (event.isV9130) {
+        return event.asV9130;
+      } else {
+        return event.asLatest;
+      }
+    }
+
     default: {
       throw new Error('getTransferEvent::network not supported');
     }
@@ -55,11 +86,12 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     const fromAddress = encodeAddress(network, transfer.from);
     const rootFromAccount = getAccountHex(transfer.from);
 
-    const fromAccount = await getOrCreate(
-      ctx.store,
-      SubstrateAccount,
-      fromAddress
-    );
+    const fromAccount = await getOrCreateAccount(ctx.store, SubstrateAccount, {
+      id: fromAddress,
+      rootAccount: rootFromAccount,
+      network,
+      prefix,
+    });
     fromAccount.rootAccount = rootFromAccount;
     fromAccount.network = network;
     fromAccount.prefix = prefix;
@@ -95,10 +127,12 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     const toAddress = encodeAddress(network, transfer.to);
     const rootToAccount = getAccountHex(transfer.to);
 
-    const toAccount = await getOrCreate(ctx.store, SubstrateAccount, toAddress);
-    toAccount.rootAccount = rootToAccount;
-    toAccount.network = network;
-    toAccount.prefix = prefix;
+    const toAccount = await getOrCreateAccount(ctx.store, SubstrateAccount, {
+      id: toAddress,
+      rootAccount: rootToAccount,
+      network,
+      prefix,
+    });
     await ctx.store.save(toAccount);
 
     const toBalanceAccount = await getOrCreate(
