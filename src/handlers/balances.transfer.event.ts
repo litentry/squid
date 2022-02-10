@@ -122,11 +122,13 @@ interface TransferEvent {
 
 function getTransferEvent(ctx: EventHandlerContext): TransferEvent {
   const event = new BalancesTransferEvent(ctx);
+
   if (event.isV1) {
     const [from, to, amount] = event.asV1;
     return { from, to, amount };
+  } else if (event.isV1090) {
+    return event.asV1090;
   } else {
-    console.log(ctx._chain.getEventHash('balances.Transfer'));
     return event.asLatest;
   }
 }
