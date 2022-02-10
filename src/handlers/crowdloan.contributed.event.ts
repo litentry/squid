@@ -23,26 +23,36 @@ function getContributedEvent(
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new PolkadotCrowdloanContributedEvent(ctx);
+      let eventData;
 
       if (event.isV9110) {
-        const [address, paraId, amount] = event.asV9110;
-        return { address, paraId, amount };
+        eventData = event.asV9110;
       } else {
-        const [address, paraId, amount] = event.asLatest;
-        return { address, paraId, amount };
+        eventData = event.asLatest;
       }
+
+      return {
+        address: eventData[0],
+        paraId: eventData[1],
+        amount: eventData[2],
+      };
     }
 
     case SubstrateNetwork.polkadot: {
       const event = new KusamaCrowdloanContributedEvent(ctx);
+      let eventData;
 
       if (event.isV9010) {
-        const [address, paraId, amount] = event.asV9010;
-        return { address, paraId, amount };
+        eventData = event.asV9010;
       } else {
-        const [address, paraId, amount] = event.asLatest;
-        return { address, paraId, amount };
+        eventData = event.asLatest;
       }
+
+      return {
+        address: eventData[0],
+        paraId: eventData[1],
+        amount: eventData[2],
+      };
     }
 
     default: {
