@@ -100,11 +100,14 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     });
     await ctx.store.save(fromAccount);
 
-    const fromBalanceAccount = await getOrCreate(
-      ctx.store,
-      SubstrateBalance,
-      `${fromAddress}:${symbol}`
-    );
+    const fromBalanceAccount = await getOrCreate(ctx.store, SubstrateBalance, {
+      id: `${fromAddress}:${symbol}`,
+      network,
+      symbol,
+      decimals,
+      rootAccount: rootFromAccount,
+      account: fromAccount,
+    });
 
     fromBalanceAccount.network = network;
     fromBalanceAccount.symbol = symbol;
@@ -150,17 +153,15 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     });
     await ctx.store.save(toAccount);
 
-    const toBalanceAccount = await getOrCreate(
-      ctx.store,
-      SubstrateBalance,
-      `${toAddress}:${symbol}`
-    );
+    const toBalanceAccount = await getOrCreate(ctx.store, SubstrateBalance, {
+      id: `${toAddress}:${symbol}`,
+      network,
+      symbol,
+      decimals,
+      rootAccount: rootToAccount,
+      account: toAccount,
+    });
 
-    toBalanceAccount.network = network;
-    toBalanceAccount.symbol = symbol;
-    toBalanceAccount.decimals = decimals;
-    toBalanceAccount.rootAccount = rootToAccount;
-    toBalanceAccount.account = toAccount;
     toBalanceAccount.totalTransfers =
       (toBalanceAccount.totalTransfers || 0) + 1;
     toBalanceAccount.lastTransferInBlockNumber = blockNumber;
