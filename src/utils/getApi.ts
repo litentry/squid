@@ -1,15 +1,30 @@
 import { WsProvider, ApiPromise } from '@polkadot/api';
+import { SubstrateNetwork } from '../model';
 
-let api: ApiPromise;
+type Api = {
+  [SubstrateNetwork.phala]: ApiPromise;
+  [SubstrateNetwork.polkadot]: ApiPromise;
+  [SubstrateNetwork.kusama]: ApiPromise;
+};
 
-export default async function getApi(): Promise<ApiPromise> {
-  if (!api) {
-    api = await ApiPromise.create({
-      provider: new WsProvider('wss://khala.api.onfinality.io/public-ws'),
+let api = {} as Api;
+
+const providers = {
+  [SubstrateNetwork.phala]: 'wss://khala.api.onfinality.io/public-ws',
+  [SubstrateNetwork.polkadot]: 'wss://polkadot.api.onfinality.io/public-ws',
+  [SubstrateNetwork.kusama]: 'wss://kusama.api.onfinality.io/public-ws',
+};
+
+export default async function getApi(
+  network: SubstrateNetwork
+): Promise<ApiPromise> {
+  if (!api[network]) {
+    api[network] = await ApiPromise.create({
+      provider: new WsProvider(providers[network]),
     });
 
-    await api.isReady;
+    await api[network].isReady;
   }
 
-  return api;
+  return api[network];
 }

@@ -1,23 +1,24 @@
 import { Store } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../model';
 
+/**
+ *
+ * @param store
+ * @param entityConstructor
+ * @param id
+ * @param props only used for new entities
+ */
 export async function getOrCreate<T extends { id: string }>(
   store: Store,
   entityConstructor: EntityConstructor<T>,
-  id: string,
-  save?: boolean
+  props: Partial<T> & { id: string }
 ): Promise<T> {
   let e = await store.get<T>(entityConstructor, {
-    where: { id },
+    where: { id: props.id },
   });
 
   if (e == null) {
-    e = new entityConstructor();
-    e.id = id;
-
-    if (save) {
-      await store.save(e);
-    }
+    e = new entityConstructor(props);
   }
 
   return e;
@@ -30,11 +31,14 @@ type SubstrateAccountBaseProps = {
   prefix: number;
 };
 
+/**
+ * Just like getOrCreate but with typed props to ensure new accounts are created
+ * with the correct data
+ */
 export async function getOrCreateAccount<T extends SubstrateAccountBaseProps>(
   store: Store,
   entityConstructor: EntityConstructor<T>,
-  props: SubstrateAccountBaseProps,
-  save?: boolean
+  props: SubstrateAccountBaseProps
 ): Promise<T> {
   let e = await store.get<T>(entityConstructor, {
     where: { id: props.id },
@@ -46,10 +50,6 @@ export async function getOrCreateAccount<T extends SubstrateAccountBaseProps>(
     e.rootAccount = props.rootAccount;
     e.network = props.network;
     e.prefix = props.prefix;
-
-    if (save) {
-      await store.save(e);
-    }
   }
 
   return e;
