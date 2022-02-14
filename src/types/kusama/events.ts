@@ -519,3 +519,34 @@ export class CrowdloanContributedEvent {
     return this.asV9010
   }
 }
+
+export class TreasuryDepositEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'treasury.Deposit')
+  }
+
+  /**
+   *  Some funds have been deposited.
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Deposit') === '00a6b2996298e567aad20092952a8a74feec74cde3e7a57572700c49512f941d'
+  }
+
+  /**
+   *  Some funds have been deposited.
+   */
+  get asV1020(): bigint {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1020
+  }
+
+  get asLatest(): bigint {
+    deprecateLatest()
+    return this.asV1020
+  }
+}

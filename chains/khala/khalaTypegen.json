@@ -12,7 +12,8 @@
     "balances.Slashed",
     "balances.Transfer",
     "balances.Unreserved",
-    "balances.Withdraw"
+    "balances.Withdraw",
+    "treasury.Deposit"
   ],
   "calls": ["democracy.vote"]
 }

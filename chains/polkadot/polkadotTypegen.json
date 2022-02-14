@@ -13,7 +13,8 @@
     "balances.Transfer",
     "balances.Unreserved",
     "balances.Withdraw",
-    "crowdloan.Contributed"
+    "crowdloan.Contributed",
+    "treasury.Deposit"
   ],
   "calls": ["democracy.vote"]
 }

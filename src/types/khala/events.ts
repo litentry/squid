@@ -442,3 +442,34 @@ export class BalancesWithdrawEvent {
     return this.asV1090
   }
 }
+
+export class TreasuryDepositEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'treasury.Deposit')
+  }
+
+  /**
+   *  Some funds have been deposited. \[deposit\]
+   */
+  get isV1(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Deposit') === '00a6b2996298e567aad20092952a8a74feec74cde3e7a57572700c49512f941d'
+  }
+
+  /**
+   *  Some funds have been deposited. \[deposit\]
+   */
+  get asV1(): bigint {
+    assert(this.isV1)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1
+  }
+
+  get asLatest(): bigint {
+    deprecateLatest()
+    return this.asV1
+  }
+}
