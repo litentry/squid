@@ -9,3 +9,5 @@
 _db
 
 .env
+
+logs/*.json
