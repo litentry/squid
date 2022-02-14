@@ -2,6 +2,18 @@
   "outDir": "../../src/types/polkadot",
   "chainVersions": "polkadotVersions.json",
   "typesBundle": "polkadot",
-  "events": ["crowdloan.Contributed", "balances.Transfer"],
+  "events": [
+    "balances.BalanceSet",
+    "balances.Deposit",
+    "balances.DustLost",
+    "balances.Endowed",
+    "balances.Reserved",
+    "balances.ReserveRepatriated",
+    "balances.Slashed",
+    "balances.Transfer",
+    "balances.Unreserved",
+    "balances.Withdraw",
+    "crowdloan.Contributed"
+  ],
   "calls": ["democracy.vote"]
 }
