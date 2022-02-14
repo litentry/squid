@@ -2,6 +2,17 @@
   "outDir": "../../src/types/khala",
   "chainVersions": "khalaVersions.json",
   "typesBundle": "khala",
-  "events": ["balances.Transfer"],
+  "events": [
+    "balances.BalanceSet",
+    "balances.Deposit",
+    "balances.DustLost",
+    "balances.Endowed",
+    "balances.Reserved",
+    "balances.ReserveRepatriated",
+    "balances.Slashed",
+    "balances.Transfer",
+    "balances.Unreserved",
+    "balances.Withdraw"
+  ],
   "calls": ["democracy.vote"]
 }
