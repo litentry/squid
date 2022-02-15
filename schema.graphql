@@ -60,6 +60,18 @@ type SubstrateTransfer @entity {
   date: DateTime!
 }
 
+type SubstrateTreasuryDeposit @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork! @index
+  symbol: String!
+  decimals: Int!
+  accountBalanceAtBlock: BigInt!
+  amount: BigInt!
+  blockNumber: BigInt!
+  date: DateTime!
+}
+
 type SubstrateVote @entity {
   "network:block:index"
   id: ID!

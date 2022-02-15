@@ -1,5 +1,6 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import balanceTransferHandler from '../handlers/balances.transfer.event';
+import treasuryDepositHandler from '../handlers/treasury.deposit.event';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import { SubstrateNetwork } from '../model';
 
@@ -15,6 +16,10 @@ processor.setDataSource({
 processor.addEventHandler(
   'balances.Transfer',
   balanceTransferHandler(SubstrateNetwork.phala, 0)
+);
+processor.addEventHandler(
+  'treasury.Deposit',
+  treasuryDepositHandler(SubstrateNetwork.phala, 0)
 );
 processor.addExtrinsicHandler(
   'democracy.vote',
