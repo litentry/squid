@@ -1,6 +1,4 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { AccountInfo } from '@polkadot/types/interfaces/system';
-import { ApiDecoration } from '@polkadot/api/types';
 import {
   SubstrateAccount,
   SubstrateBalance,
@@ -10,15 +8,11 @@ import {
 import { encodeAddress, getRegistry } from '../utils/registry';
 import { getOrCreate, getOrCreateAccount } from '../utils/store';
 import getAccountHex from '../utils/getAccountHex';
-import getApi from '../utils/getApi';
 import { getBalancesTransferEvent } from './typeGetters/getBalancesEvents';
 
 export default (network: SubstrateNetwork, tokenIndex: number) =>
   async (ctx: EventHandlerContext) => {
     const blockNumber = BigInt(ctx.block.height);
-    const blockHash = ctx.block.hash;
-    const api = await getApi(network);
-    const apiAtBlock = await api.at(blockHash);
     const date = new Date(ctx.block.timestamp);
     const transfer = getBalancesTransferEvent(ctx, network);
     const amount = transfer.amount;
@@ -48,11 +42,6 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       account: fromAccount,
     });
 
-    fromBalanceAccount.network = network;
-    fromBalanceAccount.symbol = symbol;
-    fromBalanceAccount.decimals = decimals;
-    fromBalanceAccount.rootAccount = rootFromAccount;
-    fromBalanceAccount.account = fromAccount;
     fromBalanceAccount.totalTransfers =
       (fromBalanceAccount.totalTransfers || 0) + 1;
     fromBalanceAccount.lastTransferOutBlockNumber = blockNumber;
@@ -63,20 +52,9 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       fromBalanceAccount.firstTransferOutDate = date;
     }
 
-    try {
-      // this can fail on old blocks
-      // https://github.com/polkadot-js/api/issues/3708
-      fromBalanceAccount.balance = await getBalanceAtBlock(
-        apiAtBlock,
-        fromAddress
-      );
-    } catch (e) {
-      // this is accurate enough, only extremely old inactive accounts
-      // have the possibility of being out by dust amounts
-      fromBalanceAccount.balance = fromBalanceAccount.balance || 0n;
-      fromBalanceAccount.balance -= transfer.amount;
-      fromBalanceAccount.balance -= tip;
-    }
+    fromBalanceAccount.balance = fromBalanceAccount.balance || 0n;
+    fromBalanceAccount.balance -= transfer.amount;
+    fromBalanceAccount.balance -= tip;
 
     await ctx.store.save(fromBalanceAccount);
 
@@ -111,16 +89,8 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       toBalanceAccount.firstTransferInDate = date;
     }
 
-    try {
-      // see note above
-      toBalanceAccount.balance = await getBalanceAtBlock(
-        apiAtBlock,
-        fromAddress
-      );
-    } catch (e) {
-      toBalanceAccount.balance = toBalanceAccount.balance || 0n;
-      toBalanceAccount.balance += transfer.amount;
-    }
+    toBalanceAccount.balance = toBalanceAccount.balance || 0n;
+    toBalanceAccount.balance += transfer.amount;
 
     await ctx.store.save(toBalanceAccount);
 
@@ -141,16 +111,3 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
 
     await ctx.store.save(transferModel);
   };
-
-async function getBalanceAtBlock(
-  api: ApiDecoration<'promise'>,
-  address: string
-): Promise<bigint> {
-  const raw = (await api.query.system.account(
-    address
-  )) as unknown as AccountInfo;
-
-  return BigInt(
-    (raw.data.free.toBigInt() + raw.data.reserved.toBigInt()).valueOf()
-  );
-}
