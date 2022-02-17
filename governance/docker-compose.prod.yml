@@ -13,7 +13,7 @@ services:
       context: .
       target: queryNode
     ports:
-      - 4000
+      - 4002
     environment:
       DB_HOST: db
     restart: unless-stopped
