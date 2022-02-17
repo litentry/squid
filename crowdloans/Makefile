@@ -1,0 +1,44 @@
+typegenKusama: ../metadata/kusamaVersions.json
+	@yarn squid-substrate-typegen typegen/kusamaTypegen.json
+
+exploreKusama:
+	@yarn squid-substrate-metadata-explorer \
+		--chain wss://kusama.api.onfinality.io/public-ws \
+		--archive https://kusama.indexer.gc.subsquid.io/v4/graphql \
+		--out ../metadata/kusamaVersions.json
+
+typegenPolkadot: ../metadata/polkadotVersions.json
+	@yarn squid-substrate-typegen typegen/polkadotTypegen.json
+
+explorePolkadot:
+	@yarn squid-substrate-metadata-explorer \
+		--chain wss://polkadot.api.onfinality.io/public-ws \
+		--archive https://polkadot-squid-archive.litentry.io/graphql/v1/graphql \
+		--out ../metadata/polkadotVersions.json
+
+up:
+	@docker-compose up -d
+
+down:
+	@docker-compose down
+
+deploy:
+	@git pull \
+		&& docker-compose -f docker-compose.prod.yml -p crowdloans_$$(git rev-parse --short HEAD) up --build -d \
+		&& bash -c 'progress=$$(make -s get-progress-kusama); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-kusama); echo Indexing Kusama $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
+		&& bash -c 'progress=$$(make -s get-progress-polkadot); until [[ "$$progress" == "1" ]]; do progress=$$(make -s get-progress-polkadot); echo Indexing Polkadot $$(echo $$progress*100 | bc)% complete. Waiting...; sleep 10; done' \
+		&& make go-live
+
+get-progress-polkadot:
+	@curl -s http://$$(docker ps -f name=crowdloans_$$(git rev-parse --short HEAD)_polkadot-processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
+
+get-progress-kusama:
+	@curl -s http://$$(docker ps -f name=crowdloans_$$(git rev-parse --short HEAD)_kusama-processor_1 --quiet | xargs -I{} docker container port {} 3000/tcp | head -n 1)/metrics/sqd_processor_sync_ratio | tail -n1 | cut -d ' ' -f 2
+
+go-live:
+	@make reload-nginx \
+		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep crowdloans_ | grep -v crowdloans_$$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
+		&& make reload-nginx
+
+reload-nginx:
+	@docker exec $$(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload

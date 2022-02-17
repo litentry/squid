@@ -1,0 +1,59 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+}
+
+type SubstrateBalanceAccount @entity {
+  "address:tokenSymbol"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork!
+  symbol: String!
+  decimals: Int!
+  balance: BigInt!
+  firstTransferInDate: DateTime
+  firstTransferInBlockNumber: BigInt
+  firstTransferOutDate: DateTime
+  firstTransferOutBlockNumber: BigInt
+  lastTransferInDate: DateTime
+  lastTransferInBlockNumber: BigInt
+  lastTransferOutDate: DateTime
+  lastTransferOutBlockNumber: BigInt
+  totalTransfers: Int!
+  transfersTo: [SubstrateBalanceTransfer] @derivedFrom(field: "to")
+  transfersFrom: [SubstrateBalanceTransfer] @derivedFrom(field: "from")
+  treasuryDeposits: [SubstrateTreasuryDeposit] @derivedFrom(field: "depositor")
+}
+
+type SubstrateBalanceTransfer @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  symbol: String!
+  decimals: Int!
+  toAccountBalanceAtBlock: BigInt!
+  fromAccountBalanceAtBlock: BigInt!
+  to: SubstrateBalanceAccount!
+  from: SubstrateBalanceAccount!
+  amount: BigInt!
+  tip: BigInt!
+  blockNumber: BigInt!
+  date: DateTime!
+}
+
+type SubstrateTreasuryDeposit @entity {
+  "network:block:index"
+  id: ID!
+  depositor: SubstrateBalanceAccount!
+  network: SubstrateNetwork!
+  symbol: String!
+  decimals: Int!
+  accountBalanceAtBlock: BigInt!
+  amount: BigInt!
+  blockNumber: BigInt!
+  date: DateTime!
+}

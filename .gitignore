@@ -1,13 +1,7 @@
-/node_modules
-/lib
-
-/kusamaVersions.json
+node_modules
+lib
 
 # IDE files
 /.idea
 
-_db
-
 .env
-
-logs/*.json
