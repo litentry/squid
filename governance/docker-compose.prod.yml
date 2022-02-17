@@ -13,9 +13,10 @@ services:
       context: .
       target: queryNode
     ports:
-      - 4002
+      - 4003
     environment:
       DB_HOST: db
+      GQL_PORT: 4003
     restart: unless-stopped
     depends_on:
       - db
