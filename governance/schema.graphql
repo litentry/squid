@@ -1,0 +1,27 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+}
+
+type SubstrateGovernanceAccount @entity {
+  "address"
+  id: ID!
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork!
+  totalVotes: Int!
+  votes: [SubstrateVote] @derivedFrom(field: "account")
+}
+
+type SubstrateVote @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  # referendumIndex: BigInt! # maybe int?
+  # amount: BigInt!
+}

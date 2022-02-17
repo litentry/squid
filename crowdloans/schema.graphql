@@ -1,0 +1,30 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+}
+
+type SubstrateCrowdloanContributionAccount @entity {
+  "address"
+  id: ID!
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork!
+  crowdloanContributions: [SubstrateCrowdloanContribution]
+    @derivedFrom(field: "account")
+  totalCrowdloanContributions: Int!
+}
+
+type SubstrateCrowdloanContribution @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateCrowdloanContributionAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  paraId: Int!
+  symbol: String!
+  decimals: Int!
+  amount: BigInt!
+}
