@@ -16,6 +16,7 @@
     "migration": "sqd db:create-migration Data"
   },
   "dependencies": {
+    "@polkadot/api": "^7.9.1",
     "@polkadot/util-crypto": "^8.4.1",
     "@subsquid/graphql-server": "^0.1.4",
     "@subsquid/ss58": "^0.0.3",
