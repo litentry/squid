@@ -2,5 +2,16 @@
   "outDir": "../src/types/kusama",
   "chainVersions": "../../metadata/kusamaVersions.json",
   "typesBundle": "kusama",
-  "events": ["crowdloan.Contributed"]
+  "events": [
+    "auctions.AuctionClosed",
+    "auctions.AuctionStarted",
+    "auctions.BidAccepted",
+    "auctions.WinningOffset",
+    "crowdloan.Contributed",
+    "crowdloan.Created",
+    "crowdloan.Dissolved",
+    "registrar.Registered",
+    "slots.Leased",
+    "slots.NewLeasePeriod"
+  ]
 }
