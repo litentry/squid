@@ -15,16 +15,131 @@ type SubstrateCrowdloanContributionAccount @entity {
   totalCrowdloanContributions: Int!
 }
 
+type SubstrateAuction @entity {
+  id: ID!
+  blockNumber: Int!
+  status: String! @index
+  bids: [SubstrateBid]! @derivedFrom(field: "auction")
+  leaseStart: Int
+  slotsStart: Int!
+  leaseEnd: Int
+  slotsEnd: Int!
+  closingStart: Int!
+  closingEnd: Int!
+  resultBlock: Int
+  ongoing: Boolean! @index
+  parachainLeases: [SubstrateParachainLeases] @derivedFrom(field: "auction")
+}
+
+type SubstrateParachain @entity {
+  id: ID!
+  paraId: Int!
+  createdAt: DateTime
+  creationBlock: Int
+  deregistered: Boolean!
+  deposit: BigInt!
+  manager: String!
+  leases: [SubstrateParachainLeases] @derivedFrom(field: "parachain")
+  bids: [SubstrateBid] @derivedFrom(field: "parachain")
+  funds: [SubstrateCrowdloan] @derivedFrom(field: "parachain")
+  chronicle: SubstrateChronicle
+}
+
+type SubstrateCrowdloan @entity {
+  id: ID! # generated fund address
+  parachain: SubstrateParachain!
+  depositor: String!
+  verifier: String
+  cap: BigInt!
+  raised: BigInt! @index
+  lockExpiredBlock: Int!
+  blockNumber: Int
+  firstSlot: Int!
+  lastSlot: Int!
+  status: String! @index
+  leaseExpiredBlock: Int
+  dissolvedBlock: Int
+  updatedAt: DateTime
+  createdAt: DateTime
+  isFinished: Boolean @index
+  wonAuctionId: String @index
+  contributions: [SubstrateCrowdloanContribution] @derivedFrom(field: "fund")
+}
+
+type SubstrateAuctionParachain @entity {
+  id: ID!
+  auction: SubstrateAuction!
+  parachain: SubstrateParachain!
+  blockNumber: Int!
+  createdAt: DateTime!
+  firstSlot: Int!
+  lastSlot: Int!
+}
+
+type SubstrateParachainLeases @entity {
+  id: ID! # paraId-leaseRange-auction
+  paraId: Int!
+  parachain: SubstrateParachain! @index
+  leaseRange: String! @index #auctionId-start-end
+  firstLease: Int!
+  lastLease: Int!
+  latestBidAmount: BigInt!
+  auction: SubstrateAuction @index
+  activeForAuction: String @index #auctionId or 'sudo'
+  winningAmount: BigInt
+  extraAmount: BigInt
+  wonBidFrom: String
+  numBlockWon: Int
+  winningResultBlock: Int
+  hasWon: Boolean! @index
+}
+
+type SubstrateBid @entity {
+  id: ID!
+  auction: SubstrateAuction!
+  winningAuction: Int @index # auctionId
+  blockNumber: Int! @index
+  parachain: SubstrateParachain!
+  isCrowdloan: Boolean!
+  amount: BigInt!
+  decimals: Int!
+  symbol: String!
+  fund: SubstrateCrowdloan
+  firstSlot: Int!
+  lastSlot: Int!
+  bidder: String
+  createdAt: DateTime!
+}
+
 type SubstrateCrowdloanContribution @entity {
   "network:block:index"
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateCrowdloanContributionAccount!
   rootAccount: String! @index
-  blockNumber: BigInt!
-  date: DateTime!
-  paraId: Int!
+  parachain: SubstrateParachain!
+  paraId: Int! # todo -> duped with parachain
+  fund: SubstrateCrowdloan!
+  amount: BigInt! @index
   symbol: String!
   decimals: Int!
-  amount: BigInt!
+  blockNumber: Int! @index
+  createdAt: DateTime!
+}
+
+type SubstrateChronicle @entity {
+  id: ID! # Static 'ChronicleKey'
+  curAuction: SubstrateAuction
+  curBlockNumber: Int
+  curLease: Int
+  curLeaseStart: Int
+  curLeaseEnd: Int
+  parachains: [SubstrateParachain] @derivedFrom(field: "chronicle")
+}
+
+type SubstrateCrowdloanSequence @entity {
+  id: ID!
+  curIndex: Int!
+  createdAt: DateTime!
+  blockNumber: Int!
 }
