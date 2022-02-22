@@ -28,17 +28,18 @@ ADD db db
 ADD schema.graphql .
 # TODO: use shorter PROMETHEUS_PORT
 ENV PROCESSOR_PROMETHEUS_PORT 3000
-EXPOSE 3000
-EXPOSE 4002
 
 
 FROM squid AS kusamaProcessor
+EXPOSE 3000
 CMD ["yarn", "process:kusama"]
 
 FROM squid AS polkadotProcessor
+EXPOSE 3000
 CMD ["yarn", "process:polkadot"]
 
 FROM squid AS queryNode
+EXPOSE 4002
 CMD ["yarn", "query-node"]
 
 FROM squid AS migrate

@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  squid_web_network:
+  web_network:
     external: true
     driver: bridge
   db_network:
@@ -12,36 +12,26 @@ services:
     build:
       context: .
       target: queryNode
+    profiles:
+      - querying
     ports:
-      - 4001
+      - 4002
     environment:
       DB_HOST: db
-      GQL_PORT: 4001
+      GQL_PORT: 4002
     restart: unless-stopped
     depends_on:
       - db
     networks:
-      - squid_web_network
-      - db_network
-
-  khala-processor:
-    build:
-      context: .
-      target: khalaProcessor
-    environment:
-      DB_HOST: db
-    ports:
-      - 3000
-    restart: unless-stopped
-    depends_on:
-      - db
-    networks:
+      - web_network
       - db_network
 
   kusama-processor:
     build:
       context: .
       target: kusamaProcessor
+    profiles:
+      - indexing
     environment:
       DB_HOST: db
     ports:
@@ -56,6 +46,8 @@ services:
     build:
       context: .
       target: polkadotProcessor
+    profiles:
+      - indexing
     environment:
       DB_HOST: db
     ports:
