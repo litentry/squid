@@ -4,7 +4,7 @@
   "description": "Tool kit for developers to run common tasks",
   "author": "Mark Davison @markdavison",
   "bin": {
-    "devkit": "./bin/run"
+    "devkit": "./bin/dev"
   },
   "homepage": "https://github.com/litentry/squid",
   "license": "MIT",
