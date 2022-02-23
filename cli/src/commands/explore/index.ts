@@ -1,6 +1,6 @@
 import {Command} from '@oclif/core'
 import { execSync } from 'child_process';
-import config from '../../config';
+import config, { ConfigChainsEnum } from '../../config';
 
 export default class Explore extends Command {
 
@@ -22,7 +22,8 @@ export default class Explore extends Command {
     if (!(this.chain in config.chains)) {
       this.error(`No config found for chain ${this.chain}`);
     }
-    const chainConfig = config.chains[this.chain as 'kusama' | 'khala' | 'polkadot'];
+
+    const chainConfig = config.chains[this.chain as ConfigChainsEnum];
     this.log(this.runExplore(chainConfig).toString());
   }
 
