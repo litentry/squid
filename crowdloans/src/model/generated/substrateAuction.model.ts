@@ -1,4 +1,5 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
+import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateBid} from "./substrateBid.model"
 import {SubstrateParachainLeases} from "./substrateParachainLeases.model"
 
@@ -8,11 +9,25 @@ export class SubstrateAuction {
     Object.assign(this, props)
   }
 
+  /**
+   * network:auctionId
+   */
   @PrimaryColumn_()
   id!: string
 
+  @Index_()
+  @Column_("integer", {nullable: false})
+  auctionId!: number
+
+  @Index_()
+  @Column_("varchar", {length: 8, nullable: false})
+  network!: SubstrateNetwork
+
   @Column_("integer", {nullable: false})
   blockNumber!: number
+
+  @Column_("timestamp with time zone", {nullable: false})
+  createdAt!: Date
 
   @Index_()
   @Column_("text", {nullable: false})

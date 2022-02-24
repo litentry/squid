@@ -16,8 +16,12 @@ type SubstrateCrowdloanContributionAccount @entity {
 }
 
 type SubstrateAuction @entity {
+  "network:auctionId"
   id: ID!
+  auctionId: Int! @index
+  network: SubstrateNetwork! @index
   blockNumber: Int!
+  createdAt: DateTime!
   status: String! @index
   bids: [SubstrateBid]! @derivedFrom(field: "auction")
   leaseStart: Int
@@ -34,15 +38,15 @@ type SubstrateAuction @entity {
 type SubstrateParachain @entity {
   id: ID!
   paraId: Int!
-  createdAt: DateTime
-  creationBlock: Int
+  createdAt: DateTime!
+  creationBlock: Int!
   deregistered: Boolean!
   deposit: BigInt!
   manager: String!
   leases: [SubstrateParachainLeases] @derivedFrom(field: "parachain")
   bids: [SubstrateBid] @derivedFrom(field: "parachain")
   funds: [SubstrateCrowdloan] @derivedFrom(field: "parachain")
-  chronicle: SubstrateChronicle
+  chronicle: SubstrateAuctionChronicle
 }
 
 type SubstrateCrowdloan @entity {
@@ -127,9 +131,11 @@ type SubstrateCrowdloanContribution @entity {
   createdAt: DateTime!
 }
 
-type SubstrateChronicle @entity {
-  id: ID! # Static 'ChronicleKey'
+type SubstrateAuctionChronicle @entity {
+  "network"
+  id: ID!
   curAuction: SubstrateAuction
+  "deprecated & unused"
   curBlockNumber: Int
   curLease: Int
   curLeaseStart: Int

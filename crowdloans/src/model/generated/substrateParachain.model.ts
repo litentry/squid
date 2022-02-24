@@ -3,7 +3,7 @@ import * as marshal from "./marshal"
 import {SubstrateParachainLeases} from "./substrateParachainLeases.model"
 import {SubstrateBid} from "./substrateBid.model"
 import {SubstrateCrowdloan} from "./substrateCrowdloan.model"
-import {SubstrateChronicle} from "./substrateChronicle.model"
+import {SubstrateAuctionChronicle} from "./substrateAuctionChronicle.model"
 
 @Entity_()
 export class SubstrateParachain {
@@ -17,11 +17,11 @@ export class SubstrateParachain {
   @Column_("integer", {nullable: false})
   paraId!: number
 
-  @Column_("timestamp with time zone", {nullable: true})
-  createdAt!: Date | undefined | null
+  @Column_("timestamp with time zone", {nullable: false})
+  createdAt!: Date
 
-  @Column_("integer", {nullable: true})
-  creationBlock!: number | undefined | null
+  @Column_("integer", {nullable: false})
+  creationBlock!: number
 
   @Column_("bool", {nullable: false})
   deregistered!: boolean
@@ -42,6 +42,6 @@ export class SubstrateParachain {
   funds!: SubstrateCrowdloan[]
 
   @Index_()
-  @ManyToOne_(() => SubstrateChronicle, {nullable: true})
-  chronicle!: SubstrateChronicle | undefined | null
+  @ManyToOne_(() => SubstrateAuctionChronicle, {nullable: true})
+  chronicle!: SubstrateAuctionChronicle | undefined | null
 }

@@ -3,11 +3,14 @@ import {SubstrateAuction} from "./substrateAuction.model"
 import {SubstrateParachain} from "./substrateParachain.model"
 
 @Entity_()
-export class SubstrateChronicle {
-  constructor(props?: Partial<SubstrateChronicle>) {
+export class SubstrateAuctionChronicle {
+  constructor(props?: Partial<SubstrateAuctionChronicle>) {
     Object.assign(this, props)
   }
 
+  /**
+   * network
+   */
   @PrimaryColumn_()
   id!: string
 
@@ -15,6 +18,9 @@ export class SubstrateChronicle {
   @ManyToOne_(() => SubstrateAuction, {nullable: true})
   curAuction!: SubstrateAuction | undefined | null
 
+  /**
+   * deprecated & unused
+   */
   @Column_("integer", {nullable: true})
   curBlockNumber!: number | undefined | null
 

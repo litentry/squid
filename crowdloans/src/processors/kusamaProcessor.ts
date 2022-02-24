@@ -1,5 +1,7 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import crowdloanContributedHandler from '../handlers/crowdloan.contributed.event';
+// import crowdloanContributedHandler from '../handlers/crowdloan.contributed.event';
+import auctionClosedHandler from '../handlers/events/auctions.AuctionClosed';
+import auctionStartedHandler from '../handlers/events/auctions.AuctionStarted';
 import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_crowdloans_kusama');
@@ -13,8 +15,16 @@ processor.setDataSource({
   chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
 processor.addEventHandler(
-  'crowdloan.Contributed',
-  crowdloanContributedHandler(SubstrateNetwork.kusama, 0)
+  'auctions.AuctionClosed',
+  auctionClosedHandler(SubstrateNetwork.kusama)
 );
+processor.addEventHandler(
+  'auctions.AuctionStarted',
+  auctionStartedHandler(SubstrateNetwork.kusama)
+);
+// processor.addEventHandler(
+//   'crowdloan.Contributed',
+//   crowdloanContributedHandler(SubstrateNetwork.kusama, 0)
+// );
 
 processor.run();
