@@ -1,5 +1,10 @@
 version: '3'
 
+networks:
+  web_network:
+    external: true
+    driver: bridge
+
 volumes:
   prometheus-data:
     driver: local
@@ -16,6 +21,8 @@ services:
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - web_network
 
   cadvisor:
     image: google/cadvisor:latest
