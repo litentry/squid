@@ -6,7 +6,7 @@ const getIndexingProcessorContainers = (projectName: string) => {
 
   return containerRows.map(containerRow => {
     const [id, name] = containerRow.trim().split(',');
-    const host = execSync(`docker container port ${id} 3000/tcp`).toString().trim();
+    const host = execSync(`docker container port ${id} 3000/tcp`).toString().split('\n')[0].trim();
     return { id, name, host };
   });
 };
