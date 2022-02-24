@@ -31,7 +31,6 @@ export default (network: SubstrateNetwork) =>
  * Skip winning bid before we have query abilities
  */
 export const handleBidAccepted = async (substrateEvent: SubstrateEvent) => {
-  const isFund = isFundAddress(from);
   const parachain = await Storage.ensureParachain(paraId);
   const { id: parachainId } = parachain;
 
