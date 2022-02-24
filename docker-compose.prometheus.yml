@@ -4,6 +4,9 @@ networks:
   web_network:
     external: true
     driver: bridge
+  monitoring_network:
+    name: monitoring_network
+    driver: bridge
 
 volumes:
   prometheus-data:
@@ -24,6 +27,7 @@ services:
       - "--web.external-url=http://localhost:9090/prometheus/"
     networks:
       - web_network
+      - monitoring_network
 
   cadvisor:
     image: google/cadvisor:latest
@@ -37,6 +41,8 @@ services:
     devices:
       - /dev/kmsg
     restart: unless-stopped
+    networks:
+      - monitoring_network
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
@@ -47,3 +53,5 @@ services:
     restart: unless-stopped
     volumes:
       - '/:/host:ro,rslave'
+    networks:
+      - monitoring_network
