@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--web.external-url http://localhost:9090/prometheus/"
+      - "--web.external-url=http://localhost:9090/prometheus/"
     networks:
       - web_network
 
