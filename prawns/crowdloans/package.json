@@ -3,7 +3,7 @@
   "description": "Squid processors for substrate crowdloans.",
   "private": true,
   "scripts": {
-    "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && && yarn build && yarn migrate",
+    "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && yarn build && yarn migrate",
     "dev:polkadot": "node -r dotenv/config lib/processors/polkadotProcessor.js",
     "dev:kusama": "node -r dotenv/config lib/processors/kusamaProcessor.js",
     "process:polkadot": "node lib/processors/polkadotProcessor.js",
