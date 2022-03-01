@@ -31,7 +31,7 @@ export default class Scaffolding extends Command {
 
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
-  private getModuleDir = () => `${this.getProjectRootDir()}/${this.module}`;
+  private getModuleDir = () => `${this.getProjectRootDir()}/prawns/${this.module}`;
 
   private startDb = () => execSync(`docker run --name "scaffolding-db" -p 5555:5432 -e POSTGRES_HOST_AUTH_METHOD=trust --rm -d postgres:12`, {cwd: this.getProjectRootDir()});
 

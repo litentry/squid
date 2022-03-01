@@ -79,7 +79,7 @@ export default class Deploy extends Command {
 
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
-  private getModuleDir = () => `${this.getProjectRootDir()}/${this.module}`;
+  private getModuleDir = () => `${this.getProjectRootDir()}/prawns/${this.module}`;
 
   private getLockfileName = () => `${this.getProjectRootDir()}/.deployments/${this.module}`;
 
