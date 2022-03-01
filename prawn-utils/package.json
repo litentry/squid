@@ -1,0 +1,26 @@
+{
+  "name": "prawn-utils",
+  "description": "Utils for the prawns.",
+  "version": "0.0.1",
+  "private": true,
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "watch": "tsc --watch",
+    "postinstall": "yarn build"
+  },
+  "dependencies": {
+    "@polkadot/util-crypto": "^8.4.1",
+    "@subsquid/ss58": "^0.0.3",
+    "@subsquid/substrate-processor": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "eslint": "7.26.0",
+    "prettier": "^2.3.2",
+    "typescript": "~4.5.4"
+  }
+}

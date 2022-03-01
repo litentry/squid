@@ -12,6 +12,8 @@
     "typescript": "~4.5.4"
   },
   "workspaces": [
-    "cli"
+    "cli",
+    "prawns/*",
+    "prawn-utils"
   ]
 }
