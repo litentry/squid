@@ -1,12 +1,10 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { decodeAddress, getRegistry, getOrCreate } from 'prawn-utils';
 import {
   SubstrateBalanceAccount,
   SubstrateNetwork,
   SubstrateTreasuryDeposit,
 } from '../model';
-import { getRegistry } from '../utils/registry';
-import { getOrCreate } from '../utils/store';
-import getAccountHex from '../utils/getAccountHex';
 import { getTreasuryDepositEvent } from './typeGetters/getTreasuryEvents';
 
 export default (network: SubstrateNetwork, tokenIndex: number) =>
@@ -14,7 +12,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     const depositor = ctx.extrinsic?.signer;
     if (!depositor) return;
 
-    const rootAccount = getAccountHex(depositor);
+    const rootAccount = decodeAddress(depositor);
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const deposit = getTreasuryDepositEvent(ctx, network);

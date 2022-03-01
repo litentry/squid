@@ -1,12 +1,15 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import {
+  decodeAddress,
+  encodeAddress,
+  getRegistry,
+  getOrCreate,
+} from 'prawn-utils';
+import {
   SubstrateBalanceAccount,
   SubstrateNetwork,
   SubstrateBalanceTransfer,
 } from '../model';
-import { encodeAddress, getRegistry } from '../utils/registry';
-import { getOrCreate } from '../utils/store';
-import getAccountHex from '../utils/getAccountHex';
 import { getBalancesTransferEvent } from './typeGetters/getBalancesEvents';
 
 export default (network: SubstrateNetwork, tokenIndex: number) =>
@@ -21,7 +24,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
 
     // sender
     const fromAccount = encodeAddress(network, transfer.from);
-    const rootFromAccount = getAccountHex(transfer.from);
+    const rootFromAccount = decodeAddress(transfer.from);
 
     const fromBalanceAccount = await getOrCreate(
       ctx.store,
@@ -55,7 +58,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
 
     // receiver
     const toAccount = encodeAddress(network, transfer.to);
-    const rootToAccount = getAccountHex(transfer.to);
+    const rootToAccount = decodeAddress(transfer.to);
 
     const toBalanceAccount = await getOrCreate(
       ctx.store,

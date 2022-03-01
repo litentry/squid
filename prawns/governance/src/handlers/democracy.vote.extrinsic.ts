@@ -1,17 +1,16 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { decodeAddress, getOrCreate } from 'prawn-utils';
 import {
   SubstrateGovernanceAccount,
   SubstrateNetwork,
   SubstrateVote,
 } from '../model';
-import { getOrCreate } from '../utils/store';
-import getAccountHex from '../utils/getAccountHex';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = getAccountHex(ctx.extrinsic.signer);
+    const rootAccount = decodeAddress(ctx.extrinsic.signer);
 
     const account = await getOrCreate(ctx.store, SubstrateGovernanceAccount, {
       id: ctx.extrinsic.signer,
