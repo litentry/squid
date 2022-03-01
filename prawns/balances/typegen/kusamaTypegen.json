@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/kusama",
-  "chainVersions": "../../metadata/kusamaVersions.json",
+  "chainVersions": "../../../metadata/kusamaVersions.json",
   "typesBundle": "kusama",
   "events": [
     "balances.BalanceSet",

@@ -26,5 +26,5 @@ export default class Typegen extends Command {
   }
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
-  private runTypeGen = () => execSync(`yarn squid-substrate-typegen ${this.module}/typegen/${this.chain}Typegen.json`, {cwd: this.getProjectRootDir()});
+  private runTypeGen = () => execSync(`yarn squid-substrate-typegen prawns/${this.module}/typegen/${this.chain}Typegen.json`, {cwd: this.getProjectRootDir()});
 }

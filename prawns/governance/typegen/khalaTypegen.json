@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/khala",
-  "chainVersions": "../../metadata/khalaVersions.json",
+  "chainVersions": "../../../metadata/khalaVersions.json",
   "typesBundle": "khala",
   "calls": ["democracy.vote"]
 }

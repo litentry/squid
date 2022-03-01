@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/polkadot",
-  "chainVersions": "../../metadata/polkadotVersions.json",
+  "chainVersions": "../../../metadata/polkadotVersions.json",
   "typesBundle": "polkadot",
   "calls": ["democracy.vote"]
 }

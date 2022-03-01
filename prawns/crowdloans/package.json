@@ -1,13 +1,11 @@
 {
-  "name": "squid-balances",
-  "description": "Squid processors for substrate balances.",
+  "name": "squid-crowdloans",
+  "description": "Squid processors for substrate crowdloans.",
   "private": true,
   "scripts": {
-    "db:init": "make down && make up && yarn build && yarn migrate",
-    "dev:khala": "node -r dotenv/config lib/processors/khalaProcessor.js",
+    "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && yarn build && yarn migrate",
     "dev:polkadot": "node -r dotenv/config lib/processors/polkadotProcessor.js",
     "dev:kusama": "node -r dotenv/config lib/processors/kusamaProcessor.js",
-    "process:khala": "node lib/processors/khalaProcessor.js",
     "process:polkadot": "node lib/processors/polkadotProcessor.js",
     "process:kusama": "node lib/processors/kusamaProcessor.js",
     "query-node": "squid-graphql-server",
