@@ -2,5 +2,11 @@
   "outDir": "../src/types/polkadot",
   "chainVersions": "../../../metadata/polkadotVersions.json",
   "typesBundle": "polkadot",
-  "calls": ["democracy.vote"]
+  "events": ["democracy.Proposed", "democracy.Started"],
+  "calls": [
+    "council.vote",
+    "democracy.second",
+    "democracy.vote",
+    "phragmenElection.vote"
+  ]
 }

@@ -2,5 +2,11 @@
   "outDir": "../src/types/khala",
   "chainVersions": "../../../metadata/khalaVersions.json",
   "typesBundle": "khala",
-  "calls": ["democracy.vote"]
+  "events": ["democracy.Proposed", "democracy.Started"],
+  "calls": [
+    "council.vote",
+    "democracy.second",
+    "democracy.vote",
+    "phragmenElection.vote"
+  ]
 }

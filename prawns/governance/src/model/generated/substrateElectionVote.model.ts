@@ -4,8 +4,8 @@ import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
 
 @Entity_()
-export class SubstrateVote {
-  constructor(props?: Partial<SubstrateVote>) {
+export class SubstrateElectionVote {
+  constructor(props?: Partial<SubstrateElectionVote>) {
     Object.assign(this, props)
   }
 
@@ -31,4 +31,10 @@ export class SubstrateVote {
 
   @Column_("timestamp with time zone", {nullable: false})
   date!: Date
+
+  @Column_("text", {array: true, nullable: false})
+  candidates!: (string)[]
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
 }

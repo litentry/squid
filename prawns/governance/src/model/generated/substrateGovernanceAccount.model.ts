@@ -1,6 +1,9 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import {SubstrateNetwork} from "./_substrateNetwork"
-import {SubstrateVote} from "./substrateVote.model"
+import {SubstrateCouncilVote} from "./substrateCouncilVote.model"
+import {SubstrateProposalVote} from "./substrateProposalVote.model"
+import {SubstrateProposalSecond} from "./substrateProposalSecond.model"
+import {SubstrateElectionVote} from "./substrateElectionVote.model"
 
 @Entity_()
 export class SubstrateGovernanceAccount {
@@ -25,8 +28,26 @@ export class SubstrateGovernanceAccount {
   network!: SubstrateNetwork
 
   @Column_("integer", {nullable: false})
-  totalVotes!: number
+  totalProposalSeconds!: number
 
-  @OneToMany_(() => SubstrateVote, e => e.account)
-  votes!: SubstrateVote[]
+  /**
+   * includes both normal proposal votes and votes as a council member from council.vote()
+   */
+  @Column_("integer", {nullable: false})
+  totalProposalVotes!: number
+
+  @Column_("integer", {nullable: false})
+  totalElectionVotes!: number
+
+  @OneToMany_(() => SubstrateCouncilVote, e => e.account)
+  councilVotes!: SubstrateCouncilVote[]
+
+  @OneToMany_(() => SubstrateProposalVote, e => e.account)
+  proposalVotes!: SubstrateProposalVote[]
+
+  @OneToMany_(() => SubstrateProposalSecond, e => e.account)
+  proposalSeconds!: SubstrateProposalSecond[]
+
+  @OneToMany_(() => SubstrateElectionVote, e => e.account)
+  electionVotes!: SubstrateElectionVote[]
 }
