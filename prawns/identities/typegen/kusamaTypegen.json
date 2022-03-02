@@ -1,0 +1,8 @@
+{
+  "outDir": "../src/types/kusama",
+  "chainVersions": "../../../metadata/kusamaVersions.json",
+  "typesBundle": "kusama",
+  "events": [
+    "identity.IdentitySet"
+  ]
+}
