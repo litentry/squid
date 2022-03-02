@@ -4,7 +4,7 @@ import {
   encodeAddress,
   getRegistry,
   getOrCreate,
-} from 'prawn-utils';
+} from '../utils';
 import {
   SubstrateBalanceAccount,
   SubstrateNetwork,
