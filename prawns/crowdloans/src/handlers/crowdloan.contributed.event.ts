@@ -1,12 +1,15 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import {
+  decodeAddress,
+  encodeAddress,
+  getRegistry,
+  getOrCreate,
+} from 'prawn-utils';
+import {
   SubstrateCrowdloanContributionAccount,
   SubstrateCrowdloanContribution,
   SubstrateNetwork,
 } from '../model';
-import { encodeAddress, getRegistry } from '../utils/registry';
-import { getOrCreate } from '../utils/store';
-import getAccountHex from '../utils/getAccountHex';
 import { getContributedEvent } from './typeGetters/getContributedEvent';
 
 export default (network: SubstrateNetwork, tokenIndex: number) =>
@@ -22,7 +25,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     } = getContributedEvent(ctx, network);
 
     const address = encodeAddress(network, rawAddress);
-    const rootAccount = getAccountHex(rawAddress);
+    const rootAccount = decodeAddress(rawAddress);
 
     const account = await getOrCreate(
       ctx.store,
