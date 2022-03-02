@@ -1,5 +1,6 @@
 import {Command} from '@oclif/core'
 import { execSync } from "child_process";
+import {readdirSync, unlinkSync} from "fs";
 
 export default class Scaffolding extends Command {
 
@@ -18,6 +19,7 @@ export default class Scaffolding extends Command {
   async run(): Promise<void> {
     const {args} = await this.parse(Scaffolding);
     this.module = args.module;
+    const oldMigrations = this.getExistingMigrations();
     this.log("Start DB");
     await this.log(this.startDb().toString());
     this.log("Wait for DB to be ready");
@@ -26,12 +28,21 @@ export default class Scaffolding extends Command {
     await this.log(this.runCreateMigration().toString());
     this.log("Stop DB");
     await this.log(this.stopDb().toString());
+    this.log("Delete old migrations");
+    oldMigrations.map((oldMigration) => {
+      this.log(`- Delete ${oldMigration}`);
+      unlinkSync(`${this.getMigrationsDir()}/${oldMigration}`);
+    });
     this.log("Complete");
   }
 
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
   private getModuleDir = () => `${this.getProjectRootDir()}/prawns/${this.module}`;
+
+  private getMigrationsDir = () => `${this.getModuleDir()}/db/migrations`;
+
+  private getExistingMigrations = () => readdirSync(this.getMigrationsDir());
 
   private startDb = () => execSync(`docker run --name "scaffolding-db" -p 5555:5432 -e POSTGRES_HOST_AUTH_METHOD=trust --rm -d postgres:12`, {cwd: this.getProjectRootDir()});
 
