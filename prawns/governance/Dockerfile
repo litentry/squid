@@ -5,25 +5,21 @@ FROM node AS node-with-gyp
 
 FROM node-with-gyp AS builder
 WORKDIR /squid
-ADD package.json .
-ADD yarn.lock .
+ADD ../../package.json .
+ADD ../../yarn.lock .
+ADD ../../prawn-utils prawn-utils
+ADD package.json prawns/prawn/
 RUN yarn install --pure-lockfile --non-interactive
-ADD tsconfig.json .
-ADD src src
-RUN yarn build
-
-FROM node-with-gyp AS deps
-WORKDIR /squid
-ADD package.json .
-ADD yarn.lock .
-RUN yarn install --pure-lockfile --non-interactive
+ADD tsconfig.json prawns/prawn/
+ADD src prawns/prawn/src
+RUN cd prawns/prawn && yarn build
 
 FROM node AS squid
 WORKDIR /squid
-COPY --from=deps /squid/package.json .
-COPY --from=deps /squid/yarn.lock .
-COPY --from=deps /squid/node_modules node_modules
-COPY --from=builder /squid/lib lib
+COPY --from=builder /squid/prawns/prawn/package.json .
+COPY --from=builder /squid/prawns/prawn/yarn.lock .
+COPY --from=builder /squid/prawns/prawn/node_modules node_modules
+COPY --from=builder /squid/prawns/prawn/lib lib
 ADD db db
 ADD schema.graphql .
 # TODO: use shorter PROMETHEUS_PORT
