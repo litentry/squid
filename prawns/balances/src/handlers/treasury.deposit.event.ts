@@ -1,5 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress, getRegistry, getOrCreate } from 'prawn-utils';
+import { decodeAddress, getRegistry, getOrCreate } from '../utils';
 import {
   SubstrateBalanceAccount,
   SubstrateNetwork,

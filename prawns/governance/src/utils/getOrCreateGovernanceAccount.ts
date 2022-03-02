@@ -1,7 +1,6 @@
 import { Store } from '@subsquid/substrate-processor';
-import { getOrCreate } from 'prawn-utils';
-import { SubstrateNetwork } from 'prawn-utils/lib/types';
-import { SubstrateGovernanceAccount } from './model';
+import { getOrCreate } from './store';
+import { SubstrateGovernanceAccount, SubstrateNetwork } from '../model';
 
 export async function getOrCreateGovernanceAccount(
   store: Store,

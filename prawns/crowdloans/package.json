@@ -23,7 +23,6 @@
     "@subsquid/substrate-processor": "^0.3.0",
     "dotenv": "^10.0.0",
     "pg": "^8.7.1",
-    "prawn-utils": "0.0.1",
     "typeorm": "^0.2.41"
   },
   "devDependencies": {

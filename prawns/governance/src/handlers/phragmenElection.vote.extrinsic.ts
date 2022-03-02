@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress, encodeAddress } from 'prawn-utils';
+import { decodeAddress, encodeAddress } from '../utils';
 import { SubstrateElectionVote, SubstrateNetwork } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getPhragmenElectionVoteCall } from './typeGetters/getPhragmenElectionVoteCall';
