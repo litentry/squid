@@ -2,7 +2,7 @@
   "outDir": "../src/types/khala",
   "chainVersions": "../../../metadata/khalaVersions.json",
   "typesBundle": "khala",
-  "events": [
-    "identity.IdentitySet"
+  "calls": [
+    "identity.set_identity"
   ]
 }

@@ -16,6 +16,7 @@ export type Data = Data_None | Data_Raw0 | Data_Raw1 | Data_Raw2 | Data_Raw3 | D
 
 export interface Data_None {
   __kind: 'None'
+  value: null
 }
 
 export interface Data_Raw0 {

@@ -2,7 +2,7 @@
   "outDir": "../src/types/polkadot",
   "chainVersions": "../../../metadata/polkadotVersions.json",
   "typesBundle": "polkadot",
-  "events": [
-    "identity.IdentitySet"
+  "calls": [
+    "identity.set_identity"
   ]
 }

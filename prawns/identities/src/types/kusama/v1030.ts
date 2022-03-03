@@ -1,6 +1,6 @@
 import type {Result} from './support'
 
-export interface IdentityInfo {
+export interface IdentityInfoTo198 {
   additional: [Data, Data][]
   display: Data
   legal: Data
@@ -9,13 +9,13 @@ export interface IdentityInfo {
   email: Data
   pgpFingerprint: (Uint8Array | undefined)
   image: Data
-  twitter: Data
 }
 
 export type Data = Data_None | Data_Raw0 | Data_Raw1 | Data_Raw2 | Data_Raw3 | Data_Raw4 | Data_Raw5 | Data_Raw6 | Data_Raw7 | Data_Raw8 | Data_Raw9 | Data_Raw10 | Data_Raw11 | Data_Raw12 | Data_Raw13 | Data_Raw14 | Data_Raw15 | Data_Raw16 | Data_Raw17 | Data_Raw18 | Data_Raw19 | Data_Raw20 | Data_Raw21 | Data_Raw22 | Data_Raw23 | Data_Raw24 | Data_Raw25 | Data_Raw26 | Data_Raw27 | Data_Raw28 | Data_Raw29 | Data_Raw30 | Data_Raw31 | Data_Raw32 | Data_BlakeTwo256 | Data_Sha256 | Data_Keccak256 | Data_ShaThree256
 
 export interface Data_None {
   __kind: 'None'
+  value: null
 }
 
 export interface Data_Raw0 {
