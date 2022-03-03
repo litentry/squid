@@ -2,16 +2,16 @@ export enum ConfigChainsEnum {
   'polkadot' = 'polkadot',
   'khala' = 'khala',
   'kusama' = 'kusama',
-  'moonbeam' = 'moonbeam'
+  'moonbeam' = 'moonbeam',
 }
 
 export interface ConfigInterface {
   chains: {
     [key in ConfigChainsEnum]: {
-      chain: string,
-      archive: string
-    }
-  }
+      chain: string;
+      archive: string;
+    };
+  };
 }
 
 export default {
@@ -30,7 +30,7 @@ export default {
     },
     moonbeam: {
       chain: 'wss://moonbeam.api.onfinality.io/public-ws',
-      archive: 'https://moonbeam.indexer.gc.subsquid.io/v4/graphql',
+      archive: 'https://moonbeam-squid-archive.litentry.io/graphql/v1/graphql',
     },
   },
-} as ConfigInterface
+} as ConfigInterface;
