@@ -1,5 +1,6 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../model';
+import identitySetHandler from '../handlers/indentity.set.event';
 
 const processor = new SubstrateProcessor('litentry_squid_identities_khala');
 
