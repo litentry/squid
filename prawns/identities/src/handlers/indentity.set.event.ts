@@ -1,5 +1,8 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { encodeAddress, decodeAddress } from 'prawn-utils';
+import {
+  decodeAddress,
+  encodeAddress,
+} from '../utils';
 import {
   SubstrateIdentity,
   SubstrateNetwork,
