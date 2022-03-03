@@ -1,5 +1,5 @@
 import {Command, Flags} from '@oclif/core'
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import {existsSync, mkdirSync, unlinkSync, writeFileSync} from 'fs';
 import { execSync } from 'child_process';
 import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
@@ -71,6 +71,9 @@ export default class Deploy extends Command {
     this.log("Reload Nginx:");
     this.log(this.reloadNginx().toString());
 
+    this.log("Delete lock file:");
+    this.removeLockFile();
+
   }
 
   private getVersion = () => execSync('git rev-parse --short HEAD').toString().trim();
@@ -112,4 +115,6 @@ export default class Deploy extends Command {
     console.log(projectsToCleanUp);
     return projectsToCleanUp.map(project => execSync(`docker-compose -p ${project} down`, {cwd: this.getModuleDir()}).toString()).join("\n");
   }
+
+  private removeLockFile = () => unlinkSync(this.getLockfileName());
 }

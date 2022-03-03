@@ -1,18 +1,15 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateNetwork, SubstrateProposalVote } from '../model';
+import { SubstrateNetwork, SubstrateCouncilVote } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
-import {
-  AccountVote,
-  getDemocracyVoteCall,
-} from './typeGetters/getDemocracyVoteCall';
+import { getCouncilVoteCall } from './typeGetters/getCouncilVoteCall';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const rootAccount = decodeAddress(ctx.extrinsic.signer);
-    const call = getDemocracyVoteCall(ctx, network);
+    const call = getCouncilVoteCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.extrinsic.signer,
@@ -22,34 +19,17 @@ export default (network: SubstrateNetwork) =>
     account.totalProposalVotes = account.totalProposalVotes + 1;
     await ctx.store.save(account);
 
-    const vote = new SubstrateProposalVote({
+    const vote = new SubstrateCouncilVote({
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
       rootAccount,
       blockNumber,
       date,
-      refIndex: call.refIndex,
-      // not sure how to interpret so saving raw
-      vote: JSON.stringify(cleanBigInts(call.vote)),
+      proposalIndex: call.index,
+      proposal: '0x' + Buffer.from(call.proposal).toString('hex'),
+      approve: call.approve,
     });
 
     await ctx.store.save(vote);
   };
-
-function cleanBigInts(vote: number | AccountVote) {
-  if (typeof vote === 'number') {
-    return vote.toString();
-  }
-  if (vote.__kind === 'Standard') {
-    return {
-      ...vote,
-      balance: vote.balance.toString(),
-    };
-  }
-  return {
-    ...vote,
-    aye: vote.aye.toString(),
-    nay: vote.nay.toString(),
-  };
-}

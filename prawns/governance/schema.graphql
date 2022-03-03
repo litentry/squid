@@ -2,6 +2,7 @@ enum SubstrateNetwork {
   kusama
   polkadot
   phala
+  moonbeam
 }
 
 type SubstrateGovernanceAccount @entity {
@@ -10,11 +11,17 @@ type SubstrateGovernanceAccount @entity {
   "hex address"
   rootAccount: String! @index
   network: SubstrateNetwork!
-  totalVotes: Int!
-  votes: [SubstrateVote] @derivedFrom(field: "account")
+  totalProposalSeconds: Int!
+  "includes both normal proposal votes and votes as a council member from council.vote()"
+  totalProposalVotes: Int!
+  totalElectionVotes: Int!
+  councilVotes: [SubstrateCouncilVote]! @derivedFrom(field: "account")
+  proposalVotes: [SubstrateProposalVote]! @derivedFrom(field: "account")
+  proposalSeconds: [SubstrateProposalSecond]! @derivedFrom(field: "account")
+  electionVotes: [SubstrateElectionVote]! @derivedFrom(field: "account")
 }
 
-type SubstrateVote @entity {
+type SubstrateElectionVote @entity {
   "network:block:index"
   id: ID!
   network: SubstrateNetwork!
@@ -22,6 +29,44 @@ type SubstrateVote @entity {
   rootAccount: String! @index
   blockNumber: BigInt!
   date: DateTime!
-  # referendumIndex: BigInt! # maybe int?
-  # amount: BigInt!
+  candidates: [String!]!
+  amount: BigInt!
+}
+
+type SubstrateCouncilVote @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  proposalIndex: Int! @index
+  proposal: String!
+  approve: Boolean!
+}
+
+type SubstrateProposalVote @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  refIndex: Int! @index
+  "not sure how to interpret this properly yet so using JSON.stringify() and saving raw"
+  vote: String!
+}
+
+type SubstrateProposalSecond @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  proposalIndex: Int! @index
+  upperBound: Int
 }
