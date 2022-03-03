@@ -1,0 +1,14 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+  moonbeam
+}
+
+type SubstrateErc20 @entity {
+  "address"
+  id: ID!
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
+}

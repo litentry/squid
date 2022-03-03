@@ -1,0 +1,7 @@
+{
+  "outDir": "../src/types/moonbeam",
+  "chainVersions": "../../../metadata/moonbeamVersions.json",
+  "typesBundle": "../src/moonbeamTypesBundle.json",
+  "events": ["evm.Executed"],
+  "calls": ["ethereum.transact"]
+}
