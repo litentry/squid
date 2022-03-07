@@ -18,8 +18,7 @@ export default (network: SubstrateNetwork) =>
     const account = ctx.extrinsic.signer;
     const rootAccount = decodeAddress(account);
 
-    console.log(account);
-    console.log(rootAccount);
+    console.log("whoop", identity);
 
     const identityModel = new SubstrateIdentity({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,

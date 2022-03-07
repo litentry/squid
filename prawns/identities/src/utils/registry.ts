@@ -19,3 +19,13 @@ export const encodeAddress = (
 
   return addressCodec.encode(address);
 };
+
+export const encodeSomething = (
+  network: SubstrateNetwork,
+  something: Uint8Array
+) => {
+  const registry = ss58.registry.get(network);
+  const somethingCodec = ss58.codec(registry.prefix);
+
+  return somethingCodec.encode(something);
+};
