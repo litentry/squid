@@ -749,21 +749,21 @@
     commander "^8.3.0"
     node-fetch "^2.6.7"
 
-"@subsquid/substrate-metadata@^0.3.0":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@subsquid/substrate-metadata/-/substrate-metadata-0.3.1.tgz#3a37908baa6559e6ed57b6be5dd11e460b733b28"
-  integrity sha512-VbTK1P/AM70o8L5dBOjx0CHMmLOmgOnK1JlB0AeISf0fzizTAFLaqLwG3juyt6MmChwbsMyGGX45zyE/wHF9pw==
+"@subsquid/substrate-metadata@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@subsquid/substrate-metadata/-/substrate-metadata-0.5.0.tgz#447173eb8a133d7f6c15cbcdbb61c44bbafabd97"
+  integrity sha512-Td/1BYsn0M5VE0Gyyv5yDrjI9Hg8eJga+9A9SrksYwbpf6DK0lVja8AoXNkeNChgy/3o8zBnCZRnKRsLaSKXCg==
   dependencies:
     "@subsquid/scale-codec" "^0.3.1"
     "@subsquid/util" "^0.0.4"
 
-"@subsquid/substrate-typegen@^0.2.0":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@subsquid/substrate-typegen/-/substrate-typegen-0.2.1.tgz#2540f8aa871a137d891c3c47fed016e6d7251dd7"
-  integrity sha512-r2pBiDTtGGrkHQ7jShq3tYy/mTQU0VSZzvaD1nSoRKoPvWrEg70tRWZbi/A5Zobk0PaxZcl/zwQpH2zE8mi5kA==
+"@subsquid/substrate-typegen@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@subsquid/substrate-typegen/-/substrate-typegen-0.2.3.tgz#0ddf27ce3c54441cf5a1e38667d962878b4cb30a"
+  integrity sha512-pB2JuK0Om4+B7VsEHUuD3YB0tkg4z6VyqMMjhbFF/+uAOUmsSt5UfA7I4XBOJO0ZVL2jzCsSQcCe6fvszQvNyQ==
   dependencies:
     "@subsquid/scale-codec" "^0.3.1"
-    "@subsquid/substrate-metadata" "^0.3.0"
+    "@subsquid/substrate-metadata" "^0.5.0"
     "@subsquid/util" "^0.0.4"
     ajv "^8.9.0"
     commander "^8.3.0"
