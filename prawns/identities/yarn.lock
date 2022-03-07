@@ -906,7 +906,7 @@
     prom-client "^14.0.1"
     stoppable "^1.1.0"
 
-"@subsquid/substrate-typegen@^0.2":
+"@subsquid/substrate-typegen@^0.2.0":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@subsquid/substrate-typegen/-/substrate-typegen-0.2.3.tgz#0ddf27ce3c54441cf5a1e38667d962878b4cb30a"
   integrity sha512-pB2JuK0Om4+B7VsEHUuD3YB0tkg4z6VyqMMjhbFF/+uAOUmsSt5UfA7I4XBOJO0ZVL2jzCsSQcCe6fvszQvNyQ==

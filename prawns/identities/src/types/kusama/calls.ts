@@ -30,7 +30,7 @@ export class IdentitySetIdentityCall {
    *  # </weight>
    */
   get isV1030(): boolean {
-    return this.ctx._chain.getCallHash('identity.set_identity') === 'dbb2cdcb75c723d58697e2c6a1598aafcfb49c7a13f3ee65e985534ca360ed0e'
+    return this.ctx._chain.getCallHash('identity.set_identity') === 'a060784612d57c64e9c673b4ccefecf1855c35b197cd14d200d782950b1536e7'
   }
 
   /**
@@ -79,7 +79,7 @@ export class IdentitySetIdentityCall {
    *  # </weight>
    */
   get isV1032(): boolean {
-    return this.ctx._chain.getCallHash('identity.set_identity') === '1394ec42e770b2d3ba889d259fe7cd80cb7a1e16187b899ec7488bd8202efde8'
+    return this.ctx._chain.getCallHash('identity.set_identity') === '2063615d32349aa9ca40a1c1a96c2179846748123f5550ae994de72a71436a80'
   }
 
   /**
@@ -129,7 +129,7 @@ export class IdentitySetIdentityCall {
    * # </weight>
    */
   get isV9111(): boolean {
-    return this.ctx._chain.getCallHash('identity.set_identity') === '232e0869039d06c6b163a97f9833cc687e180ac9005d09e9d20ebdf8f3b7e2e0'
+    return this.ctx._chain.getCallHash('identity.set_identity') === 'ab457704fd8cda5fee32e84ab7782778f4117cd54400c364cf7597eee5bc60ca'
   }
 
   /**
