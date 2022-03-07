@@ -4,6 +4,8 @@ lib
 # IDE files
 /.idea
 
+.DS_Store
+
 .env
 .deployments
 
