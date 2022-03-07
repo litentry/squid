@@ -27,8 +27,6 @@
   },
   "devDependencies": {
     "@subsquid/cli": "^0.1.1",
-    "@subsquid/substrate-metadata-explorer": "^0.0.7",
-    "@subsquid/substrate-typegen": "^0.2.0",
     "@types/node": "^16.11.17",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "eslint": "7.26.0",
