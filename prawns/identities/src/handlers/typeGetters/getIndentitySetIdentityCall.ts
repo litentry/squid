@@ -23,6 +23,7 @@ export function getIdentitySetIdentityCall(
 ): IdentityInfo {
 
   console.log(ctx._chain.getCallHash('identity.set_identity'));
+  console.log(ctx.block.hash);
   switch (network) {
     case SubstrateNetwork.phala: {
       const event = new KhalaIdentitySetIdentityCall(ctx);
