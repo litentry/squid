@@ -11,7 +11,7 @@ export class CrowdloanContributedEvent {
    * Contributed to a crowd sale. `[who, fund_index, amount]`
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getEventHash('crowdloan.Contributed') === 'd943dbc2818504a7c969bb6b64a01f7217f0321441ab3f4ec6efeed498414ca4'
+    return this.ctx._chain.getEventHash('crowdloan.Contributed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
   }
 
   /**
