@@ -1,44 +1,94 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { request, gql } from 'graphql-request';
 import Web3 from 'web3';
-import { SubstrateNetwork } from '../model';
-import { getContractType } from '../evm-lib';
+import {
+  SubstrateNetwork,
+  SubstrateEvmContract,
+  SubstrateEvmContractSignature,
+} from '../model';
+import {
+  getContractType,
+  isContractCreationInput,
+  getContractData,
+} from '../evm-lib';
 
-// todo get rid of this disposable key
 const web3 = new Web3(
-  'wss://moonbeam.api.onfinality.io/ws?apikey=595be5a3-8d26-417c-91e1-1c29ee03be12'
+  `wss://moonbeam.api.onfinality.io/ws?apikey=${process.env.FINALITY_MOONBEAM_API_KEY}`
 );
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
     const substrateTxHash = ctx.extrinsic.hash;
-    if (!substrateTxHash) {
-      return;
-    }
+    if (!substrateTxHash) return;
 
     const blockNumber = ctx.block.height;
     const { input } = (ctx.extrinsic.args as any)[0].value;
 
-    const contractType = getContractType(input);
-    if (!contractType) {
-      return;
-    }
-
     const evmTxHash = await getEvmTxHash(substrateTxHash, blockNumber);
-    if (!evmTxHash) {
-      return;
-    }
+    if (!evmTxHash) return;
+
+    if (!isContractCreationInput(input)) return;
+
+    const { events, functions, unknownHashes } = getContractData(input);
+
+    const functionNames = functions
+      .filter((func) => func.name)
+      .map((func) => func.name) as string[];
+    const type = getContractType(functionNames);
 
     const tx = await web3.eth.getTransaction(evmTxHash);
     // @ts-ignore todo find out why this is a secret
     const contractAddress = tx.creates as string;
 
-    console.log({
-      contractAddress, // id
-      contractType, // index
-      network, // index
-      evmTxHash, // unique
+    const contract = new SubstrateEvmContract({
+      id: contractAddress,
+      type,
+      evmTxHash,
+      network,
     });
+    await ctx.store.save(contract);
+
+    await ctx.store.save(
+      events.map(
+        (item) =>
+          new SubstrateEvmContractSignature({
+            id: `${contractAddress}:${item.hash}`,
+            contract,
+            contractType: type,
+            signatureId: item.hash,
+            signatureName: item.name,
+            signatureType: 'event',
+            network,
+          })
+      )
+    );
+    await ctx.store.save(
+      functions.map(
+        (item) =>
+          new SubstrateEvmContractSignature({
+            id: `${contractAddress}:${item.hash}`,
+            contract,
+            contractType: type,
+            signatureId: item.hash,
+            signatureName: item.name,
+            signatureType: 'function',
+            network,
+          })
+      )
+    );
+    await ctx.store.save(
+      unknownHashes.map(
+        (hash) =>
+          new SubstrateEvmContractSignature({
+            id: `${contractAddress}:${hash}`,
+            contract,
+            contractType: type,
+            signatureId: hash,
+            signatureType: 'unknown',
+            network,
+          })
+      )
+    );
   };
 
 // todo - replace this when we can - I assume subsquid will make the data visible

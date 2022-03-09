@@ -1,6 +1,6 @@
 {
-  "name": "squid-erc20",
-  "description": "Squid processors for erc20.",
+  "name": "squid-evm-contracts",
+  "description": "Squid processors for evm contracts.",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -23,6 +23,7 @@
     "@subsquid/substrate-processor": "^0.3.0",
     "dotenv": "^10.0.0",
     "ethers": "^5.5.4",
+    "evm": "^0.2.0",
     "graphql-request": "^4.0.0",
     "pg": "^8.7.1",
     "typeorm": "^0.2.41",

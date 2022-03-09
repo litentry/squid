@@ -5,10 +5,22 @@ enum SubstrateNetwork {
   moonbeam
 }
 
-type SubstrateErc20 @entity {
-  "address"
+type SubstrateEvmContract @entity {
+  "contractAddress"
+  id: ID! # is it possible for these to clash across networks?
+  type: String! @index
+  evmTxHash: String! @unique
+  network: SubstrateNetwork! @index
+  signatures: [SubstrateEvmContractSignature] @derivedFrom(field: "contract")
+}
+
+type SubstrateEvmContractSignature @entity {
+  "contractAddress:methodId"
   id: ID!
-  "hex address"
-  rootAccount: String! @index
+  contract: SubstrateEvmContract! @index
+  contractType: String! @index
+  signatureId: String! @index
+  signatureName: String @index
+  signatureType: String!
   network: SubstrateNetwork! @index
 }
