@@ -31,17 +31,9 @@ ENV PROCESSOR_PROMETHEUS_PORT 3000
 
 
 
-FROM squid AS khalaProcessor
+FROM squid AS moonbeamProcessor
 EXPOSE 3000
-CMD ["yarn", "process:khala"]
-
-FROM squid AS kusamaProcessor
-EXPOSE 3000
-CMD ["yarn", "process:kusama"]
-
-FROM squid AS polkadotProcessor
-EXPOSE 3000
-CMD ["yarn", "process:polkadot"]
+CMD ["yarn", "process:moonbeam"]
 
 FROM squid AS queryNode
 EXPOSE 4002

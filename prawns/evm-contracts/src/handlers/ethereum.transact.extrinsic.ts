@@ -12,9 +12,13 @@ import {
   getContractData,
 } from '../evm-lib';
 
+// todo recycle and remove
 const web3 = new Web3(
-  `wss://moonbeam.api.onfinality.io/ws?apikey=${process.env.FINALITY_MOONBEAM_API_KEY}`
+  `wss://moonbeam.api.onfinality.io/ws?apikey=284d5136-3feb-4ebc-a1b4-697b400ebd18`
 );
+// const web3 = new Web3(
+//   `wss://moonbeam.api.onfinality.io/ws?apikey=${process.env.FINALITY_MOONBEAM_API_KEY}`
+// );
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
