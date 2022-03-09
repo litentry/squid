@@ -1,3 +1,5 @@
+// todo look into ousing this: https://www.npmjs.com/package/evm
+
 import * as ethers from 'ethers';
 
 const CONTRACT_CREATION_IDENTIFIER = '608060';
