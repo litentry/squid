@@ -1,35 +1,79 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import fs from 'fs';
+import { request, gql } from 'graphql-request';
+import Web3 from 'web3';
 import { SubstrateNetwork } from '../model';
-import { decodeAddress } from '../utils';
-// import { getEthereumTransactCall } from './typeGetters/getEthereumTransactCall';
-let i = 58;
+import { getContractType } from '../evm-lib';
+
+// todo get rid of this disposable key
+const web3 = new Web3(
+  'wss://moonbeam.api.onfinality.io/ws?apikey=595be5a3-8d26-417c-91e1-1c29ee03be12'
+);
+
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
-    const blockNumber = BigInt(ctx.block.height);
-    // const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.extrinsic.signer);
-    // the types are failing so just go direct to the input...
-    // const call = getEthereumTransactCall(ctx, network);
-    const { input } = (ctx.extrinsic.args as any)[0].value;
-    if (input && input.startsWith('0x60e06')) {
-      console.log('\n');
-      const data = {
-        blockNumber: ctx.block.height,
-        event: ctx.event.name,
-        eventParams: ctx.event.params,
-        hash: ctx.extrinsic.hash,
-        signer: ctx.extrinsic.signer,
-        rootAccount,
-        input,
-      };
-      fs.writeFileSync(
-        `./logs/${i}-${ctx.extrinsic.hash}.json`,
-        JSON.stringify(data, null, 2)
-      );
-      i++;
-
-      console.log(`Logged ${ctx.extrinsic.hash}`);
+    const substrateTxHash = ctx.extrinsic.hash;
+    if (!substrateTxHash) {
+      return;
     }
-    // console.log(Buffer.from(ctx.extrinsic.args[0]).toString('hex'));
+
+    const blockNumber = ctx.block.height;
+    const { input } = (ctx.extrinsic.args as any)[0].value;
+
+    const contractType = getContractType(input);
+    if (!contractType) {
+      return;
+    }
+
+    const evmTxHash = await getEvmTxHash(substrateTxHash, blockNumber);
+    if (!evmTxHash) {
+      return;
+    }
+
+    const tx = await web3.eth.getTransaction(evmTxHash);
+    // @ts-ignore todo find out why this is a secret
+    const contractAddress = tx.creates as string;
+
+    console.log({
+      contractAddress, // id
+      contractType, // index
+      network, // index
+      evmTxHash, // unique
+    });
   };
+
+// todo - replace this when we can - I assume subsquid will make the data visible
+async function getEvmTxHash(
+  substrateTxHash: string,
+  blockNumber: number
+): Promise<string | null> {
+  const query = gql`
+    query MyQuery($substrateTxHash: String!, $blockNumber: bigint!) {
+      substrate_extrinsic(
+        limit: 1
+        where: {
+          hash: { _eq: $substrateTxHash }
+          blockNumber: { _eq: $blockNumber }
+        }
+      ) {
+        substrate_events(limit: 1) {
+          evmHash
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await request(
+      'https://moonbeam-squid-archive.litentry.io/graphql/v1/graphql',
+      query,
+      {
+        substrateTxHash,
+        blockNumber,
+      }
+    );
+    return response.substrate_extrinsic[0].substrate_events[0].evmHash;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}

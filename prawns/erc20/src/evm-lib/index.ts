@@ -1,0 +1,1 @@
+export { getContractType } from './getContractType';
