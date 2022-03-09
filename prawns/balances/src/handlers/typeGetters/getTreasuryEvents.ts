@@ -25,7 +25,7 @@ export function getTreasuryDepositEvent(
       if (event.isV0) {
         return event.asV0;
       } else {
-        return event.asLatest;
+        return event.asV9170.value;
       }
     }
 
@@ -35,7 +35,7 @@ export function getTreasuryDepositEvent(
       if (event.isV1020) {
         return event.asV1020;
       } else {
-        return event.asLatest;
+        return event.asV9160.value;
       }
     }
 

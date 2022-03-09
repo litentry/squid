@@ -13,7 +13,7 @@ export class BalancesBalanceSetEvent {
    *  A balance was set by root (who, free, reserved).
    */
   get isV1031(): boolean {
-    return this.ctx._chain.getEventHash('balances.BalanceSet') === '890be9c0740650f86b325a08fc07ecc4c2b4f58212c6edaca87dabdbb64d3db1'
+    return this.ctx._chain.getEventHash('balances.BalanceSet') === '0f263bfdefa394edfb38d20d33662423a2e0902235b599f9b2b0292f157f0902'
   }
 
   /**
@@ -28,7 +28,7 @@ export class BalancesBalanceSetEvent {
    * A balance was set by root.
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.BalanceSet') === '4ab45d6d95726adfeb725535bf55a2406d3b4d8ae14ac9005c7bd7e07ea76fcc'
+    return this.ctx._chain.getEventHash('balances.BalanceSet') === '1e2b5d5a07046e6d6e5507661d3f3feaddfb41fc609a2336b24957322080ca77'
   }
 
   /**
@@ -59,7 +59,7 @@ export class BalancesDepositEvent {
    *  Some amount was deposited (e.g. for transaction fees).
    */
   get isV1032(): boolean {
-    return this.ctx._chain.getEventHash('balances.Deposit') === 'cf0c633b4d95aa1626767eef7c869b6d51b4e864772aceeb18ec2d4ebd8a9101'
+    return this.ctx._chain.getEventHash('balances.Deposit') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -74,7 +74,7 @@ export class BalancesDepositEvent {
    * Some amount was deposited (e.g. for transaction fees).
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Deposit') === '3e10f037979c6bc49d783be86e7fa6eb9642f270ffedf3352fae03a41fcf22e4'
+    return this.ctx._chain.getEventHash('balances.Deposit') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
   }
 
   /**
@@ -106,7 +106,7 @@ export class BalancesDustLostEvent {
    *  resulting in an outright loss.
    */
   get isV1050(): boolean {
-    return this.ctx._chain.getEventHash('balances.DustLost') === 'cc03bf0e885d06ab5165f4598e72250fd3e16bc5ba4dbb099deae1a97e4bef09'
+    return this.ctx._chain.getEventHash('balances.DustLost') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -123,7 +123,7 @@ export class BalancesDustLostEvent {
    * resulting in an outright loss.
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.DustLost') === '10bbf3b0d3ec83ccf1a23f056e1a60d4f66be59072296b48ebf9172ffcdab3f6'
+    return this.ctx._chain.getEventHash('balances.DustLost') === '504f155afb2789c50df19d1f747fb2dc0e99bf8b7623c30bdb5cf82029fec760'
   }
 
   /**
@@ -155,7 +155,7 @@ export class BalancesEndowedEvent {
    *  An account was created with some free balance.
    */
   get isV1050(): boolean {
-    return this.ctx._chain.getEventHash('balances.Endowed') === '1b1c107d9931735af253054e543179401a9ff7b0beaee7fa7aa61319dc40a290'
+    return this.ctx._chain.getEventHash('balances.Endowed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -170,7 +170,7 @@ export class BalancesEndowedEvent {
    * An account was created with some free balance.
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Endowed') === '089e94580955109582764033c0ac689ca378b9d2d399441102b094e72be986e7'
+    return this.ctx._chain.getEventHash('balances.Endowed') === '75951f685df19cbb5fdda09cf928a105518ceca9576d95bd18d4fac8802730ca'
   }
 
   /**
@@ -202,7 +202,7 @@ export class BalancesReserveRepatriatedEvent {
    *  Final argument indicates the destination balance type.
    */
   get isV2008(): boolean {
-    return this.ctx._chain.getEventHash('balances.ReserveRepatriated') === '823db0df51a00ee6479e9d206981c4cb7b4afcdfb66f2b1626a9c053026a511e'
+    return this.ctx._chain.getEventHash('balances.ReserveRepatriated') === '68e9ec5664c8ffe977da0c890bac43122a5cf13565c1c936e2120ba4980bcf31'
   }
 
   /**
@@ -219,7 +219,7 @@ export class BalancesReserveRepatriatedEvent {
    * Final argument indicates the destination balance type.
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.ReserveRepatriated') === '1dac0fc1bd585ad6dd890e892bed23d70ca0545bf18fa96b4ce0ba7f3ffcdbd1'
+    return this.ctx._chain.getEventHash('balances.ReserveRepatriated') === '6232d50d422cea3a6fd21da36387df36d1d366405d0c589566c6de85c9cf541f'
   }
 
   /**
@@ -251,7 +251,7 @@ export class BalancesReservedEvent {
    *  Some balance was reserved (moved from free to reserved).
    */
   get isV2008(): boolean {
-    return this.ctx._chain.getEventHash('balances.Reserved') === 'c595c2f71b423f0c1e0798ad69320278f19e727a480f58f312a585980145cf22'
+    return this.ctx._chain.getEventHash('balances.Reserved') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -266,7 +266,7 @@ export class BalancesReservedEvent {
    * Some balance was reserved (moved from free to reserved).
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Reserved') === 'bc321147cc9b824c85c432ac3c753b1319c9ad37babdd0e09ae0f99aeecc9360'
+    return this.ctx._chain.getEventHash('balances.Reserved') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
   }
 
   /**
@@ -298,7 +298,7 @@ export class BalancesSlashedEvent {
    * amount_slashed\]
    */
   get isV9122(): boolean {
-    return this.ctx._chain.getEventHash('balances.Slashed') === '2483fc82edb5fdb0ff716405ceadec93041e61656d52a5eccaa1ae00b97e532b'
+    return this.ctx._chain.getEventHash('balances.Slashed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -314,7 +314,7 @@ export class BalancesSlashedEvent {
    * Some amount was removed from the account (e.g. for misbehavior).
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Slashed') === '087119b0d937e152a3831b84db573c85f89c84a6fd587673ee923c9f0061ed66'
+    return this.ctx._chain.getEventHash('balances.Slashed') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
   }
 
   /**
@@ -345,7 +345,7 @@ export class BalancesTransferEvent {
    *  Transfer succeeded (from, to, value, fees).
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getEventHash('balances.Transfer') === '154fca303841d334782de2e871e3572f786f81f86e2a6153c2b9e8dc6fc27422'
+    return this.ctx._chain.getEventHash('balances.Transfer') === '72e6f0d399a72f77551d560f52df25d757e0643d0192b3bc837cbd91b6f36b27'
   }
 
   /**
@@ -360,7 +360,7 @@ export class BalancesTransferEvent {
    *  Transfer succeeded (from, to, value).
    */
   get isV1050(): boolean {
-    return this.ctx._chain.getEventHash('balances.Transfer') === '9611bd6b933331f197e8fa73bac36184681838292120987fec97092ae037d1c8'
+    return this.ctx._chain.getEventHash('balances.Transfer') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
   }
 
   /**
@@ -375,7 +375,7 @@ export class BalancesTransferEvent {
    * Transfer succeeded.
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Transfer') === '99bc4786247456e0d4a44373efe405e598bfadfac87a7c41b0a82a91296836c1'
+    return this.ctx._chain.getEventHash('balances.Transfer') === '0ffdf35c495114c2d42a8bf6c241483fd5334ca0198662e14480ad040f1e3a66'
   }
 
   /**
@@ -406,7 +406,7 @@ export class BalancesUnreservedEvent {
    *  Some balance was unreserved (moved from reserved to free).
    */
   get isV2008(): boolean {
-    return this.ctx._chain.getEventHash('balances.Unreserved') === 'ab01310b8e7de989b74305e42be550e888c6563ed4ea284f7c56ae7d79566f8c'
+    return this.ctx._chain.getEventHash('balances.Unreserved') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -421,7 +421,7 @@ export class BalancesUnreservedEvent {
    * Some balance was unreserved (moved from reserved to free).
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Unreserved') === 'be12b7473ab82e15891b929b20269451c731ffad981836a76ca0aae115b9e9f6'
+    return this.ctx._chain.getEventHash('balances.Unreserved') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
   }
 
   /**
@@ -452,7 +452,7 @@ export class BalancesWithdrawEvent {
    * Some amount was withdrawn from the account (e.g. for transaction fees). \[who, value\]
    */
   get isV9122(): boolean {
-    return this.ctx._chain.getEventHash('balances.Withdraw') === 'c817a046dc9663596372188650f4e0b0897f9149bbc73435595dee84b7a9b049'
+    return this.ctx._chain.getEventHash('balances.Withdraw') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -467,7 +467,7 @@ export class BalancesWithdrawEvent {
    * Some amount was withdrawn from the account (e.g. for transaction fees).
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('balances.Withdraw') === '7d47465a5bcac497a2c0e813fe27069aff5d6086a74365c4f40bc0d5332e1356'
+    return this.ctx._chain.getEventHash('balances.Withdraw') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
   }
 
   /**
@@ -498,7 +498,7 @@ export class TreasuryDepositEvent {
    *  Some funds have been deposited.
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getEventHash('treasury.Deposit') === '00a6b2996298e567aad20092952a8a74feec74cde3e7a57572700c49512f941d'
+    return this.ctx._chain.getEventHash('treasury.Deposit') === '47b59f698451e50cce59979f0121e842fa3f8b2bcef2e388222dbd69849514f9'
   }
 
   /**
@@ -509,13 +509,28 @@ export class TreasuryDepositEvent {
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1020
+  /**
+   * Some funds have been deposited.
+   */
+  get isV9160(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Deposit') === 'd74027ad27459f17d7446fef449271d1b0dc12b852c175623e871d009a661493'
   }
 
-  get asLatest(): bigint {
+  /**
+   * Some funds have been deposited.
+   */
+  get asV9160(): {value: bigint} {
+    assert(this.isV9160)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV1020
+    return this.isV9160
+  }
+
+  get asLatest(): {value: bigint} {
+    deprecateLatest()
+    return this.asV9160
   }
 }

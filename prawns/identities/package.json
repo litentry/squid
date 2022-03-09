@@ -20,15 +20,15 @@
   },
   "dependencies": {
     "@polkadot/util-crypto": "^8.4.1",
-    "@subsquid/graphql-server": "^0.1.4",
-    "@subsquid/ss58": "^0.0.3",
-    "@subsquid/substrate-processor": "^0.3.0",
+    "@subsquid/graphql-server": "^0.1.5",
+    "@subsquid/ss58": "^0.0.4",
+    "@subsquid/substrate-processor": "^0.4.1",
     "dotenv": "^10.0.0",
     "pg": "^8.7.1",
     "typeorm": "^0.2.41"
   },
   "devDependencies": {
-    "@subsquid/cli": "^0.1.1",
+    "@subsquid/cli": "^0.1.4",
     "@types/node": "^16.11.17",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "eslint": "7.26.0",

@@ -15,7 +15,7 @@ export class CouncilVoteCall {
    *  # </weight>
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('council.vote') === '89a6cc1af1492447ed05b72b49a416cd0bbde7d6f390ca281ad54d3e2e69c256'
+    return this.ctx._chain.getCallHash('council.vote') === 'f8a1069a57f7b721f47c086d08b6838ae1a0c08f58caddb82428ba5f1407540f'
   }
 
   /**
@@ -54,7 +54,7 @@ export class DemocracySecondCall {
    *  # </weight>
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('democracy.second') === '08bdd38fdfd3cf389b5bbb7db437ab7bbebac3e976758cf788257ec2b37ca6d8'
+    return this.ctx._chain.getCallHash('democracy.second') === '7ac80a800d6686f21181e7b5b45c8949dc5b807bc6ec111188c7c6850a21b898'
   }
 
   /**
@@ -89,7 +89,7 @@ export class DemocracySecondCall {
    *  # </weight>
    */
   get isV2005(): boolean {
-    return this.ctx._chain.getCallHash('democracy.second') === 'c388fcd4c5b27ad8d3d1c706339f03968568c8a0f44b0114f86f00e55195abec'
+    return this.ctx._chain.getCallHash('democracy.second') === 'abe1357aae784eefd21f6999076deb6cfbc92fcb9e80c21e93a944ceb739423c'
   }
 
   /**
@@ -141,7 +141,7 @@ export class DemocracyVoteCall {
    *  # </weight>
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('democracy.vote') === '3a257842e5409d1ef798e72ec85e594b5abcb8e5073d74d987db05365764b7a0'
+    return this.ctx._chain.getCallHash('democracy.vote') === '3a01fd8d5e95145a311b99cf21decce5be8578650f311f3a6091395407f5efe9'
   }
 
   /**
@@ -173,7 +173,7 @@ export class DemocracyVoteCall {
    *  # </weight>
    */
   get isV1055(): boolean {
-    return this.ctx._chain.getCallHash('democracy.vote') === '99c87c2462eae0050bd7a29171838d7c9d7b88f3bc9c600dc60b8d304a9c85dc'
+    return this.ctx._chain.getCallHash('democracy.vote') === '6cdb35b5ffcb74405cdf222b0cc0bf7ad7025d59f676bea6712d77bcc9aff1db'
   }
 
   /**
@@ -207,7 +207,7 @@ export class DemocracyVoteCall {
    * Weight: `O(R)` where R is the number of referendums the voter has voted on.
    */
   get isV9111(): boolean {
-    return this.ctx._chain.getCallHash('democracy.vote') === '0efe1fcbb98d2fc487ae2000c67d643ca2393fcf25703010de5a67225e5a4ecd'
+    return this.ctx._chain.getCallHash('democracy.vote') === '3936a4cb49f77280bd94142d4ec458afcf5cb8a5e5b0d602b1b1530928021e28'
   }
 
   /**
@@ -268,7 +268,7 @@ export class PhragmenElectionVoteCall {
    *  # </weight>
    */
   get isV9010(): boolean {
-    return this.ctx._chain.getCallHash('phragmenElection.vote') === '1a1617701094b9706e12a855778e01f118c46b5ff80b1e2424a9c502ecb58c2c'
+    return this.ctx._chain.getCallHash('phragmenElection.vote') === '75939c25de1c96145b5d2d4bc8627a3fc22299f0e1f1f6f0709e54e884796bda'
   }
 
   /**
