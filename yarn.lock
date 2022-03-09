@@ -674,7 +674,7 @@
   resolved "https://registry.yarnpkg.com/@sqltools/formatter/-/formatter-1.2.3.tgz#1185726610acc37317ddab11c3c7f9066966bd20"
   integrity sha512-O3uyB/JbkAEMZaP3YqyHH7TMnex7tWyCbCI4EfJdOCoN6HIhqdJBWTM6aCCiWQ/5f5wxjgU735QAIpJbjDvmzg==
 
-"@subsquid/cli@^0.1.1":
+"@subsquid/cli@^0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@subsquid/cli/-/cli-0.1.4.tgz#f41d3cb5d184431c5b01ce3c971eaa731f1d8cd9"
   integrity sha512-nA3/vkl8Fu7IrBWfEdRGKsug8XIPXRXYP1WDIQ5UuITtzOsUFgGKL5p/kNviEA+D4Uo95jM+YXhrTg+Xkc/Y6g==
