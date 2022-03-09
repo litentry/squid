@@ -1,5 +1,5 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import ethereumTransactionHanndler from '../handlers/ehereum.transact.extrinsic';
+import ethereumTransactionHanndler from '../handlers/ethereum.transact.extrinsic';
 import { SubstrateNetwork } from '../model';
 import types from './moonbeamTypesBundle';
 
