@@ -15,13 +15,7 @@ interface IdentityInfo {
 export function getIdentitySetIdentityCall(
   ctx: ExtrinsicHandlerContext,
 ): IdentityInfo {
-  return formatIdentityInfo(ctx.extrinsic.args[0].value);
-}
-
-const formatIdentityInfo = (info: any): IdentityInfo => {
-  if (info.pqp) {
-    console.log(info.pqp);
-  }
+  const info = ctx.extrinsic.args[0].value as any;
   return {
     display: info.display?.raw ? hexToString(info.display.raw) : null,
     email: info.email?.raw ? hexToString(info.email.raw) : null,
@@ -32,4 +26,4 @@ const formatIdentityInfo = (info: any): IdentityInfo => {
     twitter: info.twitter?.raw ? hexToString(info.twitter.raw) : null,
     web: info.web?.raw ? hexToString(info.web.raw) : null,
   }
-} 
+}
