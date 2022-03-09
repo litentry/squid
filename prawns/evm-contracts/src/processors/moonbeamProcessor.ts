@@ -3,7 +3,9 @@ import ethereumTransactionHanndler from '../handlers/ethereum.transact.extrinsic
 import { SubstrateNetwork } from '../model';
 import types from './moonbeamTypesBundle';
 
-const processor = new SubstrateProcessor('litentry_squid_erc20_moonbeam');
+const processor = new SubstrateProcessor(
+  'litentry_squid_evm_contracts_moonbeam'
+);
 
 processor.setTypesBundle(types);
 processor.setBatchSize(100);
