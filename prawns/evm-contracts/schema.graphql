@@ -1,0 +1,27 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+  moonbeam
+}
+
+type SubstrateEvmContract @entity {
+  "contractAddress"
+  id: ID! # is it possible for these to clash across networks?
+  type: String! @index
+  creator: String! @index
+  evmTxHash: String! @unique
+  network: SubstrateNetwork! @index
+  signatures: [SubstrateEvmContractSignature] @derivedFrom(field: "contract")
+}
+
+type SubstrateEvmContractSignature @entity {
+  "contractAddress:methodId"
+  id: ID!
+  contract: SubstrateEvmContract! @index
+  contractType: String! @index
+  signatureId: String! @index
+  signatureName: String @index
+  signatureType: String!
+  network: SubstrateNetwork! @index
+}

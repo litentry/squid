@@ -1,0 +1,64 @@
+version: '3'
+
+networks:
+  web_network:
+    external: true
+    driver: bridge
+  db_network:
+    driver: bridge
+
+services:
+  query-node:
+    build:
+      context: .
+      target: queryNode
+    profiles:
+      - querying
+    ports:
+      - 4004
+    environment:
+      DB_HOST: db
+      GQL_PORT: 4004
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - web_network
+      - db_network
+
+  moonbeam-processor:
+    build:
+      context: .
+      target: moonbeamProcessor
+    profiles:
+      - indexing
+    environment:
+      DB_HOST: db
+    ports:
+      - 3000
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - db_network
+
+  migrate:
+    build:
+      context: .
+      target: migrate
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+    networks:
+      - db_network
+
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432
+    networks:
+      - db_network
