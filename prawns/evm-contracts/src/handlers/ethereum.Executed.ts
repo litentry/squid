@@ -15,7 +15,7 @@ export default (network: SubstrateNetwork) =>
     if (!ctx.event.extrinsic) return;
 
     const { input } = ctx.event.extrinsic.args[0].value as any;
-    if (!isContractCreationInput(input)) return;
+    if (!input || !isContractCreationInput(input)) return;
 
     const creator = ctx.event.params[0].value as string;
     const contractAddress = ctx.event.params[1].value as string;
