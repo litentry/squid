@@ -1,5 +1,5 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import ethereumTransactionHanndler from '../handlers/ethereum.transact.extrinsic';
+import ethereumExecutedHanndler from '../handlers/ethereum.Executed';
 import { SubstrateNetwork } from '../model';
 import types from './moonbeamTypesBundle';
 
@@ -15,9 +15,9 @@ processor.setDataSource({
   archive: 'https://moonbeam-squid-archive.litentry.io/graphql/v1/graphql',
   chain: 'wss://moonbeam.api.onfinality.io/public-ws',
 });
-processor.addExtrinsicHandler(
-  'ethereum.transact',
-  ethereumTransactionHanndler(SubstrateNetwork.moonbeam)
+processor.addEventHandler(
+  'ethereum.Executed',
+  ethereumExecutedHanndler(SubstrateNetwork.moonbeam)
 );
 
 processor.run();

@@ -9,6 +9,7 @@ type SubstrateEvmContract @entity {
   "contractAddress"
   id: ID! # is it possible for these to clash across networks?
   type: String! @index
+  creator: String! @index
   evmTxHash: String! @unique
   network: SubstrateNetwork! @index
   signatures: [SubstrateEvmContractSignature] @derivedFrom(field: "contract")

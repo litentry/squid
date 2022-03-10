@@ -18,6 +18,10 @@ export class SubstrateEvmContract {
   @Column_("text", {nullable: false})
   type!: string
 
+  @Index_()
+  @Column_("text", {nullable: false})
+  creator!: string
+
   @Index_({unique: true})
   @Column_("text", {nullable: false})
   evmTxHash!: string
