@@ -25,14 +25,7 @@ export default (network: SubstrateNetwork) =>
       current: true, // the last set_identity call we get is the current one
       blockNumber,
       date,
-      display: identity.display,
-      email: identity.email,
-      image: identity.image,
-      legal: identity.legal,
-      pgp: identity.pgp,
-      riot: identity.riot,
-      twitter: identity.twitter,
-      web: identity.web,
+      ...identity,
     });
 
     await ctx.store.save(identityModel);
