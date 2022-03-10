@@ -16,7 +16,6 @@ type SubstrateIdentity @entity {
   blockNumber: BigInt!
   date: DateTime!
   display: String
-  displayParent: String
   email: String
   image: String
   legal: String

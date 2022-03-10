@@ -46,9 +46,6 @@ export class SubstrateIdentity {
   display!: string | undefined | null
 
   @Column_("text", {nullable: true})
-  displayParent!: string | undefined | null
-
-  @Column_("text", {nullable: true})
   email!: string | undefined | null
 
   @Column_("text", {nullable: true})
