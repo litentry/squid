@@ -1,0 +1,26 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+}
+
+type SubstrateIdentity @entity {
+  "network:block:index"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
+  current: Boolean! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  display: String
+  email: String
+  image: String
+  legal: String
+  pgp: String
+  riot: String
+  twitter: String
+  web: String
+}

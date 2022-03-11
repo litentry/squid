@@ -12,7 +12,7 @@ export class DemocracyProposedEvent {
    *  A motion has been proposed by a public account. \[proposal_index, deposit\]
    */
   get isV1(): boolean {
-    return this.ctx._chain.getEventHash('democracy.Proposed') === 'ec9d8411ccb58c13acecb12c4b4103b429f06983b49e7443b80c83975cb484ed'
+    return this.ctx._chain.getEventHash('democracy.Proposed') === 'a0e51e81445baa317309351746e010ed2435e30ff7e53fbb2cf59283f3b9c536'
   }
 
   /**
@@ -27,7 +27,7 @@ export class DemocracyProposedEvent {
    * A motion has been proposed by a public account.
    */
   get isV1090(): boolean {
-    return this.ctx._chain.getEventHash('democracy.Proposed') === '52a3fc64bce50a0f796295d5997106abe75022e8260b5b12503c89b205774e0d'
+    return this.ctx._chain.getEventHash('democracy.Proposed') === '02ae149915d453560f4d12074a380744b3bbb2fe4c235e963f440e2d79243477'
   }
 
   /**
@@ -58,7 +58,7 @@ export class DemocracyStartedEvent {
    *  A referendum has begun. \[ref_index, threshold\]
    */
   get isV1(): boolean {
-    return this.ctx._chain.getEventHash('democracy.Started') === '8d2e3ee24efda41975164e8978c8d4bd4db323c948fca6fc2185f7dbd5187279'
+    return this.ctx._chain.getEventHash('democracy.Started') === '31dcae10175d30392db6fc8a872e963baae4bcf3ee28dfd38b1653a0751c031f'
   }
 
   /**
@@ -73,7 +73,7 @@ export class DemocracyStartedEvent {
    * A referendum has begun.
    */
   get isV1090(): boolean {
-    return this.ctx._chain.getEventHash('democracy.Started') === '7eddfd695fafebc9154f63d976aa98302dc7e2a7f64342b386cb0ddf84367abd'
+    return this.ctx._chain.getEventHash('democracy.Started') === '663653944bacc0e562b015a412877b12c32bc62814b673192c550438bf618ab4'
   }
 
   /**
