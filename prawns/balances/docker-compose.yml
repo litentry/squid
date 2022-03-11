@@ -90,6 +90,8 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
+    volumes:
+      - ../../data/db/${COMPOSE_PROJECT_NAME}/:/var/lib/postgresql/data
     ports:
       - 5432
     networks:
