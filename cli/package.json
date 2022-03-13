@@ -20,6 +20,7 @@
     "@oclif/core": "^1",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
+    "aws-sdk": "^2.1092.0",
     "axios": "^0.26.0",
     "cli-ux": "^6.0.9"
   },
