@@ -5,6 +5,7 @@ import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
 import { promises as fs } from 'fs';
 import * as AWS from 'aws-sdk';
+import config from  '../../config';
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -102,8 +103,8 @@ export default class MakeSnapshot extends Command {
     const fileName = `${this.getDbDataDir()}/${this.getSnapshotName()}`;
     const data = await fs.readFile(fileName);
     const params = {
-      Bucket: 'litentry-db-backup',
-      Key: 'contacts.csv',
+      Bucket: config.snapshot.s3.bucket,
+      Key: `${config.snapshot.s3.bucket}/${this.getSnapshotName()}`,
       Body: JSON.stringify(data, null, 2)
     };
     await s3.upload(params).promise();
