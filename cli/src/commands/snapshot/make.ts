@@ -13,7 +13,7 @@ const s3 = new AWS.S3({
 
 export default class MakeSnapshot extends Command {
 
-  private module: string = '';
+  private prawn: string = '';
   private version: string = '';
 
   static description = 'Make a snapshot of a prawn';
@@ -22,14 +22,14 @@ export default class MakeSnapshot extends Command {
     `$ devkit snapshot make balances`
   ];
 
-  static args = [{ name: 'module', description: 'Module to deploy', required: true }];
+  static args = [{ name: 'prawn', description: 'Prawn to snapshot', required: true }];
 
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(MakeSnapshot);
-    this.module = args.module;
+    const { args } = await this.parse(MakeSnapshot);
+    this.prawn = args.prawn;
 
-    if (!this.moduleExists()) {
-      return this.error(`Module ${this.module} does not exist`);
+    if (!this.prawnExists()) {
+      return this.error(`Prawn ${this.prawn} does not exist`);
     }
 
     this.log('Pull latest changes:');
@@ -71,26 +71,26 @@ export default class MakeSnapshot extends Command {
 
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
-  private getModuleDir = () => `${this.getProjectRootDir()}/prawns/${this.module}`;
+  private getPrawnDir = () => `${this.getProjectRootDir()}/prawns/${this.prawn}`;
 
   private getDbDataDir = () => `${this.getProjectRootDir()}/data/db/`;
 
-  private moduleExists = () => existsSync(this.getModuleDir());
+  private prawnExists = () => existsSync(this.getPrawnDir());
 
   private sleep = (time: number) => new Promise(r => setTimeout(r, time));
 
-  private getProjectName = () => `${this.module}_${this.version}`;
+  private getProjectName = () => `${this.prawn}_${this.version}`;
 
   private getSnapshotName = () => `${this.getProjectName()}.tar.gz`;
 
   private startIndexing = () => execSync(
     `COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose --profile indexing up -d`,
-    { cwd: this.getModuleDir(), stdio: 'inherit' }
+    { cwd: this.getPrawnDir(), stdio: 'inherit' }
   );
 
   private stopIndexing = () => execSync(
     `COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose down`,
-    { cwd: this.getModuleDir(), stdio: 'inherit' }
+    { cwd: this.getPrawnDir(), stdio: 'inherit' }
   );
 
   private createTarball = () => execSync(
