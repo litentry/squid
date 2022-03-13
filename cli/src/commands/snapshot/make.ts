@@ -1,5 +1,5 @@
-import { Command, Flags } from '@oclif/core';
-import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import { Command } from '@oclif/core';
+import { existsSync, unlinkSync } from 'fs';
 import { execSync } from 'child_process';
 import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
@@ -113,6 +113,4 @@ export default class MakeSnapshot extends Command {
     unlinkSync(`${this.getDbDataDir()}/${this.getSnapshotName()}`); //Delete tar.gz file
     unlinkSync(`${this.getDbDataDir()}/${this.getProjectName()}`); //Delete db folder
   };
-
-
 }
