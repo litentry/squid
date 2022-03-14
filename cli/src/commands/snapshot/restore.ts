@@ -7,21 +7,21 @@ import * as StreamPromises from "stream/promises";
 
 const s3 = new AWS.S3();
 
-export default class DownloadSnapshot extends Command {
+export default class RestoreSnapshot extends Command {
 
   private prawn: string = '';
   private version: string = '';
 
-  static description = 'Download a snapshot of a prawn';
+  static description = 'Restore a snapshot of a prawn';
 
   static examples = [
-    `$ devkit snapshot download balances`
+    `$ devkit snapshot restore balances`
   ];
 
   static args = [{ name: 'prawn', description: 'Prawn to snapshot', required: true }];
 
   async run(): Promise<void> {
-    const { args } = await this.parse(DownloadSnapshot);
+    const { args } = await this.parse(RestoreSnapshot);
     this.prawn = args.prawn;
 
     if (!this.prawnExists()) {
@@ -39,6 +39,8 @@ export default class DownloadSnapshot extends Command {
 
     this.log("Extract snapshot:");
     await this.extractSnapshot();
+
+    this.log(`Successfully restored snapshot ${this.getSnapshotName()}`);
   }
 
   private getVersion = () => execSync('git rev-parse --short HEAD').toString().trim();
@@ -47,7 +49,7 @@ export default class DownloadSnapshot extends Command {
 
   private getPrawnDir = () => `${this.getProjectRootDir()}/prawns/${this.prawn}`;
 
-  private getDbDataDir = () => `${this.getProjectRootDir()}/data/db/`;
+  private getDbDataDir = () => `${this.getProjectRootDir()}/data/db`;
 
   private prawnExists = () => existsSync(this.getPrawnDir());
 
