@@ -23,7 +23,7 @@ export default (network: SubstrateNetwork) =>
       current: true, // the last set_identity call we get is the current one
       blockNumber,
       date,
-      action: IdentityAction.CLEAR,
+      action: IdentityAction.KILL,
     });
 
     await ctx.store.save(identityModel);
