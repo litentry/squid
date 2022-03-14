@@ -5,10 +5,7 @@ import * as AWS from 'aws-sdk';
 import config from '../../config';
 import * as StreamPromises from "stream/promises";
 
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-});
+const s3 = new AWS.S3();
 
 export default class DownloadSnapshot extends Command {
 
