@@ -64,6 +64,8 @@ export default class MakeSnapshot extends Command {
 
     this.log('Delete db data');
     this.deleteDbData();
+
+    this.log(`Successfully created a snapshot of ${this.getSnapshotName()}`);
   }
 
   private getVersion = () => execSync('git rev-parse --short HEAD').toString().trim();
