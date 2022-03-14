@@ -4,7 +4,7 @@ enum SubstrateNetwork {
   phala
 }
 
-enum IdentityActions {
+enum IdentityAction {
   SET
   CLEAR
   KILL
@@ -21,7 +21,7 @@ type SubstrateIdentity @entity {
   current: Boolean! @index
   blockNumber: BigInt!
   date: DateTime!
-  action: IdentityActions!
+  action: IdentityAction!
   display: String
   email: String
   image: String

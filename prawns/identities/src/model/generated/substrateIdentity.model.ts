@@ -1,7 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
-import {IdentityActions} from "./_identityActions"
+import {IdentityAction} from "./_identityAction"
 
 @Entity_()
 export class SubstrateIdentity {
@@ -44,7 +44,7 @@ export class SubstrateIdentity {
   date!: Date
 
   @Column_("varchar", {length: 5, nullable: false})
-  action!: IdentityActions
+  action!: IdentityAction
 
   @Column_("text", {nullable: true})
   display!: string | undefined | null
