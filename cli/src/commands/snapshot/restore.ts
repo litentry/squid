@@ -1,9 +1,8 @@
 import { Command } from '@oclif/core';
-import { createWriteStream, existsSync } from 'fs';
+import { existsSync, promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import * as AWS from 'aws-sdk';
 import config from '../../config';
-import * as StreamPromises from "stream/promises";
 
 const s3 = new AWS.S3();
 
@@ -65,9 +64,8 @@ export default class RestoreSnapshot extends Command {
       Bucket: config.snapshot.s3.bucket,
       Key: `${config.snapshot.s3.bucket}/${this.getSnapshotName()}`,
     };
-    const readStream = s3.getObject(params).createReadStream();
-    const writeStream = createWriteStream(targetFilePath);
-    await StreamPromises.pipeline(readStream, writeStream);
+    const { Body } = await s3.getObject(params).promise()
+    await fs.writeFile(targetFilePath, Body!.toString());
   };
 
   private extractSnapshot = () => execSync(

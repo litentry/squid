@@ -112,7 +112,7 @@ export default class MakeSnapshot extends Command {
     const params = {
       Bucket: config.snapshot.s3.bucket,
       Key: `${config.snapshot.s3.bucket}/${this.getSnapshotName()}`,
-      Body: JSON.stringify(data, null, 2)
+      Body: data
     };
     await s3.upload(params).promise();
   };
