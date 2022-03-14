@@ -60,7 +60,7 @@ export default class MakeSnapshot extends Command {
     this.createTarball();
 
     this.log('Upload snapshot');
-    this.uploadSnapshot();
+    await this.uploadSnapshot();
 
     this.log('Delete db data');
     this.deleteDbData();
