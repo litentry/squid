@@ -1,5 +1,5 @@
 import { Command } from '@oclif/core';
-import { existsSync, unlinkSync } from 'fs';
+import { existsSync, rmSync, unlinkSync } from 'fs';
 import { execSync } from 'child_process';
 import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
@@ -74,7 +74,7 @@ export default class MakeSnapshot extends Command {
 
   private getPrawnDir = () => `${this.getProjectRootDir()}/prawns/${this.prawn}`;
 
-  private getDbDataDir = () => `${this.getProjectRootDir()}/data/db/`;
+  private getDbDataDir = () => `${this.getProjectRootDir()}/data/db`;
 
   private prawnExists = () => existsSync(this.getPrawnDir());
 
@@ -116,7 +116,7 @@ export default class MakeSnapshot extends Command {
   };
 
   private deleteDbData = () => {
-    unlinkSync(`${this.getDbDataDir()}/${this.getSnapshotName()}`); //Delete tar.gz file
-    unlinkSync(`${this.getDbDataDir()}/${this.getProjectName()}`); //Delete db folder
+    rmSync(`${this.getDbDataDir()}/${this.getSnapshotName()}`); //Delete tar.gz file
+    rmSync(`${this.getDbDataDir()}/${this.getProjectName()}`, {recursive: true, force: true}); //Delete db folder
   };
 }
