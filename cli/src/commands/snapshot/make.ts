@@ -53,6 +53,9 @@ export default class MakeSnapshot extends Command {
 
     await this.sleep(2000);
 
+    this.log('Chown the db data directory');
+    this.chownDbDataDir();
+
     this.log('Create tarball');
     this.createTarball();
 
@@ -90,6 +93,11 @@ export default class MakeSnapshot extends Command {
     `COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose down`,
     { cwd: this.getPrawnDir(), stdio: 'inherit' }
   );
+
+  private chownDbDataDir = () => execSync(
+    `sudo chown -R $(id -u):$(id -g) ${this.getProjectName()}`,
+    { cwd: this.getDbDataDir(), stdio: 'inherit' }
+  )
 
   private createTarball = () => execSync(
     `tar -zcvf ${this.getSnapshotName()} ${this.getProjectName()}`,
