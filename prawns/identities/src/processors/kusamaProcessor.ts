@@ -1,8 +1,8 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../model';
-import identitySetHandler from '../handlers/indentity.set.identity.extrinsic';
-import identityClearHandler from '../handlers/indentity.clear.identity.extrinsic';
-import identityKillHandler from '../handlers/indentity.kill.identity.extrinsic';
+import identitySetHandler from '../handlers/identity.set.identity.extrinsic';
+import identityClearHandler from '../handlers/identity.clear.identity.extrinsic';
+import identityKillHandler from '../handlers/identity.kill.identity.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_identities_kusama');
 

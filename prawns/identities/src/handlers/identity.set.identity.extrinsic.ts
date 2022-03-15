@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateIdentity, SubstrateNetwork, IdentityAction } from '../model';
+import { SubstrateIdentity, SubstrateNetwork, SubstrateIdentityAction } from '../model';
 import { getIdentitySetIdentityCall } from './typeGetters/getIndentitySetIdentityCall';
 import { getManager } from 'typeorm';
 
@@ -25,7 +25,7 @@ export default (network: SubstrateNetwork) =>
       current: true, // the last set_identity call we get is the current one
       blockNumber,
       date,
-      action: IdentityAction.SET,
+      action: SubstrateIdentityAction.SET,
       ...identity,
     });
 
