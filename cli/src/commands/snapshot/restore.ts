@@ -33,11 +33,11 @@ export default class RestoreSnapshot extends Command {
       return this.error(`Prawn ${this.getSnapshotName()} already exists in ${this.getDbDataDir()}`);
     }
 
-    this.log("Download snapshot:");
-    await this.downloadSnapshot();
+    this.log('Download snapshot:');
+    this.downloadSnapshot();
 
-    this.log("Extract snapshot:");
-    await this.extractSnapshot();
+    this.log('Extract snapshot:');
+    this.extractSnapshot();
 
     this.log(`Successfully restored snapshot ${this.getSnapshotName()}`);
   }
@@ -58,15 +58,10 @@ export default class RestoreSnapshot extends Command {
 
   private snapshotExists = () => existsSync(`${this.getDbDataDir()}/${this.getProjectName()}`);
 
-  private downloadSnapshot = async () => {
-    const targetFilePath = `${this.getDbDataDir()}/${this.getSnapshotName()}`;
-    const params = {
-      Bucket: config.snapshot.s3.bucket,
-      Key: `${config.snapshot.s3.path}/${this.getSnapshotName()}`,
-    };
-    const { Body } = await s3.getObject(params).promise()
-    await fs.writeFile(targetFilePath, Body!.toString());
-  };
+  private downloadSnapshot = () => execSync(
+    `aws s3 cp s3://${config.snapshot.s3.bucket}/${config.snapshot.s3.path}/${this.getSnapshotName()} .`,
+    { cwd: this.getDbDataDir(), stdio: 'inherit' }
+  );
 
   private extractSnapshot = () => execSync(
     `tar -xf ${this.getSnapshotName()}`,
