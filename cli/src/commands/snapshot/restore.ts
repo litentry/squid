@@ -62,7 +62,7 @@ export default class RestoreSnapshot extends Command {
     const targetFilePath = `${this.getDbDataDir()}/${this.getSnapshotName()}`;
     const params = {
       Bucket: config.snapshot.s3.bucket,
-      Key: `${config.snapshot.s3.bucket}/${this.getSnapshotName()}`,
+      Key: `${config.snapshot.s3.path}/${this.getSnapshotName()}`,
     };
     const { Body } = await s3.getObject(params).promise()
     await fs.writeFile(targetFilePath, Body!.toString());

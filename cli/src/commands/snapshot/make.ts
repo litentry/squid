@@ -111,7 +111,7 @@ export default class MakeSnapshot extends Command {
     const data = await fs.readFile(fileName);
     const params = {
       Bucket: config.snapshot.s3.bucket,
-      Key: `${config.snapshot.s3.bucket}/${this.getSnapshotName()}`,
+      Key: `${config.snapshot.s3.path}/${this.getSnapshotName()}`,
       Body: data,
       ContentEncoding: 'application/x-compressed-tar'
     };
