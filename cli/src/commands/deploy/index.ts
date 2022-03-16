@@ -124,7 +124,7 @@ export default class Deploy extends Command {
 
     const projectsToCleanUp = [...new Set(projects)].filter((project: string) => project.startsWith(`${this.module}_`) && project !== this.getProjectName());
 
-    projectsToCleanUp.map(project => () => {
+    projectsToCleanUp.map(project => {
       this.log(`Take down project: ${project}`);
       execSync(
         `COMPOSE_PROJECT_NAME=${project} docker-compose down`,
