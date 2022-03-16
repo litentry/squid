@@ -1,6 +1,8 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../model';
-import identitySetHandler from '../handlers/indentity.set.identity.extrinsic';
+import identitySetHandler from '../handlers/identity.set.identity.extrinsic';
+import identityClearHandler from '../handlers/identity.clear.identity.extrinsic';
+import identityKillHandler from '../handlers/identity.kill.identity.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_identities_khala');
 
@@ -15,5 +17,12 @@ processor.addExtrinsicHandler(
   'identity.set_identity',
   identitySetHandler(SubstrateNetwork.phala)
 );
-
+processor.addExtrinsicHandler(
+  'identity.clear_identity',
+  identityClearHandler(SubstrateNetwork.phala)
+);
+processor.addExtrinsicHandler(
+  'identity.kill_identity',
+  identityKillHandler(SubstrateNetwork.phala)
+);
 processor.run();

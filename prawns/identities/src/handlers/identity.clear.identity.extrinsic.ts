@@ -1,7 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateIdentity, SubstrateNetwork } from '../model';
-import { getIdentitySetIdentityCall } from './typeGetters/getIndentitySetIdentityCall';
+import { SubstrateIdentity, SubstrateNetwork, SubstrateIdentityAction } from '../model';
 import { getManager } from 'typeorm';
 
 export default (network: SubstrateNetwork) =>
@@ -9,7 +8,6 @@ export default (network: SubstrateNetwork) =>
 
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const identity = getIdentitySetIdentityCall(ctx);
     const account = ctx.extrinsic.signer;
     const rootAccount = decodeAddress(account);
 
@@ -25,7 +23,7 @@ export default (network: SubstrateNetwork) =>
       current: true, // the last set_identity call we get is the current one
       blockNumber,
       date,
-      ...identity,
+      action: SubstrateIdentityAction.CLEAR,
     });
 
     await ctx.store.save(identityModel);

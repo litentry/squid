@@ -3,6 +3,8 @@
   "chainVersions": "../../../metadata/kusamaVersions.json",
   "typesBundle": "kusama",
   "calls": [
-    "identity.set_identity"
+    "identity.set_identity",
+    "identity.clear_identity",
+    "identity.kill_identity"
   ]
 }

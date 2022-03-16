@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
+import {SubstrateIdentityAction} from "./_substrateIdentityAction"
 
 @Entity_()
 export class SubstrateIdentity {
@@ -41,6 +42,9 @@ export class SubstrateIdentity {
 
   @Column_("timestamp with time zone", {nullable: false})
   date!: Date
+
+  @Column_("varchar", {length: 5, nullable: false})
+  action!: SubstrateIdentityAction
 
   @Column_("text", {nullable: true})
   display!: string | undefined | null

@@ -4,6 +4,12 @@ enum SubstrateNetwork {
   phala
 }
 
+enum SubstrateIdentityAction {
+  SET
+  CLEAR
+  KILL
+}
+
 type SubstrateIdentity @entity {
   "network:block:index"
   id: ID!
@@ -15,6 +21,7 @@ type SubstrateIdentity @entity {
   current: Boolean! @index
   blockNumber: BigInt!
   date: DateTime!
+  action: SubstrateIdentityAction!
   display: String
   email: String
   image: String
