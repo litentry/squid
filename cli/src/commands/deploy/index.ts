@@ -51,6 +51,7 @@ export default class Deploy extends Command {
       const containers = await getProjectIndexingProgress(this.getProjectName());
       indexingComplete = containers.every((container) => container.progress === 1);
       cli.table(containers, { name: {}, progress: {} });
+      process.stdout.moveCursor(0, (containers.length + 2) * -1);
     }
 
     this.log("Indexing complete");
