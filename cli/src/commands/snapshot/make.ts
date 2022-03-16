@@ -1,5 +1,5 @@
 import { Command } from '@oclif/core';
-import { existsSync, rmSync, unlinkSync } from 'fs';
+import { existsSync } from 'fs';
 import { execSync } from 'child_process';
 import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';

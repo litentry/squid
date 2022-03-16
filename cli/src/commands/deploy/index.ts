@@ -98,13 +98,6 @@ export default class Deploy extends Command {
 
   private sleep = (time: number) => new Promise(r => setTimeout(r, time));
 
-  private getDockerGroup = () => {
-    if (process.platform === 'linux') {
-      return execSync('getent group docker | cut -d: -f3');
-    }
-    return '100';
-  }
-
   private createLockFile = (deploymentConfig: object) => {
     const lockFileDir = `${this.getProjectRootDir()}/.deployments/`;
     if (!existsSync(lockFileDir)){
@@ -116,7 +109,7 @@ export default class Deploy extends Command {
   private getProjectName = () => `${this.module}_${this.version}`;
 
   private startIndexing = () => execSync(
-    `DOCKER_GROUP=${this.getDockerGroup()} COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose --profile indexing up --build -d`,
+    `COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose --profile indexing up --build -d`,
     {cwd: this.getModuleDir(), stdio: 'inherit'}
     );
 
