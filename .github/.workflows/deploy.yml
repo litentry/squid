@@ -29,4 +29,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Deploy
-        run: ssh github-actions@${{ secrets.HOST }} "cd /srv/www/squid && yarn devkit snapshot restore && yarn devkit deploy"
+        run: ssh github-actions@${{ secrets.HOST }} "cd /srv/www/squid && yarn devkit snapshot restore ${{ inputs.prawn }} && yarn devkit deploy ${{ inputs.prawn }}"
