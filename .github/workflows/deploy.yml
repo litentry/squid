@@ -1,0 +1,33 @@
+name: Deploy
+on:
+    workflow_dispatch:
+      inputs:
+        prawn:
+          description: "Prawn to deploy"
+          required: true
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SNAPSHOT_SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SNAPSHOT_KNOWN_HOSTS }}
+      - name: Snapshot
+        run: ssh github-actions@${{ secrets.SNAPSHOT_HOST }} "cd /srv/squid && yarn devkit snapshot make ${{ inputs.prawn }}"
+
+  deploy:
+    needs: snapshot
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Deploy
+        run: ssh github-actions@${{ secrets.HOST }} "cd /srv/www/squid && yarn devkit snapshot restore ${{ inputs.prawn }} && yarn devkit deploy ${{ inputs.prawn }}"
