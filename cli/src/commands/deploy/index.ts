@@ -46,12 +46,15 @@ export default class Deploy extends Command {
     this.startIndexing();
 
     let indexingComplete = false;
+    let linesToDelete = 0;
     while (!indexingComplete) {
       await this.sleep(10000);
+      process.stdout.moveCursor(0, linesToDelete * -1);
       const containers = await getProjectIndexingProgress(this.getProjectName());
       indexingComplete = containers.every((container) => container.progress === 1);
+      this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
       cli.table(containers, { name: {}, progress: {} });
-      process.stdout.moveCursor(0, (containers.length + 2) * -1);
+      linesToDelete = containers.length + 3;
     }
 
     this.log("Indexing complete");
