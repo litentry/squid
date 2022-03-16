@@ -126,12 +126,12 @@ export default class Deploy extends Command {
     console.log(projectsToCleanUp);
     projectsToCleanUp.map(project => () => {
       execSync(
-        `docker-compose -p ${project} -f ./prawns/${this.module}/ down`,
+        `docker-compose -p ${project} -f ${this.getModuleDir}/docker-compose.yml down`,
         {cwd: this.getModuleDir(), stdio: 'inherit'}
         );
 
       execSync(
-        `rm -rf ./data/db/${project}`,
+        `rm -rf ${project}`,
         {cwd: this.getDbDataDir(), stdio: 'inherit'}
       );
     })
