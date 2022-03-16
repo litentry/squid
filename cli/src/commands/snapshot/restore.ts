@@ -4,8 +4,6 @@ import { execSync } from 'child_process';
 import * as AWS from 'aws-sdk';
 import config from '../../config';
 
-const s3 = new AWS.S3();
-
 export default class RestoreSnapshot extends Command {
 
   private prawn: string = '';
