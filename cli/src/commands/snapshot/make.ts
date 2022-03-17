@@ -42,7 +42,9 @@ export default class MakeSnapshot extends Command {
     let linesToDelete = 0;
     while (!indexingComplete) {
       await this.sleep(10000);
-      process.stdout.moveCursor(0, linesToDelete * -1);
+      if (process.stdout.moveCursor) {
+        process.stdout.moveCursor(0, linesToDelete * -1);
+      }
       const containers = await getProjectIndexingProgress(this.getProjectName());
       indexingComplete = containers.every((container) => container.progress === 1);
       this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
