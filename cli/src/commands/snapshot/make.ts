@@ -59,6 +59,9 @@ export default class MakeSnapshot extends Command {
 
     await this.sleep(2000);
 
+    this.log('Chown the db data directory');
+    this.chownDbDataDir();
+
     this.log('Create tarball');
     this.createTarball();
 
@@ -115,6 +118,11 @@ export default class MakeSnapshot extends Command {
     };
     await s3.upload(params).promise();
   };
+
+  private chownDbDataDir = () => execSync(
+    `sudo chown -R $(id -u):$(id -g) ${this.getProjectName()}`,
+    { cwd: this.getDbDataDir(), stdio: 'inherit' }
+  )
 
   private deleteDbData = () => {
     execSync(`rm ${this.getSnapshotName()}`,
