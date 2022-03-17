@@ -1,10 +1,7 @@
 import { Command } from '@oclif/core';
-import { existsSync, promises as fs } from 'fs';
+import { existsSync } from 'fs';
 import { execSync } from 'child_process';
-import * as AWS from 'aws-sdk';
 import config from '../../config';
-
-const s3 = new AWS.S3();
 
 export default class RestoreSnapshot extends Command {
 
