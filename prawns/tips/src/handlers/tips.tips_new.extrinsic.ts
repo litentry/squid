@@ -11,6 +11,8 @@ export default (network: SubstrateNetwork) =>
     const rootAccount = decodeAddress(account);
     const newTipCall = getTipsTipNewCall(ctx, network);
 
+    console.log(ctx.event.params);
+
     const tipModel = new SubstrateTip({
       id: ctx.extrinsic.hash?.toString(),
       account,
