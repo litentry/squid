@@ -12,7 +12,7 @@ processor.setDataSource({
   chain: 'wss://polkadot.api.onfinality.io/public-ws',
 });
 processor.addExtrinsicHandler(
-  'tips.tipNew',
+  'tips.new_tip',
   tipsTipsNew(SubstrateNetwork.polkadot)
 );
 processor.run();

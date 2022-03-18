@@ -12,7 +12,7 @@ processor.setDataSource({
   chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
 processor.addExtrinsicHandler(
-  'tips.tip_new',
+  'tips.new_tip',
   tipsTipsNew(SubstrateNetwork.kusama)
 );
 processor.run();

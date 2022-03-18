@@ -6,6 +6,9 @@ import {
 import {
   TipsTipNewCall as KusamaTipsTipNewCall
 } from '../../types/kusama/calls';
+import {
+  TipsTipNewCall as PolkadotTipsTipNewCall
+} from '../../types/polkadot/calls';
 
 
 export function getTipsTipNewCall(
@@ -29,6 +32,16 @@ export function getTipsTipNewCall(
 
       if (event.isV2028) {
         return event.asV2028;
+      } 
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotTipsTipNewCall(ctx);
+
+      if (event.isV28) {
+        return event.asV28;
       } 
 
       return event.asLatest;

@@ -13,10 +13,6 @@ processor.setDataSource({
   chain: 'wss://khala.api.onfinality.io/public-ws',
 });
 processor.addExtrinsicHandler(
-  'tips.tip_new',
-  tipsTipsNew(SubstrateNetwork.phala)
-);
-processor.addExtrinsicHandler(
   'tips.new_tip',
   tipsTipsNew(SubstrateNetwork.phala)
 );
