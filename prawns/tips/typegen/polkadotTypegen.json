@@ -1,0 +1,13 @@
+{
+  "outDir": "../src/types/polkadot",
+  "chainVersions": "../../../metadata/polkadotVersions.json",
+  "typesBundle": "polkadot",
+  "calls": [
+    "tips.report_awesome",
+    "tips.retract_tip",
+    "tips.tip_new",
+    "tips.tip",
+    "tips.close_tip",
+    "tips.slash_tip"
+  ]
+}
