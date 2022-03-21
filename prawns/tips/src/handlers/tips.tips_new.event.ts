@@ -4,8 +4,6 @@ import { SubstrateNetwork, SubstrateTip } from '../model';
 import { decodeAddress } from '../utils';
 import { getTipsNewTipEvent } from './typeGetters/getTipsTipNewEvent';
 
-const reportAwesomeName = 'tips.reportAwesome';
-
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     if (!ctx.extrinsic) {
@@ -16,6 +14,10 @@ export default (network: SubstrateNetwork) =>
     const blockNumber = BigInt(ctx.block.height);
     const account = ctx.extrinsic.signer;
     const rootAccount = decodeAddress(account);
+
+    ctx.block
+
+    // let deposit = T::TipReportDepositBase::get() + T::DataDepositPerByte::get() * (reason.len() as u32).into();
 
     const tipModel = new SubstrateTip({
       id: u8aToHex(newTipEvent.tipHash),
@@ -32,8 +34,4 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(tipModel);
   };
-
-function isReport(ctx: EventHandlerContext) {
-  return ctx.event.name === reportAwesomeName;
-}
 

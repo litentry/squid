@@ -1,5 +1,5 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import tipsTipsNew from '../handlers/tips.tips_new.extrinsic';
+import tipsTipsNewEvent from '../handlers/tips.tips_new.event';
 import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_identities_polkadot');
@@ -13,6 +13,6 @@ processor.setDataSource({
 });
 processor.addExtrinsicHandler(
   'tips.tip_new',
-  tipsTipsNew(SubstrateNetwork.polkadot)
+  tipsTipsNewEvent(SubstrateNetwork.polkadot)
 );
 processor.run();

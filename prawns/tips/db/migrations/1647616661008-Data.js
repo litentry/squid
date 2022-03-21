@@ -2,7 +2,7 @@ module.exports = class Data1647616661008 {
   name = 'Data1647616661008'
 
   async up(db) {
-    await db.query(`CREATE TABLE "substrate_tipper" ("id" character varying NOT NULL, "account" text NOT NULL, "block_number" numeric NOT NULL, "amount" numeric NOT NULL, "tip_id" character varying NOT NULL, CONSTRAINT "PK_89c8abf809b2e63b5168cec95de" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_tipper" ("id" character varying NOT NULL, "account" text NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, "block_number" numeric NOT NULL, "tip_id" character varying NOT NULL, "tip_value" numeric NOT NULL, CONSTRAINT "PK_89c8abf809b2e63b5168cec95de" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_f2ccf4393edfa8de23ea70ab3e" ON "substrate_tipper" ("account") `)
     await db.query(`CREATE INDEX "IDX_b398f0038263207602e68a6fa5" ON "substrate_tipper" ("tip_id") `)
     await db.query(`CREATE TABLE "substrate_tip" ("id" character varying NOT NULL, "account" text NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, "block_number" numeric NOT NULL, "who" text NOT NULL, "finder" text NOT NULL, "reason" text NOT NULL, "tip_value" numeric, "deposit" numeric NOT NULL, CONSTRAINT "PK_47a6dc052349ff9e667731bf1dd" PRIMARY KEY ("id"))`)

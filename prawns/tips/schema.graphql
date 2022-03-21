@@ -26,6 +26,9 @@ type SubstrateTipper @entity {
   id: ID!
   "address"
   account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
   blockNumber: BigInt!
   tip: SubstrateTip!
   tipValue: BigInt!

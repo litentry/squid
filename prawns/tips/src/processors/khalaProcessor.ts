@@ -1,5 +1,6 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import tipsTipsNew from '../handlers/tips.tips_new.extrinsic';
+import tipsTipCall from '../handlers/tips.tip.extrinsic';
+import tipsTipsNewEvent from '../handlers/tips.tips_new.event';
 import { SubstrateNetwork } from '../model';
 
 
@@ -14,6 +15,10 @@ processor.setDataSource({
 });
 processor.addEventHandler(
   'tips.NewTip',
-  tipsTipsNew(SubstrateNetwork.phala)
+  tipsTipsNewEvent(SubstrateNetwork.phala)
+);
+processor.addExtrinsicHandler(
+  'tips.Tip',
+  tipsTipCall(SubstrateNetwork.phala)
 );
 processor.run();

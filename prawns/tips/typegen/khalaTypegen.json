@@ -4,5 +4,8 @@
   "typesBundle": "khala",
   "events": [
     "tips.NewTip"
-  ]
+  ],
+  "calls": [
+    "tips.tip"
+  ] 
 }
