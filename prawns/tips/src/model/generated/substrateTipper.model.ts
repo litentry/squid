@@ -29,5 +29,5 @@ export class SubstrateTipper {
   tip!: SubstrateTip
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  amount!: bigint
+  tipValue!: bigint
 }

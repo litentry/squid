@@ -39,17 +39,17 @@ export class SubstrateTip {
   @Column_("text", {nullable: false})
   who!: string
 
-  @Column_("text", {nullable: false})
-  finder!: string
+  @Column_("text", {nullable: true})
+  finder!: string | undefined | null
 
   @Column_("text", {nullable: false})
   reason!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  closes!: bigint
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  tipValue!: bigint | undefined | null
 
-  @Column_("text", {nullable: false})
-  deposit!: string
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  deposit!: bigint
 
   @OneToMany_(() => SubstrateTipper, e => e.tip)
   tippers!: SubstrateTipper[]

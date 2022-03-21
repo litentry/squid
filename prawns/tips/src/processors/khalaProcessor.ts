@@ -12,8 +12,8 @@ processor.setDataSource({
   archive: 'https://khala-squid-archive.litentry.io/graphql/v1/graphql',
   chain: 'wss://khala.api.onfinality.io/public-ws',
 });
-processor.addExtrinsicHandler(
-  'tips.tip_new',
+processor.addEventHandler(
+  'tips.NewTip',
   tipsTipsNew(SubstrateNetwork.phala)
 );
 processor.run();

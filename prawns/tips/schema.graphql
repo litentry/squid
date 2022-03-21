@@ -14,10 +14,10 @@ type SubstrateTip @entity {
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
   who: String!
-  finder: String!
+  finder: String
   reason: String!
-  closes: BigInt!
-  deposit: String!
+  tipValue: BigInt
+  deposit: BigInt!
   tippers: [SubstrateTipper] @derivedFrom(field: "tip")
 }
 
@@ -28,6 +28,6 @@ type SubstrateTipper @entity {
   account: String! @index
   blockNumber: BigInt!
   tip: SubstrateTip!
-  amount: BigInt!
+  tipValue: BigInt!
 }
 
