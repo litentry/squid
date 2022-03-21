@@ -2,12 +2,7 @@
   "outDir": "../src/types/kusama",
   "chainVersions": "../../../metadata/kusamaVersions.json",
   "typesBundle": "kusama",
-  "calls": [
-    "tips.report_awesome",
-    "tips.retract_tip",
-    "tips.tip_new",
-    "tips.tip",
-    "tips.close_tip",
-    "tips.slash_tip"
+  "events": [
+    "tips.NewTip"
   ]
 }
