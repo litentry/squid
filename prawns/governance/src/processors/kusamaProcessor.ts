@@ -4,6 +4,8 @@ import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import { SubstrateNetwork } from '../model';
+import democracyProposedHandler from '../handlers/democracy.Proposed.event';
+import councilProposedHandler from '../handlers/council.Proposed.event';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_kusama');
 
@@ -21,6 +23,14 @@ processor.addExtrinsicHandler(
 processor.addExtrinsicHandler(
   'council.vote',
   councilVoteHandler(SubstrateNetwork.kusama)
+);
+processor.addEventHandler(
+  'democracy.Proposed',
+  democracyProposedHandler(SubstrateNetwork.kusama)
+);
+processor.addEventHandler(
+  'council.Proposed',
+  councilProposedHandler(SubstrateNetwork.kusama)
 );
 processor.addExtrinsicHandler(
   'democracy.vote',

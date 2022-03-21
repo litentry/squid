@@ -3,6 +3,56 @@ import {EventContext, Result, deprecateLatest} from './support'
 import * as v0 from './v0'
 import * as v9140 from './v9140'
 
+export class CouncilProposedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'council.Proposed')
+  }
+
+  /**
+   *  A motion (given hash) has been proposed (by given account) with a threshold (given
+   *  `MemberCount`).
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('council.Proposed') === '8d3dc2ef388c0264b2a1bd5e18788f415f4c08186c50dbbee2c60e61d81cb025'
+  }
+
+  /**
+   *  A motion (given hash) has been proposed (by given account) with a threshold (given
+   *  `MemberCount`).
+   */
+  get asV0(): [Uint8Array, number, Uint8Array, number] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion (given hash) has been proposed (by given account) with a threshold (given
+   * `MemberCount`).
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('council.Proposed') === '63978c884e95719fd416c8a38a2ec2ec5a691a58a28349d62b0173643f0d8262'
+  }
+
+  /**
+   * A motion (given hash) has been proposed (by given account) with a threshold (given
+   * `MemberCount`).
+   */
+  get asV9140(): {account: v9140.AccountId32, proposalIndex: number, proposalHash: v9140.H256, threshold: number} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {account: v9140.AccountId32, proposalIndex: number, proposalHash: v9140.H256, threshold: number} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
 export class DemocracyProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'democracy.Proposed')
