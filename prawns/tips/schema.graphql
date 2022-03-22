@@ -4,6 +4,13 @@ enum SubstrateNetwork {
   phala
 }
 
+enum SubstrateTipStatus {
+  Opened
+  Closed
+  Retracted
+  Slashed
+}
+
 type SubstrateTip @entity {
   "hash"
   id: ID!
@@ -13,11 +20,15 @@ type SubstrateTip @entity {
   rootAccount: String! @index
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
+  createdAt: DateTime!
+  updatedAt: DateTime! 
+  status: SubstrateTipStatus!
   who: String!
   finder: String
   reason: String!
   tipValue: BigInt
-  deposit: BigInt!
+  deposit: BigInt
+  closes: BigInt
   tippers: [SubstrateTipper] @derivedFrom(field: "tip")
 }
 
@@ -30,6 +41,7 @@ type SubstrateTipper @entity {
   rootAccount: String! @index
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
+  createdAt: DateTime!
   tip: SubstrateTip!
   tipValue: BigInt!
 }

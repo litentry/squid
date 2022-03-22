@@ -36,6 +36,9 @@ export class SubstrateTipper {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint
 
+  @Column_("timestamp with time zone", {nullable: false})
+  createdAt!: Date
+
   @Index_()
   @ManyToOne_(() => SubstrateTip, {nullable: false})
   tip!: SubstrateTip

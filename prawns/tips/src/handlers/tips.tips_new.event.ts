@@ -4,6 +4,7 @@ import type { PalletTipsOpenTip } from '@polkadot/types/lookup';
 import { hexToString, u8aToHex } from '@polkadot/util';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateTip } from '../model';
+import { SubstrateTipStatus } from '../model/generated/_substrateTipStatus';
 import { decodeAddress } from '../utils';
 import getApi from '../utils/getApi';
 import { getTipsNewTipEvent } from './typeGetters/getTipsTipNewEvent';
@@ -13,23 +14,26 @@ export default (network: SubstrateNetwork) =>
     if (!ctx.extrinsic) {
       return;
     }
-    
+
     const newTipEvent = getTipsNewTipEvent(ctx, network);
     const blockNumber = BigInt(ctx.block.height);
     const account = ctx.extrinsic.signer;
     const rootAccount = decodeAddress(account);
-    
+
     const blockHash = ctx.block.hash;
     const api = await getApi(network);
     const apiAtBlock = await api.at(blockHash);
+    const date = new Date(ctx.block.timestamp);
 
- 
     const tipModel = new SubstrateTip({
       id: u8aToHex(newTipEvent.tipHash),
       account,
       rootAccount, 
       network,
       blockNumber,
+      createdAt: date,
+      updatedAt: date,
+      status: SubstrateTipStatus.Opened,
       who: decodeAddress(ctx.extrinsic.args[1].value as string),
       finder: rootAccount,
       tipValue: ctx.extrinsic.args[2]?.value as bigint,
@@ -55,4 +59,5 @@ async function getDeposit(apiAtBlock: ApiDecoration<"promise">, hash: Uint8Array
     return finderInfo[1] as Balance | null;
   }
 }
+
 
