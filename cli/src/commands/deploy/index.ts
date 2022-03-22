@@ -46,11 +46,17 @@ export default class Deploy extends Command {
     this.startIndexing();
 
     let indexingComplete = false;
+    let linesToDelete = 0;
     while (!indexingComplete) {
       await this.sleep(10000);
+      if (process.stdout.moveCursor) {
+        process.stdout.moveCursor(0, linesToDelete * -1);
+      }
       const containers = await getProjectIndexingProgress(this.getProjectName());
       indexingComplete = containers.every((container) => container.progress === 1);
+      this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
       cli.table(containers, { name: {}, progress: {} });
+      linesToDelete = containers.length + 3;
     }
 
     this.log("Indexing complete");
@@ -121,17 +127,19 @@ export default class Deploy extends Command {
 
   private takeDownOldVersion = () => {
     const projects = execSync(`docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'`).toString().trim().split("\n");
-    console.log(projects);
+
     const projectsToCleanUp = [...new Set(projects)].filter((project: string) => project.startsWith(`${this.module}_`) && project !== this.getProjectName());
-    console.log(projectsToCleanUp);
-    projectsToCleanUp.map(project => () => {
+
+    projectsToCleanUp.map(project => {
+      this.log(`Take down project: ${project}`);
       execSync(
-        `docker-compose -p ${project} down`,
+        `COMPOSE_PROJECT_NAME=${project} docker-compose down`,
         {cwd: this.getModuleDir(), stdio: 'inherit'}
         );
 
+      this.log(`Delete data for project: ${project}`);
       execSync(
-        `rm -rf ${project}`,
+        `sudo rm -rf ${project}`,
         {cwd: this.getDbDataDir(), stdio: 'inherit'}
       );
     })

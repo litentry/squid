@@ -1,5 +1,5 @@
 import { Command } from '@oclif/core';
-import { existsSync, rmSync, unlinkSync } from 'fs';
+import { existsSync } from 'fs';
 import { execSync } from 'child_process';
 import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
@@ -39,11 +39,17 @@ export default class MakeSnapshot extends Command {
     this.startIndexing();
 
     let indexingComplete = false;
+    let linesToDelete = 0;
     while (!indexingComplete) {
       await this.sleep(10000);
+      if (process.stdout.moveCursor) {
+        process.stdout.moveCursor(0, linesToDelete * -1);
+      }
       const containers = await getProjectIndexingProgress(this.getProjectName());
       indexingComplete = containers.every((container) => container.progress === 1);
+      this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
       cli.table(containers, { name: {}, progress: {} });
+      linesToDelete = containers.length + 3;
     }
 
     this.log('Indexing complete');
@@ -96,11 +102,6 @@ export default class MakeSnapshot extends Command {
     { cwd: this.getPrawnDir(), stdio: 'inherit' }
   );
 
-  private chownDbDataDir = () => execSync(
-    `sudo chown -R $(id -u):$(id -g) ${this.getProjectName()}`,
-    { cwd: this.getDbDataDir(), stdio: 'inherit' }
-  )
-
   private createTarball = () => execSync(
     `tar -zcvf ${this.getSnapshotName()} ${this.getProjectName()}`,
     { cwd: this.getDbDataDir(), stdio: 'inherit' }
@@ -118,8 +119,17 @@ export default class MakeSnapshot extends Command {
     await s3.upload(params).promise();
   };
 
+  private chownDbDataDir = () => execSync(
+    `sudo chown -R $(id -u):$(id -g) ${this.getProjectName()}`,
+    { cwd: this.getDbDataDir(), stdio: 'inherit' }
+  )
+
   private deleteDbData = () => {
-    rmSync(`${this.getDbDataDir()}/${this.getSnapshotName()}`); //Delete tar.gz file
-    rmSync(`${this.getDbDataDir()}/${this.getProjectName()}`, {recursive: true, force: true}); //Delete db folder
+    execSync(`rm ${this.getSnapshotName()}`,
+      { cwd: this.getDbDataDir(), stdio: 'inherit' }
+    ); //Delete tar.gz file
+    execSync(`sudo rm -rf ${this.getProjectName()}`,
+      { cwd: this.getDbDataDir(), stdio: 'inherit' }
+      ); //Delete db folder
   };
 }
