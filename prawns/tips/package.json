@@ -19,7 +19,8 @@
     "migration": "sqd db:create-migration Data"
   },
   "dependencies": {
-    "@polkadot/util-crypto": "^8.4.1",
+    "@polkadot/api": "^7.13.1",
+    "@polkadot/util-crypto": "^8.6.1",
     "@subsquid/graphql-server": "^0.1.5",
     "@subsquid/ss58": "^0.0.4",
     "@subsquid/substrate-processor": "^0.4.1",
@@ -34,5 +35,23 @@
     "eslint": "7.26.0",
     "prettier": "^2.3.2",
     "typescript": "~4.5.4"
+  },
+  "resolutions": {
+    "@polkadot/api": "^7.13.1",
+    "@polkadot/api-augment": "^7.13.1",
+    "@polkadot/api-base": "^7.13.1",
+    "@polkadot/api-contract": "^7.13.1",
+    "@polkadot/api-derive": "^7.13.1",
+    "@polkadot/rpc-augment": "^7.13.1",
+    "@polkadot/rpc-core": "^7.13.1",
+    "@polkadot/rpc-provider": "^7.13.1",
+    "@polkadot/types": "^7.13.1",
+    "@polkadot/types-augment": "^7.13.1",
+    "@polkadot/types-codec": "^7.13.1",
+    "@polkadot/types-create": "^7.13.1",
+    "@polkadot/types-known": "^7.13.1",
+    "@polkadot/types-support": "^7.13.1",
+    "@polkadot/util": "^8.6.1",
+    "@polkadot/util-crypto": "^8.6.1"
   }
 }
