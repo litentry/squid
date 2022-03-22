@@ -1,6 +1,8 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import councilVoteHandler from '../handlers/council.vote.extrinsic';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
+import democracyProposedHandler from '../handlers/democracy.Proposed.event';
+import councilProposedHandler from '../handlers/council.Proposed.event';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import { SubstrateNetwork } from '../model';
@@ -25,6 +27,14 @@ processor.addExtrinsicHandler(
 processor.addExtrinsicHandler(
   'democracy.vote',
   democracyVoteHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'democracy.Proposed',
+  democracyProposedHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'council.Proposed',
+  councilProposedHandler(SubstrateNetwork.phala)
 );
 processor.addExtrinsicHandler(
   'democracy.second',

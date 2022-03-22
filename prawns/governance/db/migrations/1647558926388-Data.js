@@ -1,5 +1,5 @@
-module.exports = class Data1646228287305 {
-  name = 'Data1646228287305'
+module.exports = class Data1647558926388 {
+  name = 'Data1647558926388'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_council_vote" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "proposal" text NOT NULL, "approve" boolean NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_1f1048f82fd8ea3f80453b0cd35" PRIMARY KEY ("id"))`)
@@ -14,14 +14,24 @@ module.exports = class Data1646228287305 {
     await db.query(`CREATE INDEX "IDX_2fd2af427131b2c21e303bca51" ON "substrate_proposal_second" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_0ef1335e8984eeb400ea605bcf" ON "substrate_proposal_second" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_7626d7003e4c426be6ba887c6c" ON "substrate_proposal_second" ("proposal_index") `)
+    await db.query(`CREATE TABLE "substrate_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "amount" numeric NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_6e8242bba602f4381ba503bd134" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE INDEX "IDX_135031c0807f92fefccf43fcec" ON "substrate_proposal" ("account_id") `)
+    await db.query(`CREATE INDEX "IDX_b3d4d73fcf1b09cb6a39a03f37" ON "substrate_proposal" ("root_account") `)
+    await db.query(`CREATE INDEX "IDX_5f95284a08518f66c51b4e114d" ON "substrate_proposal" ("proposal_index") `)
+    await db.query(`CREATE TABLE "substrate_council_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "proposal_hash" text NOT NULL, "threshold" integer NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_de7e32a4bd91872e2de07fc2626" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE INDEX "IDX_15ad9e7c37a6ed0a9a6767ab27" ON "substrate_council_proposal" ("account_id") `)
+    await db.query(`CREATE INDEX "IDX_7739b391e3653eeb1aeff733da" ON "substrate_council_proposal" ("root_account") `)
+    await db.query(`CREATE INDEX "IDX_bb99ef512e2618c3d88e151971" ON "substrate_council_proposal" ("proposal_index") `)
     await db.query(`CREATE TABLE "substrate_election_vote" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "candidates" text array NOT NULL, "amount" numeric NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_08102bd051fcdc0b97ec12d6877" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_4418e8a14729709867e599ef70" ON "substrate_election_vote" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_ae13930714d737631f3b6ed9f8" ON "substrate_election_vote" ("root_account") `)
-    await db.query(`CREATE TABLE "substrate_governance_account" ("id" character varying NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, "total_proposal_seconds" integer NOT NULL, "total_proposal_votes" integer NOT NULL, "total_election_votes" integer NOT NULL, CONSTRAINT "PK_ccd1f23a87828f4ee8eb38e9fb7" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_governance_account" ("id" character varying NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, "total_proposal_seconds" integer NOT NULL, "total_proposal_votes" integer NOT NULL, "total_election_votes" integer NOT NULL, "total_proposals" integer NOT NULL, "total_council_proposals" integer NOT NULL, CONSTRAINT "PK_ccd1f23a87828f4ee8eb38e9fb7" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_21097df62963e6b1d6a813e952" ON "substrate_governance_account" ("root_account") `)
     await db.query(`ALTER TABLE "substrate_council_vote" ADD CONSTRAINT "FK_858957db11f91f86c9adda91146" FOREIGN KEY ("account_id") REFERENCES "substrate_governance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_proposal_vote" ADD CONSTRAINT "FK_17e4cf681684ff09db454426be0" FOREIGN KEY ("account_id") REFERENCES "substrate_governance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_proposal_second" ADD CONSTRAINT "FK_2fd2af427131b2c21e303bca510" FOREIGN KEY ("account_id") REFERENCES "substrate_governance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "substrate_proposal" ADD CONSTRAINT "FK_135031c0807f92fefccf43fcecf" FOREIGN KEY ("account_id") REFERENCES "substrate_governance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "substrate_council_proposal" ADD CONSTRAINT "FK_15ad9e7c37a6ed0a9a6767ab278" FOREIGN KEY ("account_id") REFERENCES "substrate_governance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_election_vote" ADD CONSTRAINT "FK_4418e8a14729709867e599ef706" FOREIGN KEY ("account_id") REFERENCES "substrate_governance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
   }
 
@@ -38,6 +48,14 @@ module.exports = class Data1646228287305 {
     await db.query(`DROP INDEX "public"."IDX_2fd2af427131b2c21e303bca51"`)
     await db.query(`DROP INDEX "public"."IDX_0ef1335e8984eeb400ea605bcf"`)
     await db.query(`DROP INDEX "public"."IDX_7626d7003e4c426be6ba887c6c"`)
+    await db.query(`DROP TABLE "substrate_proposal"`)
+    await db.query(`DROP INDEX "public"."IDX_135031c0807f92fefccf43fcec"`)
+    await db.query(`DROP INDEX "public"."IDX_b3d4d73fcf1b09cb6a39a03f37"`)
+    await db.query(`DROP INDEX "public"."IDX_5f95284a08518f66c51b4e114d"`)
+    await db.query(`DROP TABLE "substrate_council_proposal"`)
+    await db.query(`DROP INDEX "public"."IDX_15ad9e7c37a6ed0a9a6767ab27"`)
+    await db.query(`DROP INDEX "public"."IDX_7739b391e3653eeb1aeff733da"`)
+    await db.query(`DROP INDEX "public"."IDX_bb99ef512e2618c3d88e151971"`)
     await db.query(`DROP TABLE "substrate_election_vote"`)
     await db.query(`DROP INDEX "public"."IDX_4418e8a14729709867e599ef70"`)
     await db.query(`DROP INDEX "public"."IDX_ae13930714d737631f3b6ed9f8"`)
@@ -46,6 +64,8 @@ module.exports = class Data1646228287305 {
     await db.query(`ALTER TABLE "substrate_council_vote" DROP CONSTRAINT "FK_858957db11f91f86c9adda91146"`)
     await db.query(`ALTER TABLE "substrate_proposal_vote" DROP CONSTRAINT "FK_17e4cf681684ff09db454426be0"`)
     await db.query(`ALTER TABLE "substrate_proposal_second" DROP CONSTRAINT "FK_2fd2af427131b2c21e303bca510"`)
+    await db.query(`ALTER TABLE "substrate_proposal" DROP CONSTRAINT "FK_135031c0807f92fefccf43fcecf"`)
+    await db.query(`ALTER TABLE "substrate_council_proposal" DROP CONSTRAINT "FK_15ad9e7c37a6ed0a9a6767ab278"`)
     await db.query(`ALTER TABLE "substrate_election_vote" DROP CONSTRAINT "FK_4418e8a14729709867e599ef706"`)
   }
 }

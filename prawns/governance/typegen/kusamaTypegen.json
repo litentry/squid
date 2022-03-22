@@ -2,7 +2,7 @@
   "outDir": "../src/types/kusama",
   "chainVersions": "../../../metadata/kusamaVersions.json",
   "typesBundle": "kusama",
-  "events": ["democracy.Proposed", "democracy.Started"],
+  "events": ["democracy.Proposed", "council.Proposed", "democracy.Started"],
   "calls": [
     "council.vote",
     "democracy.second",
