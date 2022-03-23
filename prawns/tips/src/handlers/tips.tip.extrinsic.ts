@@ -14,7 +14,11 @@ export default (network: SubstrateNetwork) =>
 
     const tipModel = await ctx.store.get(SubstrateTip, u8aToHex(tipCall.hash));
     if (!tipModel) {
-      throw new Error(`tips.tip.extrinsic::Tip not found: ${tipCall.hash}`);
+      console.log(`tips.tip.extrinsic::Tip not found: ${blockNumber}`);
+      console.log(`tips.tip.extrinsic::Tip not found: ${ctx.event.id}`);
+      console.log(`tips.tip.extrinsic::Tip not found: ${u8aToHex(tipCall.hash)}`);
+      return;
+      // throw new Error(`tips.tip.extrinsic::Tip not found: ${u8aToHex(tipCall.hash)}`);
     }
 
     const tipperModel = new SubstrateTipper({

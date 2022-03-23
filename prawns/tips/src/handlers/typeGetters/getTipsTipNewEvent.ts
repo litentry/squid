@@ -30,37 +30,37 @@ export function getTipsNewTipEvent(
 
       return event.asLatest;
     }
-    
+
     case SubstrateNetwork.kusama: {
       const event = new KusamaTipsNewTipEvent(ctx);
 
       if (event.isV2028) {
         return {tipHash: event.asV2028};
-      } 
+      }
 
       if (event.isV9130) {
         return event.asV9130;
-      } 
+      }
 
       return event.asLatest;
     }
-    
+
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotTipsNewTipEvent(ctx);
 
       if (event.isV28) {
         return {tipHash: event.asV28};
-      } 
+      }
 
       if (event.isV9140) {
         return event.asV9140;
-      } 
+      }
 
       return event.asLatest;
     }
-    
+
     default: {
-      throw new Error('getBalancesDepositEvent::network not supported');
+      throw new Error('getTipsNewTipEvent::network not supported');
     }
   }
 }

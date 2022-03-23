@@ -20,7 +20,9 @@ export default (network: SubstrateNetwork) =>
 
     const tipModel = await ctx.store.get(SubstrateTip, hash);
     if (!tipModel) {
-      throw new Error(`tips.status.extrinsic::Tip not found: ${hash}`);
+      console.log(`tips.status.event::Tip not found: ${hash}`);
+      return;
+      // throw new Error(`tips.status.event::Tip not found: ${hash}`);
     }
 
     await updateTip(ctx, network, hash, date);

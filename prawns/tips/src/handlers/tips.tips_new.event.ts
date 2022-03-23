@@ -2,7 +2,7 @@ import { ApiDecoration } from '@polkadot/api/types';
 import type { Balance, OpenTipTo225 } from '@polkadot/types/interfaces';
 import type { PalletTipsOpenTip } from '@polkadot/types/lookup';
 import { hexToString, u8aToHex } from '@polkadot/util';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { EventHandlerContext, ExtrinsicArg } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateTip } from '../model';
 import { SubstrateTipStatus } from '../model/generated/_substrateTipStatus';
 import { decodeAddress } from '../utils';
@@ -12,8 +12,17 @@ import { getTipsNewTipEvent } from './typeGetters/getTipsTipNewEvent';
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     if (!ctx.extrinsic) {
+      console.log(ctx.event);
       return;
     }
+
+    const proxyCallArgs = getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'call');
+
+    const [who, reason, tipValue] = [
+      proxyCallArgs ? proxyCallArgs.args.who : getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'who') as string,
+      proxyCallArgs ? proxyCallArgs.args.reason : getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'reason') as string,
+      proxyCallArgs ? proxyCallArgs.args.tipValue : getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'tipValue') as bigint,
+    ];
 
     const newTipEvent = getTipsNewTipEvent(ctx, network);
     const blockNumber = BigInt(ctx.block.height);
@@ -34,10 +43,10 @@ export default (network: SubstrateNetwork) =>
       createdAt: date,
       updatedAt: date,
       status: SubstrateTipStatus.Opened,
-      who: decodeAddress(ctx.extrinsic.args[1].value as string),
+      who: decodeAddress(who),
       finder: rootAccount,
-      tipValue: ctx.extrinsic.args[2]?.value as bigint,
-      reason: hexToString(ctx.extrinsic.args[0].value as string),
+      tipValue,
+      reason: hexToString(reason),
       deposit: (await getDeposit(apiAtBlock, newTipEvent.tipHash))?.toBigInt(),
     });
 
@@ -58,6 +67,10 @@ async function getDeposit(apiAtBlock: ApiDecoration<"promise">, hash: Uint8Array
     const finderInfo = tip.finder.unwrap();
     return finderInfo[1] as Balance | null;
   }
+}
+
+function getFieldFromExtrinsicArgs(args: ExtrinsicArg[], name: string): any {
+  return (args.find(arg => arg.name === name))?.value;
 }
 
 

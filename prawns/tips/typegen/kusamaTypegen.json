@@ -4,5 +4,8 @@
   "typesBundle": "kusama",
   "events": [
     "tips.NewTip"
+  ],
+  "calls": [
+    "tips.tip"
   ]
 }

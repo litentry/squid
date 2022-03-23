@@ -4,5 +4,8 @@
   "typesBundle": "polkadot",
   "events": [
     "tips.NewTip"
+  ],
+  "calls": [
+    "tips.tip"
   ]
 }

@@ -3,12 +3,12 @@ import { SubstrateNetwork } from '../../model';
 import {
   TipsTipCall as KhalaTipsTipCall
 } from '../../types/khala/calls';
-// import {
-//   TipsTipCall as KusamaTipsTipCall
-// } from '../../types/kusama/calls';
-// import {
-//   TipsTipCall as PolkadotTipsTipCall
-// } from '../../types/polkadot/calls';
+import {
+  TipsTipCall as KusamaTipsTipCall
+} from '../../types/kusama/calls';
+import {
+  TipsTipCall as PolkadotTipsTipCall
+} from '../../types/polkadot/calls';
 
 export function getTipsTipCall(
   ctx: ExtrinsicHandlerContext,
@@ -25,40 +25,27 @@ export function getTipsTipCall(
 
       return call.asLatest;
     }
-    
-    // case SubstrateNetwork.kusama: {
-    //   const call = new KusamaTipsTipCall(ctx);
 
-    //   // if (call.is) {
-    //   //   return call.asV1090;
-    //   // } 
-    //   // if (call.isV1060) {
-    //   //   return call.asV1060;
-    //   // } 
-    //   // if (call.isV1090) {
-    //   //   return call.asV1090;
-    //   // } 
-    //   // if (call.isV1060) {
-    //   //   return call.asV1060;
-    //   // } 
+    case SubstrateNetwork.kusama: {
+      const call = new KusamaTipsTipCall(ctx);
 
-    //   // if (call.isV9130) {
-    //   //   return call.asV9130;
-    //   // } 
+      if (call.isV2028) {
+        return call.asV2028;
+      }
 
-    //   return call.asLatest;
-    // }
-    
-    // case SubstrateNetwork.polkadot: {
-    //   const call = new PolkadotTipsTipCall(ctx);
+      return call.asLatest;
+    }
 
-    //   if (call.isV9140) {
-    //     return call.asV9140;
-    //   } 
+    case SubstrateNetwork.polkadot: {
+      const call = new PolkadotTipsTipCall(ctx);
 
-    //   return call.asLatest;
-    // }
-    
+      if (call.isV28) {
+        return call.asV28;
+      }
+
+      return call.asLatest;
+    }
+
     default: {
       throw new Error('getTipsTipCall::network not supported');
     }
