@@ -6,11 +6,12 @@ import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import { SubstrateNetwork } from '../model';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
 import councilProposedHandler from '../handlers/council.Proposed.event';
+import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_kusama');
 
 processor.setTypesBundle('kusama');
-processor.setBatchSize(500);
+processor.setBatchSize(100);
 processor.setIsolationLevel('REPEATABLE READ');
 processor.setDataSource({
   archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
@@ -27,6 +28,10 @@ processor.addExtrinsicHandler(
 processor.addEventHandler(
   'democracy.Proposed',
   democracyProposedHandler(SubstrateNetwork.kusama)
+);
+processor.addEventHandler(
+  'technicalCommittee.Proposed',
+  technicalCommitteeProposedHandler(SubstrateNetwork.kusama)
 );
 processor.addEventHandler(
   'council.Proposed',

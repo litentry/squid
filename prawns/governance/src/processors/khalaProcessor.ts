@@ -3,6 +3,7 @@ import councilVoteHandler from '../handlers/council.vote.extrinsic';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
 import councilProposedHandler from '../handlers/council.Proposed.event';
+import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import { SubstrateNetwork } from '../model';
@@ -10,7 +11,7 @@ import { SubstrateNetwork } from '../model';
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
 
 processor.setTypesBundle('khala');
-processor.setBatchSize(500);
+processor.setBatchSize(100);
 processor.setIsolationLevel('REPEATABLE READ');
 processor.setDataSource({
   archive: 'https://khala-squid-archive.litentry.io/graphql/v1/graphql',
@@ -31,6 +32,10 @@ processor.addExtrinsicHandler(
 processor.addEventHandler(
   'democracy.Proposed',
   democracyProposedHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'technicalCommittee.Proposed',
+  technicalCommitteeProposedHandler(SubstrateNetwork.phala)
 );
 processor.addEventHandler(
   'council.Proposed',

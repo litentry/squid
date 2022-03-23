@@ -5,6 +5,7 @@ import {SubstrateProposalVote} from "./substrateProposalVote.model"
 import {SubstrateProposalSecond} from "./substrateProposalSecond.model"
 import {SubstrateProposal} from "./substrateProposal.model"
 import {SubstrateCouncilProposal} from "./substrateCouncilProposal.model"
+import {SubstrateTechnicalCommitteeProposal} from "./substrateTechnicalCommitteeProposal.model"
 import {SubstrateElectionVote} from "./substrateElectionVote.model"
 
 @Entity_()
@@ -47,6 +48,9 @@ export class SubstrateGovernanceAccount {
   @Column_("integer", {nullable: false})
   totalCouncilProposals!: number
 
+  @Column_("integer", {nullable: false})
+  totalTechnicalCommitteeProposals!: number
+
   @OneToMany_(() => SubstrateCouncilVote, e => e.account)
   councilVotes!: SubstrateCouncilVote[]
 
@@ -61,6 +65,9 @@ export class SubstrateGovernanceAccount {
 
   @OneToMany_(() => SubstrateCouncilProposal, e => e.account)
   councilProposals!: SubstrateCouncilProposal[]
+
+  @OneToMany_(() => SubstrateTechnicalCommitteeProposal, e => e.account)
+  technicalCommitteeProposals!: SubstrateTechnicalCommitteeProposal[]
 
   @OneToMany_(() => SubstrateElectionVote, e => e.account)
   electionVotes!: SubstrateElectionVote[]
