@@ -5,7 +5,7 @@ import tipsTipsNewEvent from '../handlers/tips.tips_new.event';
 import { SubstrateNetwork } from '../model';
 
 
-const processor = new SubstrateProcessor('litentry_squid_identities_polkadot');
+const processor = new SubstrateProcessor('litentry_squid_tips_polkadot');
 
 processor.setTypesBundle('polkadot');
 processor.setBatchSize(10);

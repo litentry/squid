@@ -1,6 +1,6 @@
 {
-  "name": "squid-identities",
-  "description": "Squid processors for substrate identities.",
+  "name": "squid-tips",
+  "description": "Squid processors for substrate tips.",
   "version": "0.0.1",
   "private": true,
   "scripts": {
