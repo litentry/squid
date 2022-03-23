@@ -10,7 +10,7 @@ enum METHODS {
   TipClosed = 'TipClosed',
   TipClosing = 'TipClosing',
   TipRetracted = 'TipRetracted',
-  TipSlashed = 'TiTipSlashedpClosed'
+  TipSlashed = 'TipSlashed'
 }
 
 export default (network: SubstrateNetwork) =>
