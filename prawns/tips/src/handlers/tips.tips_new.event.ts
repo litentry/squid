@@ -28,7 +28,7 @@ export default (network: SubstrateNetwork) =>
     const tipModel = new SubstrateTip({
       id: u8aToHex(newTipEvent.tipHash),
       account,
-      rootAccount, 
+      rootAccount,
       network,
       blockNumber,
       createdAt: date,

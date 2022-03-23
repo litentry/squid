@@ -1,11 +1,7 @@
-import { ApiDecoration } from '@polkadot/api/types';
-import type { OpenTipTo225 } from '@polkadot/types/interfaces';
-import type { PalletTipsOpenTip } from '@polkadot/types/lookup';
 import { u8aToHex } from '@polkadot/util';
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateTip, SubstrateTipper } from '../model';
 import { decodeAddress } from '../utils';
-import getApi from '../utils/getApi';
 import { getTipsTipCall } from './typeGetters/getTipsTipCall';
 
 export default (network: SubstrateNetwork) =>
@@ -18,24 +14,13 @@ export default (network: SubstrateNetwork) =>
 
     const tipModel = await ctx.store.get(SubstrateTip, u8aToHex(tipCall.hash));
     if (!tipModel) {
-      throw new Error('tips.tip.extrinsic::Tip not found: ');
-    }
-
-    if (!tipModel.closes) {
-      const blockHash = ctx.block.hash;
-      const api = await getApi(network);
-      const apiAtBlock = await api.at(blockHash);
-      const closes = await getClosesTipData(apiAtBlock, tipCall.hash);
-
-      if (closes) {
-        await ctx.store.update(SubstrateTip, u8aToHex(tipCall.hash), { closes });
-      }
+      throw new Error(`tips.tip.extrinsic::Tip not found: ${tipCall.hash}`);
     }
 
     const tipperModel = new SubstrateTipper({
       id: `${account}:${u8aToHex(tipCall.hash)}`,
       account,
-      rootAccount, 
+      rootAccount,
       network,
       blockNumber,
       createdAt: date,
@@ -45,11 +30,4 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(tipperModel);
   };
-
-  async function getClosesTipData(apiAtBlock: ApiDecoration<"promise">, hash: Uint8Array): Promise<bigint | null> {
-    const tipOption = await apiAtBlock.query.tips.tips(hash);
-    const tip = tipOption.unwrap() as PalletTipsOpenTip | OpenTipTo225;
-  
-    return tip.closes?.unwrapOr(null)?.toBigInt() || null;
-  }
 
