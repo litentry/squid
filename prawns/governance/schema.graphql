@@ -17,11 +17,13 @@ type SubstrateGovernanceAccount @entity {
   totalElectionVotes: Int!
   totalProposals: Int!
   totalCouncilProposals: Int!
+  totalTechnicalCommitteeProposals: Int!
   councilVotes: [SubstrateCouncilVote]! @derivedFrom(field: "account")
   proposalVotes: [SubstrateProposalVote]! @derivedFrom(field: "account")
   proposalSeconds: [SubstrateProposalSecond]! @derivedFrom(field: "account")
   proposals: [SubstrateProposal]! @derivedFrom(field: "account")
   councilProposals: [SubstrateCouncilProposal]! @derivedFrom(field: "account")
+  technicalCommitteeProposals: [SubstrateTechnicalCommitteeProposal]! @derivedFrom(field: "account")
   electionVotes: [SubstrateElectionVote]! @derivedFrom(field: "account")
 }
 
@@ -50,6 +52,19 @@ type SubstrateProposal @entity {
 }
 
 type SubstrateCouncilProposal @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  proposalIndex: Int! @index
+  proposalHash: String!
+  threshold: Int!
+}
+
+type SubstrateTechnicalCommitteeProposal @entity {
   "network:block:index"
   id: ID!
   network: SubstrateNetwork!
