@@ -20,9 +20,9 @@ export default (network: SubstrateNetwork) =>
 
     const tipModel = await ctx.store.get(SubstrateTip, hash);
     if (!tipModel) {
-      console.log(`tips.status.event::Tip not found: ${hash}`);
+      // NOTE: We don't break here because there can be old tippers or tips that are created through the treasury.NewTip.
+      // For now we don't need to index those events.
       return;
-      // throw new Error(`tips.status.event::Tip not found: ${hash}`);
     }
 
     await updateTip(ctx, network, hash, date);
