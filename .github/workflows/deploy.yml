@@ -5,6 +5,11 @@ on:
         prawn:
           description: "Prawn to deploy"
           required: true
+        branch:
+          description: "Branch or commit hash to deploy"
+          default: "main"
+          required: true
+
 
 jobs:
   snapshot:
@@ -17,7 +22,7 @@ jobs:
           key: ${{ secrets.SNAPSHOT_SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.SNAPSHOT_KNOWN_HOSTS }}
       - name: Snapshot
-        run: ssh github-actions@${{ secrets.SNAPSHOT_HOST }} "cd /srv/squid && yarn devkit snapshot make ${{ github.event.inputs.prawn }}"
+        run: ssh github-actions@${{ secrets.SNAPSHOT_HOST }} "cd /srv/squid && git fetch && git checkout ${{ github.event.inputs.branch }} && git pull && yarn devkit snapshot make ${{ github.event.inputs.prawn }}"
 
   deploy:
     needs: snapshot
@@ -30,4 +35,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Deploy
-        run: ssh github-actions@${{ secrets.HOST }} "cd /srv/www/squid && yarn devkit snapshot restore ${{ github.event.inputs.prawn }} && yarn devkit deploy ${{ github.event.inputs.prawn }}"
+        run: ssh github-actions@${{ secrets.HOST }} "cd /srv/www/squid && git fetch && git checkout ${{ github.event.inputs.branch }} &&  git pull && yarn devkit snapshot restore ${{ github.event.inputs.prawn }} && yarn devkit deploy ${{ github.event.inputs.prawn }}"
