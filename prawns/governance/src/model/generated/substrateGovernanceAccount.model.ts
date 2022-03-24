@@ -3,7 +3,7 @@ import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateCouncilVote} from "./substrateCouncilVote.model"
 import {SubstrateProposalVote} from "./substrateProposalVote.model"
 import {SubstrateProposalSecond} from "./substrateProposalSecond.model"
-import {SubstrateProposal} from "./substrateProposal.model"
+import {SubstrateDemocracyProposal} from "./substrateDemocracyProposal.model"
 import {SubstrateCouncilProposal} from "./substrateCouncilProposal.model"
 import {SubstrateTechnicalCommitteeProposal} from "./substrateTechnicalCommitteeProposal.model"
 import {SubstrateElectionVote} from "./substrateElectionVote.model"
@@ -43,7 +43,7 @@ export class SubstrateGovernanceAccount {
   totalElectionVotes!: number
 
   @Column_("integer", {nullable: false})
-  totalProposals!: number
+  totalDemocracyProposals!: number
 
   @Column_("integer", {nullable: false})
   totalCouncilProposals!: number
@@ -60,8 +60,8 @@ export class SubstrateGovernanceAccount {
   @OneToMany_(() => SubstrateProposalSecond, e => e.account)
   proposalSeconds!: SubstrateProposalSecond[]
 
-  @OneToMany_(() => SubstrateProposal, e => e.account)
-  proposals!: SubstrateProposal[]
+  @OneToMany_(() => SubstrateDemocracyProposal, e => e.account)
+  democracyProposals!: SubstrateDemocracyProposal[]
 
   @OneToMany_(() => SubstrateCouncilProposal, e => e.account)
   councilProposals!: SubstrateCouncilProposal[]

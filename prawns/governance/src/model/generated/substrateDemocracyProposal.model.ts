@@ -4,8 +4,8 @@ import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
 
 @Entity_()
-export class SubstrateProposal {
-  constructor(props?: Partial<SubstrateProposal>) {
+export class SubstrateDemocracyProposal {
+  constructor(props?: Partial<SubstrateDemocracyProposal>) {
     Object.assign(this, props)
   }
 

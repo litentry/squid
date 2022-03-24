@@ -15,13 +15,13 @@ type SubstrateGovernanceAccount @entity {
   "includes both normal proposal votes and votes as a council member from council.vote()"
   totalProposalVotes: Int!
   totalElectionVotes: Int!
-  totalProposals: Int!
+  totalDemocracyProposals: Int!
   totalCouncilProposals: Int!
   totalTechnicalCommitteeProposals: Int!
   councilVotes: [SubstrateCouncilVote]! @derivedFrom(field: "account")
   proposalVotes: [SubstrateProposalVote]! @derivedFrom(field: "account")
   proposalSeconds: [SubstrateProposalSecond]! @derivedFrom(field: "account")
-  proposals: [SubstrateProposal]! @derivedFrom(field: "account")
+  democracyProposals: [SubstrateDemocracyProposal]! @derivedFrom(field: "account")
   councilProposals: [SubstrateCouncilProposal]! @derivedFrom(field: "account")
   technicalCommitteeProposals: [SubstrateTechnicalCommitteeProposal]! @derivedFrom(field: "account")
   electionVotes: [SubstrateElectionVote]! @derivedFrom(field: "account")
@@ -39,7 +39,7 @@ type SubstrateElectionVote @entity {
   amount: BigInt!
 }
 
-type SubstrateProposal @entity {
+type SubstrateDemocracyProposal @entity {
   "network:block:index"
   id: ID!
   network: SubstrateNetwork!
