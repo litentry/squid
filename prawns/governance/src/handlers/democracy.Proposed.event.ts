@@ -1,6 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateNetwork, SubstrateProposal } from '../model';
+import { SubstrateNetwork, SubstrateDemocracyProposal } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
 
@@ -19,10 +19,10 @@ export default (network: SubstrateNetwork) =>
       rootAccount,
       network,
     });
-    account.totalProposals = account.totalProposals + 1;
+    account.totalDemocracyProposals = account.totalDemocracyProposals + 1;
     await ctx.store.save(account);
 
-    const proposal = new SubstrateProposal({
+    const proposal = new SubstrateDemocracyProposal({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       account,
