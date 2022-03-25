@@ -43,7 +43,7 @@ EXPOSE 3000
 CMD ["yarn", "process:polkadot"]
 
 FROM squid AS queryNode
-EXPOSE 4001
+EXPOSE 4006
 CMD ["yarn", "query-node"]
 
 FROM squid AS migrate
