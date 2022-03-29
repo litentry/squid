@@ -1,0 +1,59 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+}
+
+type SubstrateStakingAccount @entity {
+  "address:tokenSymbol"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork!
+  staking: [SubstrateStakingActions] @derivedFrom(field: "account")
+}
+
+type SubstrateStakingActions @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateStakingAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  stash: String!
+  date: DateTime!
+  action: String!
+  amount: BigInt
+}
+
+
+
+# enum SubstrateIdentityAction {
+#   SET
+#   CLEAR
+#   KILL
+# }
+
+# type SubstrateIdentity @entity {
+#   "network:block:index"
+#   id: ID!
+#   "address"
+#   account: String! @index
+#   "hex address"
+#   rootAccount: String! @index
+#   network: SubstrateNetwork! @index
+#   current: Boolean! @index
+#   blockNumber: BigInt!
+#   date: DateTime!
+#   action: SubstrateIdentityAction!
+#   display: String
+#   email: String
+#   image: String
+#   legal: String
+#   pgp: String
+#   riot: String
+#   twitter: String
+#   web: String
+# }
