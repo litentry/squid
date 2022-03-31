@@ -1,0 +1,48 @@
+enum SubstrateNetwork {
+  kusama
+  polkadot
+  phala
+}
+
+enum SubstrateTipStatus {
+  Opened
+  Closed
+  Retracted
+  Slashed
+}
+
+type SubstrateTip @entity {
+  "hash"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
+  blockNumber: BigInt!
+  createdAt: DateTime!
+  updatedAt: DateTime! 
+  status: SubstrateTipStatus!
+  who: String!
+  finder: String
+  reason: String!
+  tipValue: BigInt
+  deposit: BigInt
+  closes: BigInt
+  tippers: [SubstrateTipper] @derivedFrom(field: "tip")
+}
+
+type SubstrateTipper @entity {
+  "address:hash"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
+  blockNumber: BigInt!
+  createdAt: DateTime!
+  tip: SubstrateTip!
+  tipValue: BigInt!
+}
+
