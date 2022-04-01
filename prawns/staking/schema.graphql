@@ -4,56 +4,74 @@ enum SubstrateNetwork {
   phala
 }
 
-type SubstrateStakingAccount @entity {
+enum SubstrateStakingActionType {
+  bonded
+  unbonded
+  chilled
+  kicked
+  payoutStarted
+  rewarded
+  slashed
+}
+
+type SubstrateStakingNominatorAccount @entity {
   "address:tokenSymbol"
   id: ID!
   "address"
   account: String! @index
   "hex address"
   rootAccount: String! @index
-  network: SubstrateNetwork!
-  staking: [SubstrateStakingActions] @derivedFrom(field: "account")
+  network: SubstrateNetwork! @index
+  stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "nominator")
+  stakingStatus: SubstrateStakingStatus @derivedFrom(field: "nominator")
 }
 
-type SubstrateStakingActions @entity {
+type SubstrateStakingValidatorAccount @entity {
+  "address:tokenSymbol"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
+  stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "validator")
+  # stakingStatus: SubstrateStakingStatus @derivedFrom(field: "validator")
+}
+
+type SubstrateStakingStashAccount @entity {
+  "address:tokenSymbol"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  network: SubstrateNetwork! @index
+  nominator: SubstrateStakingNominatorAccount! @index
+  validator: SubstrateStakingValidatorAccount! @index
+  balance: BigInt!
+}
+
+type SubstrateStakingActionHistory @entity {
   "network:block:index"
   id: ID!
-  network: SubstrateNetwork!
-  account: SubstrateStakingAccount!
-  rootAccount: String! @index
+  network: SubstrateNetwork! @index
   blockNumber: BigInt!
-  stash: String!
+  action: SubstrateStakingActionType! @index
+  stash: SubstrateStakingStashAccount!
+  nominator: SubstrateStakingNominatorAccount
+  validator: SubstrateStakingValidatorAccount
   date: DateTime!
-  action: String!
   amount: BigInt
 }
 
-
-
-# enum SubstrateIdentityAction {
-#   SET
-#   CLEAR
-#   KILL
-# }
-
-# type SubstrateIdentity @entity {
-#   "network:block:index"
-#   id: ID!
-#   "address"
-#   account: String! @index
-#   "hex address"
-#   rootAccount: String! @index
-#   network: SubstrateNetwork! @index
-#   current: Boolean! @index
-#   blockNumber: BigInt!
-#   date: DateTime!
-#   action: SubstrateIdentityAction!
-#   display: String
-#   email: String
-#   image: String
-#   legal: String
-#   pgp: String
-#   riot: String
-#   twitter: String
-#   web: String
-# }
+type SubstrateStakingStatus @entity {
+  "address:tokenSymbol"
+  id: ID!
+  "address"
+  account: String! @index
+  "hex address"
+  rootAccount: String! @index
+  nominator: SubstrateStakingNominatorAccount! @unique
+  balance: BigInt!
+  lastAction: SubstrateStakingActionType!
+}

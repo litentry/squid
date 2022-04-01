@@ -13,6 +13,6 @@ processor.setDataSource({
 });
 processor.addEventHandler(
   'staking.Bonded',
-  stakingBondedEvent(SubstrateNetwork.kusama)
+  stakingBondedEvent(SubstrateNetwork.kusama, 0)
 );
 processor.run();

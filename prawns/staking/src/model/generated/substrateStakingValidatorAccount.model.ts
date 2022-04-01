@@ -1,10 +1,10 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import {SubstrateNetwork} from "./_substrateNetwork"
-import {SubstrateStakingActions} from "./substrateStakingActions.model"
+import {SubstrateStakingActionHistory} from "./substrateStakingActionHistory.model"
 
 @Entity_()
-export class SubstrateStakingAccount {
-  constructor(props?: Partial<SubstrateStakingAccount>) {
+export class SubstrateStakingValidatorAccount {
+  constructor(props?: Partial<SubstrateStakingValidatorAccount>) {
     Object.assign(this, props)
   }
 
@@ -28,9 +28,10 @@ export class SubstrateStakingAccount {
   @Column_("text", {nullable: false})
   rootAccount!: string
 
+  @Index_()
   @Column_("varchar", {length: 8, nullable: false})
   network!: SubstrateNetwork
 
-  @OneToMany_(() => SubstrateStakingActions, e => e.account)
-  staking!: SubstrateStakingActions[]
+  @OneToMany_(() => SubstrateStakingActionHistory, e => e.validator)
+  stakingActionHistory!: SubstrateStakingActionHistory[]
 }
