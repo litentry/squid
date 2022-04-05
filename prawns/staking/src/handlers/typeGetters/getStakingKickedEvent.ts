@@ -1,24 +1,24 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import {
-  StakingBondedEvent as KusamaStakingBondedEvent
+  StakingKickedEvent as KusamaStakingKickedEvent
 } from '../../types/kusama/events';
 import { decodeAddress } from '../../utils';
 
 
-export function getStakingBondedEvent(
+export function getStakingKickedEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork,
-): {stash: string, amount: bigint} {
+): {nominator: string, stash: string} {
   switch (network) {
     case SubstrateNetwork.kusama: {
-      const event = new KusamaStakingBondedEvent(ctx);
+      const event = new KusamaStakingKickedEvent(ctx);
 
-      const [stash, amount] = event.isV1051 ? event.asV1051 : event.asLatest;
+      const [nominator, stash] = event.isV2028 ? event.asV2028 : event.asLatest;
 
       return {
-        stash: decodeAddress(stash),
-        amount,
+        nominator: decodeAddress(nominator),
+        stash: decodeAddress(stash)
       }
     }
 

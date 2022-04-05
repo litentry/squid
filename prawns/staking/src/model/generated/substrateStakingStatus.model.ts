@@ -1,5 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToOne as OneToOne_, JoinColumn as JoinColumn_} from "typeorm"
 import * as marshal from "./marshal"
+import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateStakingNominatorAccount} from "./substrateStakingNominatorAccount.model"
 import {SubstrateStakingActionType} from "./_substrateStakingActionType"
 
@@ -28,6 +29,10 @@ export class SubstrateStakingStatus {
   @Index_()
   @Column_("text", {nullable: false})
   rootAccount!: string
+
+  @Index_()
+  @Column_("varchar", {length: 8, nullable: false})
+  network!: SubstrateNetwork
 
   @Index_({unique: true})
   @OneToOne_(() => SubstrateStakingNominatorAccount, {nullable: false})

@@ -1,8 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork } from '../model';
-import { SubstrateStakingStashAccount } from '../model/generated/substrateStakingStashAccount.model';
+import { SubstrateNetwork, SubstrateStakingActionType, SubstrateStakingNominatorAccount } from '../model';
 import { decodeAddress, getOrCreate, getRegistry } from '../utils';
-import { getFieldByNameFromExtrinsicArgs } from '../utils/extrinsics';
+import { createStakingActionHistory } from '../utils/staking';
 import { getStakingBondedEvent } from './typeGetters/getStakingBondedEvent';
 
 // [
@@ -74,51 +73,50 @@ import { getStakingBondedEvent } from './typeGetters/getStakingBondedEvent';
 //   indexInBlock: 3
 // }
 
-export default (network: SubstrateNetwork, tokenIndex: number) =>
+export default (network: SubstrateNetwork, tokenIndex: number, action: SubstrateStakingActionType) =>
   async (ctx: EventHandlerContext) => {
     const extrinsic = ctx.extrinsic;
     if (!extrinsic) {
       return;
     }
 
-    console.log(ctx.event.params);
-    console.log(extrinsic);
-
     const account = extrinsic.signer;
     const rootAccount = decodeAddress(account);
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const stakingEvent = getStakingBondedEvent(ctx, network);
     const symbol = getRegistry(network).symbols[tokenIndex];
 
-    const proxyCallArgs = getFieldByNameFromExtrinsicArgs(extrinsic.args, 'calls');
+    const stakingEvent = getStakingBondedEvent(ctx, network);
 
-    // if (!getFieldByNameFromExtrinsicArgs(extrinsic.args, 'controller')) {
-    //   console.log(blockNumber);
-    //   console.log(proxyCallArgs);
-    //   console.log(extrinsic.args, 'args');
-    //   // console.log(controller);
-    //   // console.log(stash);
-    //   // console.log(amount);
-    //   console.log('#################');
-    // }
+    // const proxyCallArgs = getFieldByNameFromExtrinsicArgs(extrinsic.args, 'call') || getFieldByNameFromExtrinsicArgs(extrinsic.args, 'calls');
+    // const [controller, stash, amount] = [
+    //   proxyCallArgs?.args?.controller || getFieldByNameFromExtrinsicArgs(extrinsic.args, 'controller') as string,
+    //   stakingEvent.stash,
+    //   stakingEvent.amount,
+    // ];
 
-    const [controller, stash, amount] = [
-      proxyCallArgs?.args?.controller || getFieldByNameFromExtrinsicArgs(extrinsic.args, 'controller') as string,
-      stakingEvent.stash,
-      stakingEvent.amount,
-    ];
-
-    const stashAccount = await getOrCreate(
+    const nominator = await getOrCreate(
       ctx.store,
-      SubstrateStakingStashAccount,
+      SubstrateStakingNominatorAccount,
       {
-        id: `${stash}:${symbol}`,
-        account: stash,
-        rootAccount: decodeAddress(stash),
-        balance: BigInt(0),
+        id: `${account}:${symbol}`,
+        account,
+        rootAccount,
+        network,
       }
     );
 
+    await ctx.store.save(nominator);
+
+    return await createStakingActionHistory(
+      ctx.store,
+      network,
+      blockNumber,
+      ctx.event.indexInBlock,
+      action,
+      date,
+      stakingEvent.amount || BigInt(0),
+      nominator,
+    );
   };
 

@@ -2,7 +2,6 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateStakingActionType} from "./_substrateStakingActionType"
-import {SubstrateStakingStashAccount} from "./substrateStakingStashAccount.model"
 import {SubstrateStakingNominatorAccount} from "./substrateStakingNominatorAccount.model"
 import {SubstrateStakingValidatorAccount} from "./substrateStakingValidatorAccount.model"
 
@@ -28,10 +27,6 @@ export class SubstrateStakingActionHistory {
   @Index_()
   @Column_("varchar", {length: 13, nullable: false})
   action!: SubstrateStakingActionType
-
-  @Index_()
-  @ManyToOne_(() => SubstrateStakingStashAccount, {nullable: false})
-  stash!: SubstrateStakingStashAccount
 
   @Index_()
   @ManyToOne_(() => SubstrateStakingNominatorAccount, {nullable: true})

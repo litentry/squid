@@ -57,7 +57,7 @@ type SubstrateStakingActionHistory @entity {
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
   action: SubstrateStakingActionType! @index
-  stash: SubstrateStakingStashAccount!
+  # stash: SubstrateStakingStashAccount!
   nominator: SubstrateStakingNominatorAccount
   validator: SubstrateStakingValidatorAccount
   date: DateTime!
@@ -71,6 +71,7 @@ type SubstrateStakingStatus @entity {
   account: String! @index
   "hex address"
   rootAccount: String! @index
+  network: SubstrateNetwork! @index
   nominator: SubstrateStakingNominatorAccount! @unique
   balance: BigInt!
   lastAction: SubstrateStakingActionType!
