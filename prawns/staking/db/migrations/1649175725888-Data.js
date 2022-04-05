@@ -1,5 +1,5 @@
-module.exports = class Data1649153106606 {
-  name = 'Data1649153106606'
+module.exports = class Data1649175725888 {
+  name = 'Data1649175725888'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_staking_validator_account" ("id" character varying NOT NULL, "account" text NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, CONSTRAINT "PK_b40747ba0a477a11a3c09289cb5" PRIMARY KEY ("id"))`)
@@ -16,11 +16,6 @@ module.exports = class Data1649153106606 {
     await db.query(`CREATE INDEX "IDX_421ba529ff64759e5b6d5cd151" ON "substrate_staking_action_history" ("nominator_id") `)
     await db.query(`CREATE INDEX "IDX_254db6dc476814716519019484" ON "substrate_staking_action_history" ("validator_id") `)
     await db.query(`CREATE INDEX "IDX_f5388f59a33b9360403ceb8e00" ON "substrate_staking_action_history" ("stash_id") `)
-    await db.query(`CREATE TABLE "substrate_staking_status" ("id" character varying NOT NULL, "account" text NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, "balance" numeric NOT NULL, "last_action" character varying(13) NOT NULL, "nominator_id" character varying NOT NULL, CONSTRAINT "REL_f421e3dd526896f935b10b48fa" UNIQUE ("nominator_id"), CONSTRAINT "PK_01792c3c9068e30f0d75296714f" PRIMARY KEY ("id"))`)
-    await db.query(`CREATE INDEX "IDX_5bde8a13c955826e0758294ddb" ON "substrate_staking_status" ("account") `)
-    await db.query(`CREATE INDEX "IDX_4324b1efce9300daea7d16f46e" ON "substrate_staking_status" ("root_account") `)
-    await db.query(`CREATE INDEX "IDX_6650b095dacfad55ee7e502fbd" ON "substrate_staking_status" ("network") `)
-    await db.query(`CREATE UNIQUE INDEX "IDX_f421e3dd526896f935b10b48fa" ON "substrate_staking_status" ("nominator_id") `)
     await db.query(`CREATE TABLE "substrate_staking_nominator_account" ("id" character varying NOT NULL, "account" text NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, CONSTRAINT "PK_a336f41c97a8855e054f3497e2c" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_ec84af9b1c9201728107f31fbe" ON "substrate_staking_nominator_account" ("account") `)
     await db.query(`CREATE INDEX "IDX_9f83630ef8e906c9784dc45a77" ON "substrate_staking_nominator_account" ("root_account") `)
@@ -28,7 +23,6 @@ module.exports = class Data1649153106606 {
     await db.query(`ALTER TABLE "substrate_staking_action_history" ADD CONSTRAINT "FK_421ba529ff64759e5b6d5cd1510" FOREIGN KEY ("nominator_id") REFERENCES "substrate_staking_nominator_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_staking_action_history" ADD CONSTRAINT "FK_254db6dc4768147165190194841" FOREIGN KEY ("validator_id") REFERENCES "substrate_staking_validator_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_staking_action_history" ADD CONSTRAINT "FK_f5388f59a33b9360403ceb8e009" FOREIGN KEY ("stash_id") REFERENCES "substrate_staking_stash_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-    await db.query(`ALTER TABLE "substrate_staking_status" ADD CONSTRAINT "FK_f421e3dd526896f935b10b48faf" FOREIGN KEY ("nominator_id") REFERENCES "substrate_staking_nominator_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
   }
 
   async down(db) {
@@ -46,11 +40,6 @@ module.exports = class Data1649153106606 {
     await db.query(`DROP INDEX "public"."IDX_421ba529ff64759e5b6d5cd151"`)
     await db.query(`DROP INDEX "public"."IDX_254db6dc476814716519019484"`)
     await db.query(`DROP INDEX "public"."IDX_f5388f59a33b9360403ceb8e00"`)
-    await db.query(`DROP TABLE "substrate_staking_status"`)
-    await db.query(`DROP INDEX "public"."IDX_5bde8a13c955826e0758294ddb"`)
-    await db.query(`DROP INDEX "public"."IDX_4324b1efce9300daea7d16f46e"`)
-    await db.query(`DROP INDEX "public"."IDX_6650b095dacfad55ee7e502fbd"`)
-    await db.query(`DROP INDEX "public"."IDX_f421e3dd526896f935b10b48fa"`)
     await db.query(`DROP TABLE "substrate_staking_nominator_account"`)
     await db.query(`DROP INDEX "public"."IDX_ec84af9b1c9201728107f31fbe"`)
     await db.query(`DROP INDEX "public"."IDX_9f83630ef8e906c9784dc45a77"`)
@@ -58,6 +47,5 @@ module.exports = class Data1649153106606 {
     await db.query(`ALTER TABLE "substrate_staking_action_history" DROP CONSTRAINT "FK_421ba529ff64759e5b6d5cd1510"`)
     await db.query(`ALTER TABLE "substrate_staking_action_history" DROP CONSTRAINT "FK_254db6dc4768147165190194841"`)
     await db.query(`ALTER TABLE "substrate_staking_action_history" DROP CONSTRAINT "FK_f5388f59a33b9360403ceb8e009"`)
-    await db.query(`ALTER TABLE "substrate_staking_status" DROP CONSTRAINT "FK_f421e3dd526896f935b10b48faf"`)
   }
 }

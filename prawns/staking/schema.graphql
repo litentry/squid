@@ -22,7 +22,6 @@ type SubstrateStakingNominatorAccount @entity {
   rootAccount: String! @index
   network: SubstrateNetwork! @index
   stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "nominator")
-  stakingStatus: SubstrateStakingStatus @derivedFrom(field: "nominator")
 }
 
 type SubstrateStakingValidatorAccount @entity {
@@ -34,7 +33,6 @@ type SubstrateStakingValidatorAccount @entity {
   rootAccount: String! @index
   network: SubstrateNetwork! @index
   stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "validator")
-  # stakingStatus: SubstrateStakingStatus @derivedFrom(field: "validator")
 }
 
 type SubstrateStakingStashAccount @entity {
@@ -45,6 +43,7 @@ type SubstrateStakingStashAccount @entity {
   "hex address"
   rootAccount: String! @index
   network: SubstrateNetwork! @index
+  stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "stash")
 }
 
 type SubstrateStakingActionHistory @entity {
@@ -53,23 +52,9 @@ type SubstrateStakingActionHistory @entity {
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
   action: SubstrateStakingActionType! @index
-  # stash: SubstrateStakingStashAccount!
   nominator: SubstrateStakingNominatorAccount
   validator: SubstrateStakingValidatorAccount
   stash: SubstrateStakingStashAccount
   date: DateTime!
   amount: BigInt
-}
-
-type SubstrateStakingStatus @entity {
-  "address:tokenSymbol"
-  id: ID!
-  "address"
-  account: String! @index
-  "hex address"
-  rootAccount: String! @index
-  network: SubstrateNetwork! @index
-  nominator: SubstrateStakingNominatorAccount! @unique
-  balance: BigInt!
-  lastAction: SubstrateStakingActionType!
 }

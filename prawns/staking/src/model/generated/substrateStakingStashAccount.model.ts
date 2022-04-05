@@ -1,5 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import {SubstrateNetwork} from "./_substrateNetwork"
+import {SubstrateStakingActionHistory} from "./substrateStakingActionHistory.model"
 
 @Entity_()
 export class SubstrateStakingStashAccount {
@@ -30,4 +31,7 @@ export class SubstrateStakingStashAccount {
   @Index_()
   @Column_("varchar", {length: 8, nullable: false})
   network!: SubstrateNetwork
+
+  @OneToMany_(() => SubstrateStakingActionHistory, e => e.stash)
+  stakingActionHistory!: SubstrateStakingActionHistory[]
 }

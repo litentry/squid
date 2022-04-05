@@ -3,6 +3,9 @@ import { SubstrateNetwork } from '../../model';
 import {
   StakingSlashedEvent as KusamaStakingSlashedEvent
 } from '../../types/kusama/events';
+import {
+  StakingSlashedEvent as PolkadotStakingSlashedEvent
+} from '../../types/polkadot/events';
 import { encodeAddress } from '../../utils';
 
 
@@ -13,6 +16,17 @@ export function getStakingSlashedEvent(
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaStakingSlashedEvent(ctx);
+
+      const [validator, amount] = event.isV9090 ? event.asV9090 : event.asLatest;
+
+      return {
+        validator: encodeAddress(network, validator),
+        amount,
+      }
+    }
+
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotStakingSlashedEvent(ctx);
 
       const [validator, amount] = event.isV9090 ? event.asV9090 : event.asLatest;
 
