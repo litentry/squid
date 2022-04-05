@@ -4,6 +4,7 @@ import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateStakingActionType} from "./_substrateStakingActionType"
 import {SubstrateStakingNominatorAccount} from "./substrateStakingNominatorAccount.model"
 import {SubstrateStakingValidatorAccount} from "./substrateStakingValidatorAccount.model"
+import {SubstrateStakingStashAccount} from "./substrateStakingStashAccount.model"
 
 @Entity_()
 export class SubstrateStakingActionHistory {
@@ -35,6 +36,10 @@ export class SubstrateStakingActionHistory {
   @Index_()
   @ManyToOne_(() => SubstrateStakingValidatorAccount, {nullable: true})
   validator!: SubstrateStakingValidatorAccount | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => SubstrateStakingStashAccount, {nullable: true})
+  stash!: SubstrateStakingStashAccount | undefined | null
 
   @Column_("timestamp with time zone", {nullable: false})
   date!: Date

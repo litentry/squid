@@ -1,17 +1,16 @@
 enum SubstrateNetwork {
   kusama
   polkadot
-  phala
 }
 
 enum SubstrateStakingActionType {
-  bonded
-  unbonded
-  chilled
-  kicked
-  payoutStarted
-  rewarded
-  slashed
+  Bonded
+  Unbonded
+  Chilled
+  Kicked
+  PayoutStarted
+  Rewarded
+  Slashed
 }
 
 type SubstrateStakingNominatorAccount @entity {
@@ -46,9 +45,6 @@ type SubstrateStakingStashAccount @entity {
   "hex address"
   rootAccount: String! @index
   network: SubstrateNetwork! @index
-  nominator: SubstrateStakingNominatorAccount! @index
-  validator: SubstrateStakingValidatorAccount! @index
-  balance: BigInt!
 }
 
 type SubstrateStakingActionHistory @entity {
@@ -60,6 +56,7 @@ type SubstrateStakingActionHistory @entity {
   # stash: SubstrateStakingStashAccount!
   nominator: SubstrateStakingNominatorAccount
   validator: SubstrateStakingValidatorAccount
+  stash: SubstrateStakingStashAccount
   date: DateTime!
   amount: BigInt
 }

@@ -1,8 +1,0 @@
-{
-  "outDir": "../src/types/khala",
-  "chainVersions": "../../../metadata/khalaVersions.json",
-  "typesBundle": "khala",
-  "events": [
-    "staking.Bonded"
-  ]
-}

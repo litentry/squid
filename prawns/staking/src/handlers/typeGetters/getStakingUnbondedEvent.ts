@@ -3,7 +3,7 @@ import { SubstrateNetwork } from '../../model';
 import {
   StakingUnbondedEvent as KusamaStakingUnbondedEvent
 } from '../../types/kusama/events';
-import { decodeAddress } from '../../utils';
+import { encodeAddress } from '../../utils';
 
 
 export function getStakingUnbondedEvent(
@@ -17,7 +17,7 @@ export function getStakingUnbondedEvent(
       const [stash, amount] = event.isV1051 ? event.asV1051 : event.asLatest;
 
       return {
-        stash: decodeAddress(stash),
+        stash: encodeAddress(network, stash),
         amount,
       }
     }

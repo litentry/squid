@@ -3,7 +3,7 @@ import { SubstrateNetwork } from '../../model';
 import {
   StakingSlashedEvent as KusamaStakingSlashedEvent
 } from '../../types/kusama/events';
-import { decodeAddress } from '../../utils';
+import { encodeAddress } from '../../utils';
 
 
 export function getStakingSlashedEvent(
@@ -17,7 +17,7 @@ export function getStakingSlashedEvent(
       const [validator, amount] = event.isV9090 ? event.asV9090 : event.asLatest;
 
       return {
-        validator: decodeAddress(validator),
+        validator: encodeAddress(network, validator),
         amount,
       }
     }

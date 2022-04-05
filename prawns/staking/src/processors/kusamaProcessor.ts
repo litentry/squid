@@ -13,30 +13,30 @@ processor.setDataSource({
 });
 processor.addEventHandler(
   'staking.Bonded',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.bonded)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Bonded)
 );
 processor.addEventHandler(
   'staking.Unbonded',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.unbonded)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Unbonded)
 );
 processor.addEventHandler(
   'staking.Chilled',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.chilled)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Chilled)
 );
 processor.addEventHandler(
   'staking.Kicked',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.kicked)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Kicked)
 );
 processor.addEventHandler(
   'staking.PayoutStarted',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.payoutStarted)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.PayoutStarted)
 );
 processor.addEventHandler(
   'staking.Rewarded',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.rewarded)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Rewarded)
 );
 processor.addEventHandler(
   'staking.Slashed',
-  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.slashed)
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Slashed)
 );
 processor.run();

@@ -3,6 +3,12 @@
   "chainVersions": "../../../metadata/polkadotVersions.json",
   "typesBundle": "polkadot",
   "events": [
-    "staking.Bonded"
+    "staking.Bonded",
+    "staking.Unbonded",
+    "staking.Chilled",
+    "staking.Kicked",
+    "staking.PayoutStarted",
+    "staking.Rewarded",
+    "staking.Slashed"
   ]
 }

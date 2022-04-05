@@ -1,9 +1,9 @@
 export enum SubstrateStakingActionType {
-  bonded = "bonded",
-  unbonded = "unbonded",
-  chilled = "chilled",
-  kicked = "kicked",
-  payoutStarted = "payoutStarted",
-  rewarded = "rewarded",
-  slashed = "slashed",
+  Bonded = "Bonded",
+  Unbonded = "Unbonded",
+  Chilled = "Chilled",
+  Kicked = "Kicked",
+  PayoutStarted = "PayoutStarted",
+  Rewarded = "Rewarded",
+  Slashed = "Slashed",
 }

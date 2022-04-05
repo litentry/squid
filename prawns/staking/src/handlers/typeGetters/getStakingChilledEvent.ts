@@ -3,7 +3,7 @@ import { SubstrateNetwork } from '../../model';
 import {
   StakingChilledEvent as KusamaStakingChilledEvent
 } from '../../types/kusama/events';
-import { decodeAddress } from '../../utils';
+import { encodeAddress } from '../../utils';
 
 
 export function getStakingChilledEvent(
@@ -17,7 +17,7 @@ export function getStakingChilledEvent(
       const stash = event.isV9090 ? event.asV9090 : event.asLatest;
 
       return {
-        stash: decodeAddress(stash)
+        stash: encodeAddress(network, stash)
       }
     }
 

@@ -1,8 +1,13 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork, SubstrateStakingActionType, SubstrateStakingNominatorAccount } from '../model';
+import { SubstrateNetwork, SubstrateStakingActionHistory, SubstrateStakingActionType, SubstrateStakingNominatorAccount, SubstrateStakingStashAccount, SubstrateStakingValidatorAccount } from '../model';
 import { decodeAddress, getOrCreate, getRegistry } from '../utils';
-import { createStakingActionHistory } from '../utils/staking';
 import { getStakingBondedEvent } from './typeGetters/getStakingBondedEvent';
+import { getStakingChilledEvent } from './typeGetters/getStakingChilledEvent';
+import { getStakingKickedEvent } from './typeGetters/getStakingKickedEvent';
+import { getStakingPayoutStartedEvent } from './typeGetters/getStakingPayoutStartedEvent';
+import { getStakingRewardedEvent } from './typeGetters/getStakingRewardedEvent';
+import { getStakingSlashedEvent } from './typeGetters/getStakingSlashedEvent';
+import { getStakingUnbondedEvent } from './typeGetters/getStakingUnbondedEvent';
 
 // [
 //   {
@@ -86,7 +91,173 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
     const date = new Date(ctx.block.timestamp);
     const symbol = getRegistry(network).symbols[tokenIndex];
 
-    const stakingEvent = getStakingBondedEvent(ctx, network);
+    let data: any = {
+      amount: BigInt(0)
+    };
+
+    switch (ctx.event.method) {
+      case SubstrateStakingActionType.Bonded:
+        const stakingBondedEvent = getStakingBondedEvent(ctx, network);
+
+        const bondedStash = await getOrCreate(
+          ctx.store,
+          SubstrateStakingStashAccount,
+          {
+            id: `${stakingBondedEvent.stash}:${symbol}`,
+            account: stakingBondedEvent.stash,
+            rootAccount: decodeAddress(stakingBondedEvent.stash),
+            network,
+          }
+        );
+
+        await ctx.store.save(bondedStash);
+
+        data.stash = bondedStash;
+        data.amount = stakingBondedEvent.amount;
+
+        break;
+
+      case SubstrateStakingActionType.Unbonded:
+        const stakingUnbondedEvent = getStakingUnbondedEvent(ctx, network);
+
+        const unbondedStash = await getOrCreate(
+          ctx.store,
+          SubstrateStakingStashAccount,
+          {
+            id: `${stakingUnbondedEvent.stash}:${symbol}`,
+            account: stakingUnbondedEvent.stash,
+            rootAccount: decodeAddress(stakingUnbondedEvent.stash),
+            network,
+          }
+        );
+
+        await ctx.store.save(unbondedStash);
+
+        data.amount = stakingUnbondedEvent.amount;
+        data.stash = unbondedStash;
+
+        break;
+
+      case SubstrateStakingActionType.Chilled:
+        const stakingChilledEvent = getStakingChilledEvent(ctx, network);
+
+        const chilledStash = await getOrCreate(
+          ctx.store,
+          SubstrateStakingStashAccount,
+          {
+            id: `${stakingChilledEvent.stash}:${symbol}`,
+            account: stakingChilledEvent.stash,
+            rootAccount: decodeAddress(stakingChilledEvent.stash),
+            network,
+          }
+        );
+
+        await ctx.store.save(chilledStash);
+
+        data.stash = chilledStash;
+
+        break;
+
+      case SubstrateStakingActionType.Kicked:
+        const stakingKickedEvent = getStakingKickedEvent(ctx, network);
+
+        const kickedNominator = await getOrCreate(
+          ctx.store,
+          SubstrateStakingNominatorAccount,
+          {
+            id: `${stakingKickedEvent.nominator}:${symbol}`,
+            account: stakingKickedEvent.nominator,
+            rootAccount: decodeAddress(stakingKickedEvent.nominator),
+            network,
+          }
+        );
+
+        await ctx.store.save(kickedNominator);
+
+        const kickedStash = await getOrCreate(
+          ctx.store,
+          SubstrateStakingStashAccount,
+          {
+            id: `${stakingKickedEvent.stash}:${symbol}`,
+            account: stakingKickedEvent.stash,
+            rootAccount: decodeAddress(stakingKickedEvent.stash),
+            network,
+          }
+        );
+
+        await ctx.store.save(kickedStash);
+
+        data.nominator = kickedNominator;
+        data.stash = kickedStash;
+
+        break;
+
+      case SubstrateStakingActionType.PayoutStarted:
+        const stakingPayoutStartedEvent = getStakingPayoutStartedEvent(ctx, network);
+
+        const payoutStartedStash = await getOrCreate(
+          ctx.store,
+          SubstrateStakingStashAccount,
+          {
+            id: `${stakingPayoutStartedEvent.stash}:${symbol}`,
+            account: stakingPayoutStartedEvent.stash,
+            rootAccount: decodeAddress(stakingPayoutStartedEvent.stash),
+            network,
+          }
+        );
+
+        await ctx.store.save(payoutStartedStash);
+
+        data.stash = payoutStartedStash;
+
+        break;
+
+      case SubstrateStakingActionType.Rewarded:
+        const stakingRewardedEvent = getStakingRewardedEvent(ctx, network);
+
+        const rewardedStash = await getOrCreate(
+          ctx.store,
+          SubstrateStakingStashAccount,
+          {
+            id: `${stakingRewardedEvent.stash}:${symbol}`,
+            account: stakingRewardedEvent.stash,
+            rootAccount: decodeAddress(stakingRewardedEvent.stash),
+            network,
+          }
+        );
+
+        await ctx.store.save(rewardedStash);
+
+        data.amount = stakingRewardedEvent.amount;
+        data.stash = rewardedStash;
+
+        break;
+
+      case SubstrateStakingActionType.Slashed:
+        const stakingSlashedEvent = getStakingSlashedEvent(ctx, network);
+
+        const slashedValidator = await getOrCreate(
+          ctx.store,
+          SubstrateStakingValidatorAccount,
+          {
+            id: `${stakingSlashedEvent.validator}:${symbol}`,
+            account: stakingSlashedEvent.validator,
+            rootAccount: decodeAddress(stakingSlashedEvent.validator),
+            network,
+          }
+        );
+
+        await ctx.store.save(slashedValidator);
+
+        data.amount = stakingSlashedEvent.amount;
+        data.validator = slashedValidator;
+
+        break;
+
+      default: {
+        throw new Error('getStakingEvent::method not supported');
+      }
+    }
 
     // const proxyCallArgs = getFieldByNameFromExtrinsicArgs(extrinsic.args, 'call') || getFieldByNameFromExtrinsicArgs(extrinsic.args, 'calls');
     // const [controller, stash, amount] = [
@@ -95,28 +266,32 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
     //   stakingEvent.amount,
     // ];
 
-    const nominator = await getOrCreate(
-      ctx.store,
-      SubstrateStakingNominatorAccount,
-      {
-        id: `${account}:${symbol}`,
-        account,
-        rootAccount,
-        network,
-      }
-    );
+    if (!data.nominator) {
+      const nominator = await getOrCreate(
+        ctx.store,
+        SubstrateStakingNominatorAccount,
+        {
+          id: `${account}:${symbol}`,
+          account: account,
+          rootAccount: decodeAddress(account),
+          network,
+        }
+      );
 
-    await ctx.store.save(nominator);
+      await ctx.store.save(nominator);
 
-    return await createStakingActionHistory(
-      ctx.store,
+      data.nominator = nominator;
+    }
+
+    const actionModel = new SubstrateStakingActionHistory({
+      id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       blockNumber,
-      ctx.event.indexInBlock,
       action,
       date,
-      stakingEvent.amount || BigInt(0),
-      nominator,
-    );
+      ...data,
+    });
+
+    await ctx.store.save(actionModel);
   };
 

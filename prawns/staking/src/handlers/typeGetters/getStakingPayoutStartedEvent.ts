@@ -3,7 +3,7 @@ import { SubstrateNetwork } from '../../model';
 import {
   StakingPayoutStartedEvent as KusamaStakingPayoutStartedEvent
 } from '../../types/kusama/events';
-import { decodeAddress } from '../../utils';
+import { encodeAddress } from '../../utils';
 
 
 export function getStakingPayoutStartedEvent(
@@ -18,7 +18,7 @@ export function getStakingPayoutStartedEvent(
 
       return {
         eraIndex,
-        stash: decodeAddress(stash)
+        stash: encodeAddress(network, stash)
       }
     }
 
