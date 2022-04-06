@@ -2,7 +2,7 @@ import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import stakingActionEvent from '../handlers/staking.action.event';
 import { SubstrateNetwork, SubstrateStakingActionType } from '../model';
 
-const processor = new SubstrateProcessor('litentry_squid_identities_polkadot');
+const processor = new SubstrateProcessor('litentry_squid_staking_polkadot');
 
 processor.setTypesBundle('polkadot');
 processor.setBatchSize(500);
