@@ -1,7 +1,6 @@
 {
   "outDir": "../src/types/clover",
   "chainVersions": "../../../metadata/cloverVersions.json",
-  "typesBundle": "clover",
   "events": [
     "staking.Bonded",
     "staking.Unbonded",

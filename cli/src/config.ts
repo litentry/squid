@@ -46,8 +46,8 @@ export default {
       archive: 'https://moonbeam-squid-archive.litentry.io/graphql/v1/graphql',
     },
     clover: {
-      chain: 'wss://clover.api.onfinality.io/public-ws',
-      archive: 'https://clover.indexer.gc.subsquid.io/v4/graphql',
+      chain: 'wss://api-ivy-elastic.clover.finance',
+      archive: 'https://clover-squid-archive.litentry.io/graphql/v1/graphql',
     },
   },
 } as ConfigInterface;

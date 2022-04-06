@@ -5,7 +5,7 @@ import { SubstrateNetwork, SubstrateStakingActionType } from '../model';
 const processor = new SubstrateProcessor('litentry_squid_staking_polkadot');
 
 processor.setTypesBundle('polkadot');
-processor.setBatchSize(500);
+processor.setBatchSize(50);
 processor.setIsolationLevel('REPEATABLE READ');
 processor.setDataSource({
   archive: 'https://polkadot-squid-archive.litentry.io/graphql/v1/graphql',
