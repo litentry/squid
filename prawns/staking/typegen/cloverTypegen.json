@@ -1,0 +1,13 @@
+{
+  "outDir": "../src/types/clover",
+  "chainVersions": "../../../metadata/cloverVersions.json",
+  "events": [
+    "staking.Bonded",
+    "staking.Unbonded",
+    "staking.Chilled",
+    "staking.Kicked",
+    "staking.PayoutStarted",
+    "staking.Rewarded",
+    "staking.Slashed"
+  ]
+}

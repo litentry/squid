@@ -3,6 +3,7 @@ export enum ConfigChainsEnum {
   'khala' = 'khala',
   'kusama' = 'kusama',
   'moonbeam' = 'moonbeam',
+  'clover' = 'clover',
 }
 
 export interface ConfigInterface {
@@ -43,6 +44,10 @@ export default {
     moonbeam: {
       chain: 'wss://moonbeam.api.onfinality.io/public-ws',
       archive: 'https://moonbeam-squid-archive.litentry.io/graphql/v1/graphql',
+    },
+    clover: {
+      chain: 'wss://api-ivy-elastic.clover.finance',
+      archive: 'https://clover-squid-archive.litentry.io/graphql/v1/graphql',
     },
   },
 } as ConfigInterface;
