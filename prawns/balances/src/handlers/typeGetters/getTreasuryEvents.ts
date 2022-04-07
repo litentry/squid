@@ -14,8 +14,10 @@ export function getTreasuryDepositEvent(
 
       if (event.isV1) {
         return event.asV1;
+      } else if (event.isV1110) {
+        return event.asV1110.value;
       } else {
-        return event.asLatest;
+        return event.asLatest.value;
       }
     }
 

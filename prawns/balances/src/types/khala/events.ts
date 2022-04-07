@@ -463,13 +463,28 @@ export class TreasuryDepositEvent {
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1
+  /**
+   * Some funds have been deposited.
+   */
+  get isV1110(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Deposit') === 'd74027ad27459f17d7446fef449271d1b0dc12b852c175623e871d009a661493'
   }
 
-  get asLatest(): bigint {
+  /**
+   * Some funds have been deposited.
+   */
+  get asV1110(): {value: bigint} {
+    assert(this.isV1110)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV1
+    return this.isV1110
+  }
+
+  get asLatest(): {value: bigint} {
+    deprecateLatest()
+    return this.asV1110
   }
 }
