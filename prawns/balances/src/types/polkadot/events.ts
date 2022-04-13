@@ -3,6 +3,7 @@ import {EventContext, Result, deprecateLatest} from './support'
 import * as v8 from './v8'
 import * as v9122 from './v9122'
 import * as v9140 from './v9140'
+import * as v9170 from './v9170'
 
 export class BalancesBalanceSetEvent {
   constructor(private ctx: EventContext) {
@@ -471,6 +472,52 @@ export class BalancesWithdrawEvent {
   get asLatest(): {who: v9140.AccountId32, amount: bigint} {
     deprecateLatest()
     return this.asV9140
+  }
+}
+
+export class TreasuryAwardedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'treasury.Awarded')
+  }
+
+  /**
+   *  Some funds have been allocated.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Awarded') === '86708250ac506876b8d63d9c97b4ca0fa73f0199c633da6fb2a8956aaab8c743'
+  }
+
+  /**
+   *  Some funds have been allocated.
+   */
+  get asV0(): [number, bigint, Uint8Array] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * Some funds have been allocated.
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Awarded') === '998b846fdf605dfbbe27d46b36b246537b990ed6d4deb2f0177d539b9dab3878'
+  }
+
+  /**
+   * Some funds have been allocated.
+   */
+  get asV9170(): {proposalIndex: number, award: bigint, account: v9170.AccountId32} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9170
+  }
+
+  get asLatest(): {proposalIndex: number, award: bigint, account: v9170.AccountId32} {
+    deprecateLatest()
+    return this.asV9170
   }
 }
 

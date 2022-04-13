@@ -57,3 +57,16 @@ type SubstrateTreasuryDeposit @entity {
   blockNumber: BigInt!
   date: DateTime!
 }
+
+type SubstrateTreasuryAwarded @entity {
+  "network:block:index"
+  id: ID!
+  depositor: SubstrateBalanceAccount!
+  network: SubstrateNetwork!
+  symbol: String!
+  decimals: Int!
+  accountBalanceAtBlock: BigInt!
+  amount: BigInt!
+  blockNumber: BigInt!
+  date: DateTime!
+}
