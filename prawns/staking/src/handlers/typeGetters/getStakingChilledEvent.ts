@@ -35,7 +35,7 @@ export function getStakingChilledEvent(
     }
 
     default: {
-      throw new Error('getStakingEvent::network not supported');
+      throw new Error('getStakingChilledEvent::network not supported');
     }
   }
 }

@@ -37,7 +37,7 @@ export function getStakingBondedEvent(
     }
 
     default: {
-      throw new Error('getStakingEvent::network not supported');
+      throw new Error('getStakingBondedEvent::network not supported');
     }
   }
 }

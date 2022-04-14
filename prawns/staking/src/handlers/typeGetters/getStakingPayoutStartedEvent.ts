@@ -37,7 +37,7 @@ export function getStakingPayoutStartedEvent(
     }
 
     default: {
-      throw new Error('getStakingEvent::network not supported');
+      throw new Error('getStakingPayoutStartedEvent::network not supported');
     }
   }
 }

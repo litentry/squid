@@ -1,16 +1,21 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import stakingActionEvent from '../handlers/staking.action.event';
+import stakingNominateCall from '../handlers/staking.nominate.extrinsic';
 import { SubstrateNetwork, SubstrateStakingActionType } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_staking_kusama');
 
 processor.setTypesBundle('kusama');
-processor.setBatchSize(50);
+processor.setBatchSize(500);
 processor.setIsolationLevel('REPEATABLE READ');
 processor.setDataSource({
   archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
   chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
+processor.addExtrinsicHandler(
+  'staking.nominate',
+  stakingNominateCall(SubstrateNetwork.kusama, 0)
+);
 processor.addEventHandler(
   'staking.Bonded',
   stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Bonded)

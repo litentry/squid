@@ -227,3 +227,36 @@ export class StakingUnbondedEvent {
     return this.asV1051
   }
 }
+
+export class StakingWithdrawnEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'staking.Withdrawn')
+  }
+
+  /**
+   *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
+   *  from the unlocking queue.
+   */
+  get isV1051(): boolean {
+    return this.ctx._chain.getEventHash('staking.Withdrawn') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+  }
+
+  /**
+   *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
+   *  from the unlocking queue.
+   */
+  get asV1051(): [Uint8Array, bigint] {
+    assert(this.isV1051)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1051
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV1051
+  }
+}
