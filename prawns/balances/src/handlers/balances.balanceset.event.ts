@@ -1,24 +1,27 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress, getRegistry, getOrCreate, encodeAddress } from '../utils';
 import {
-  SubstrateBalanceAccount,
+  SubstrateBalanceAccount, SubstrateBalanceSet,
   SubstrateNetwork,
   SubstrateTreasuryAwarded,
 } from '../model';
-import { getTreasuryAwardedEvent, getTreasuryDepositEvent } from './typeGetters/getTreasuryEvents';
+import { getBalancesBalanceSetEvent } from './typeGetters/getBalancesEvents';
 
 export default (network: SubstrateNetwork, tokenIndex: number) => {
   return async (ctx: EventHandlerContext) => {
 
+    const depositor = ctx.extrinsic?.signer;
+    if (!depositor) return;
+
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const { award, account } = getTreasuryAwardedEvent(ctx, network);
+    const { who, free, reserved } = getBalancesBalanceSetEvent(ctx, network);
     const symbol = getRegistry(network).symbols[tokenIndex];
     const decimals = getRegistry(network).decimals[tokenIndex];
 
     // receiver
-    const toAccount = encodeAddress(network, account);
-    const rootToAccount = decodeAddress(account);
+    const toAccount = encodeAddress(network, who);
+    const rootToAccount = decodeAddress(who);
 
     const balanceAccount = await getOrCreate(
       ctx.store,
@@ -34,10 +37,10 @@ export default (network: SubstrateNetwork, tokenIndex: number) => {
         totalTransfers: 0,
       }
     );
-    balanceAccount.balance += award;
+    balanceAccount.balance = (free + reserved);
     await ctx.store.save(balanceAccount);
 
-    const depositModel = new SubstrateTreasuryAwarded({
+    const depositModel = new SubstrateBalanceSet({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       blockNumber,
@@ -45,7 +48,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) => {
       symbol,
       decimals,
       accountBalanceAtBlock: balanceAccount.balance,
-      amount: award,
+      amount: balanceAccount.balance,
       depositor: balanceAccount,
     });
     await ctx.store.save(depositModel);

@@ -11,7 +11,6 @@ import {
   BalancesTransferEvent as PolkadotBalancesTransferEvent,
   BalancesUnreservedEvent as PolkadotBalancesUnreservedEvent,
   BalancesWithdrawEvent as PolkadotBalancesWithdrawEvent,
-  TreasuryAwardedEvent as PolkadotTreasuryAwardedEvent,
 } from '../../types/polkadot/events';
 import {
   BalancesBalanceSetEvent as KhalaBalancesBalanceSetEvent,
@@ -24,7 +23,6 @@ import {
   BalancesTransferEvent as KhalaBalancesTransferEvent,
   BalancesUnreservedEvent as KhalaBalancesUnreservedEvent,
   BalancesWithdrawEvent as KhalaBalancesWithdrawEvent,
-  TreasuryAwardedEvent as KhalaTreasuryAwardedEvent,
 } from '../../types/khala/events';
 import {
   BalancesBalanceSetEvent as KusamaBalancesBalanceSetEvent,
@@ -37,7 +35,6 @@ import {
   BalancesTransferEvent as KusamaBalancesTransferEvent,
   BalancesUnreservedEvent as KusamaBalancesUnreservedEvent,
   BalancesWithdrawEvent as KusamaBalancesWithdrawEvent,
-  TreasuryAwardedEvent as KusamaTreasuryAwardedEvent,
 } from '../../types/kusama/events';
 
 export function getBalancesBalanceSetEvent(
