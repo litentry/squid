@@ -9,6 +9,10 @@
     "staking.Kicked",
     "staking.PayoutStarted",
     "staking.Rewarded",
-    "staking.Slashed"
+    "staking.Slashed",
+    "staking.Withdrawn"
+  ],
+  "calls": [
+    "staking.nominate"
   ]
 }

@@ -11,6 +11,7 @@ enum SubstrateStakingActionType {
   PayoutStarted
   Rewarded
   Slashed
+  Withdrawn
 }
 
 type SubstrateStakingNominatorAccount @entity {

@@ -37,7 +37,7 @@ export function getStakingSlashedEvent(
     }
 
     default: {
-      throw new Error('getStakingEvent::network not supported');
+      throw new Error('getStakingSlashedEvent::network not supported');
     }
   }
 }

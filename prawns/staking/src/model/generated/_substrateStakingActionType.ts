@@ -6,4 +6,5 @@ export enum SubstrateStakingActionType {
   PayoutStarted = "PayoutStarted",
   Rewarded = "Rewarded",
   Slashed = "Slashed",
+  Withdrawn = "Withdrawn",
 }
