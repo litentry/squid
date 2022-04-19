@@ -1,5 +1,5 @@
-module.exports = class Data1645108063788 {
-  name = 'Data1645108063788'
+module.exports = class Data1650374352114 {
+  name = 'Data1650374352114'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_balance_transfer" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "symbol" text NOT NULL, "decimals" integer NOT NULL, "to_account_balance_at_block" numeric NOT NULL, "from_account_balance_at_block" numeric NOT NULL, "amount" numeric NOT NULL, "tip" numeric NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "to_id" character varying NOT NULL, "from_id" character varying NOT NULL, CONSTRAINT "PK_d488f127bbee114b748a65c0a1c" PRIMARY KEY ("id"))`)
@@ -10,9 +10,15 @@ module.exports = class Data1645108063788 {
     await db.query(`CREATE TABLE "substrate_balance_account" ("id" character varying NOT NULL, "account" text NOT NULL, "root_account" text NOT NULL, "network" character varying(8) NOT NULL, "symbol" text NOT NULL, "decimals" integer NOT NULL, "balance" numeric NOT NULL, "first_transfer_in_date" TIMESTAMP WITH TIME ZONE, "first_transfer_in_block_number" numeric, "first_transfer_out_date" TIMESTAMP WITH TIME ZONE, "first_transfer_out_block_number" numeric, "last_transfer_in_date" TIMESTAMP WITH TIME ZONE, "last_transfer_in_block_number" numeric, "last_transfer_out_date" TIMESTAMP WITH TIME ZONE, "last_transfer_out_block_number" numeric, "total_transfers" integer NOT NULL, CONSTRAINT "PK_d1d216881f9fb7f16406feb31ac" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_60a0f5d2146a44ab0225533b45" ON "substrate_balance_account" ("account") `)
     await db.query(`CREATE INDEX "IDX_7fb58652b5e442b900d47c55fa" ON "substrate_balance_account" ("root_account") `)
+    await db.query(`CREATE TABLE "substrate_treasury_awarded" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "symbol" text NOT NULL, "decimals" integer NOT NULL, "account_balance_at_block" numeric NOT NULL, "amount" numeric NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "depositee_id" character varying NOT NULL, CONSTRAINT "PK_91b2f8d564f94fc2b50c762e6ab" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE INDEX "IDX_2542fc39eeeb30d380fa53f201" ON "substrate_treasury_awarded" ("depositee_id") `)
+    await db.query(`CREATE TABLE "substrate_balance_set" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "symbol" text NOT NULL, "decimals" integer NOT NULL, "account_balance_at_block" numeric NOT NULL, "amount" numeric NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_e7f8f964b08c6aabcdd86f2c83e" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE INDEX "IDX_b127e97310dc1886e09b8762fd" ON "substrate_balance_set" ("account_id") `)
     await db.query(`ALTER TABLE "substrate_balance_transfer" ADD CONSTRAINT "FK_e654ea0583a50430430a809e7d9" FOREIGN KEY ("to_id") REFERENCES "substrate_balance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_balance_transfer" ADD CONSTRAINT "FK_95971b2db96accf594426e97982" FOREIGN KEY ("from_id") REFERENCES "substrate_balance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "substrate_treasury_deposit" ADD CONSTRAINT "FK_40a8cbaec489c5f87928955c971" FOREIGN KEY ("depositor_id") REFERENCES "substrate_balance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "substrate_treasury_awarded" ADD CONSTRAINT "FK_2542fc39eeeb30d380fa53f201f" FOREIGN KEY ("depositee_id") REFERENCES "substrate_balance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "substrate_balance_set" ADD CONSTRAINT "FK_b127e97310dc1886e09b8762fd8" FOREIGN KEY ("account_id") REFERENCES "substrate_balance_account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
   }
 
   async down(db) {
@@ -24,8 +30,14 @@ module.exports = class Data1645108063788 {
     await db.query(`DROP TABLE "substrate_balance_account"`)
     await db.query(`DROP INDEX "public"."IDX_60a0f5d2146a44ab0225533b45"`)
     await db.query(`DROP INDEX "public"."IDX_7fb58652b5e442b900d47c55fa"`)
+    await db.query(`DROP TABLE "substrate_treasury_awarded"`)
+    await db.query(`DROP INDEX "public"."IDX_2542fc39eeeb30d380fa53f201"`)
+    await db.query(`DROP TABLE "substrate_balance_set"`)
+    await db.query(`DROP INDEX "public"."IDX_b127e97310dc1886e09b8762fd"`)
     await db.query(`ALTER TABLE "substrate_balance_transfer" DROP CONSTRAINT "FK_e654ea0583a50430430a809e7d9"`)
     await db.query(`ALTER TABLE "substrate_balance_transfer" DROP CONSTRAINT "FK_95971b2db96accf594426e97982"`)
     await db.query(`ALTER TABLE "substrate_treasury_deposit" DROP CONSTRAINT "FK_40a8cbaec489c5f87928955c971"`)
+    await db.query(`ALTER TABLE "substrate_treasury_awarded" DROP CONSTRAINT "FK_2542fc39eeeb30d380fa53f201f"`)
+    await db.query(`ALTER TABLE "substrate_balance_set" DROP CONSTRAINT "FK_b127e97310dc1886e09b8762fd8"`)
   }
 }

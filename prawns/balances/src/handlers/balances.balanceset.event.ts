@@ -49,7 +49,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) => {
       decimals,
       accountBalanceAtBlock: balanceAccount.balance,
       amount: balanceAccount.balance,
-      depositor: balanceAccount,
+      account: balanceAccount,
     });
     await ctx.store.save(depositModel);
   };

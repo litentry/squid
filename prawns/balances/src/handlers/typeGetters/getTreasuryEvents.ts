@@ -114,7 +114,7 @@ export function getTreasuryAwardedEvent(
     }
 
     default: {
-      throw new Error('getBalancesWithdrawEvent::network not supported');
+      throw new Error('getTreasuryAwardedEvent::network not supported');
     }
   }
 }

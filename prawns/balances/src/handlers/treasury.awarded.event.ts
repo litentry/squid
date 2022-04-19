@@ -5,7 +5,7 @@ import {
   SubstrateNetwork,
   SubstrateTreasuryAwarded,
 } from '../model';
-import { getTreasuryAwardedEvent, getTreasuryDepositEvent } from './typeGetters/getTreasuryEvents';
+import { getTreasuryAwardedEvent } from './typeGetters/getTreasuryEvents';
 
 export default (network: SubstrateNetwork, tokenIndex: number) => {
   return async (ctx: EventHandlerContext) => {
@@ -46,7 +46,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) => {
       decimals,
       accountBalanceAtBlock: balanceAccount.balance,
       amount: award,
-      depositor: balanceAccount,
+      depositee: balanceAccount,
     });
     await ctx.store.save(depositModel);
   };

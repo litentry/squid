@@ -61,7 +61,7 @@ type SubstrateTreasuryDeposit @entity {
 type SubstrateTreasuryAwarded @entity {
   "network:block:index"
   id: ID!
-  depositor: SubstrateBalanceAccount!
+  depositee: SubstrateBalanceAccount!
   network: SubstrateNetwork!
   symbol: String!
   decimals: Int!
@@ -74,7 +74,7 @@ type SubstrateTreasuryAwarded @entity {
 type SubstrateBalanceSet @entity {
   "network:block:index"
   id: ID!
-  depositor: SubstrateBalanceAccount!
+  account: SubstrateBalanceAccount!
   network: SubstrateNetwork!
   symbol: String!
   decimals: Int!

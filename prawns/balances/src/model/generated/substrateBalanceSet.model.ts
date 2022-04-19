@@ -17,7 +17,7 @@ export class SubstrateBalanceSet {
 
   @Index_()
   @ManyToOne_(() => SubstrateBalanceAccount, {nullable: false})
-  depositor!: SubstrateBalanceAccount
+  account!: SubstrateBalanceAccount
 
   @Column_("varchar", {length: 8, nullable: false})
   network!: SubstrateNetwork
