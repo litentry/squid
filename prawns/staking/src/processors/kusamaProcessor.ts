@@ -44,4 +44,8 @@ processor.addEventHandler(
   'staking.Slashed',
   stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Slashed)
 );
+processor.addEventHandler(
+  'staking.Withdrawn',
+  stakingActionEvent(SubstrateNetwork.kusama, 0, SubstrateStakingActionType.Withdrawn)
+);
 processor.run();

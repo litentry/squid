@@ -1,4 +1,4 @@
-import { EventHandlerContext, ExtrinsicArg } from '@subsquid/substrate-processor';
+import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateStakingActionHistory, SubstrateStakingActionType, SubstrateStakingNominatorAccount, SubstrateStakingStashAccount, SubstrateStakingValidatorAccount } from '../model';
 import { decodeAddress, getOrCreate, getRegistry } from '../utils';
 import { getStakingBondedEvent } from './typeGetters/getStakingBondedEvent';
@@ -12,12 +12,6 @@ import { getStakingWithdrawnEvent } from './typeGetters/getStakingWithdrawnEvent
 
 export default (network: SubstrateNetwork, tokenIndex: number, action: SubstrateStakingActionType) =>
   async (ctx: EventHandlerContext) => {
-    const extrinsic = ctx.extrinsic;
-    if (!extrinsic) {
-      return;
-    }
-
-    const account = extrinsic.signer;
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const symbol = getRegistry(network).symbols[tokenIndex];
@@ -33,6 +27,12 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
         data.amount = stakingBondedEvent.amount;
         data.stash = await getOrCreateStash(ctx, stakingBondedEvent.stash, symbol, network);
 
+        if (ctx.extrinsic) {
+          data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
+        } else {
+          throw new Error(`StakingActionEvent::bonded event does not have a extrinsic. Block number: ${blockNumber}`);
+        }
+
         break;
 
       case SubstrateStakingActionType.Unbonded:
@@ -40,6 +40,12 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
 
         data.amount = stakingUnbondedEvent.amount;
         data.stash = await getStash(ctx, stakingUnbondedEvent.stash);
+
+        if (ctx.extrinsic) {
+          data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
+        } else {
+          throw new Error(`StakingActionEvent::unbonded event does not have a extrinsic. Block number: ${blockNumber}`);
+        }
 
         break;
 
@@ -92,10 +98,6 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
       default: {
         throw new Error('getStakingEvent::method not supported');
       }
-    }
-
-    if (!data.nominator) {
-      data.nominator = await getOrCreateNominator(ctx, account, symbol, network);
     }
 
     const actionModel = new SubstrateStakingActionHistory({
@@ -161,8 +163,3 @@ async function getStash(ctx: EventHandlerContext, account: string): Promise<Subs
     account
   );
 }
-
-function getFieldFromExtrinsicArgs(args: ExtrinsicArg[], name: string): any {
-  return (args.find(arg => arg.name === name))?.value;
-}
-
