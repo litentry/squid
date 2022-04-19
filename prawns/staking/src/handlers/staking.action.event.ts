@@ -29,6 +29,8 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
 
         if (ctx.extrinsic) {
           data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
+        } else {
+          throw new Error(`StakingActionEvent::bonded event does not have a extrinsic. Block number: ${blockNumber}`);
         }
 
         break;
@@ -41,6 +43,8 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
 
         if (ctx.extrinsic) {
           data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
+        } else {
+          throw new Error(`StakingActionEvent::unbonded event does not have a extrinsic. Block number: ${blockNumber}`);
         }
 
         break;
