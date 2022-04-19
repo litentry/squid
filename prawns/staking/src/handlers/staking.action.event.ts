@@ -27,6 +27,10 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
         data.amount = stakingBondedEvent.amount;
         data.stash = await getOrCreateStash(ctx, stakingBondedEvent.stash, symbol, network);
 
+        if (ctx.extrinsic) {
+          data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
+        }
+
         break;
 
       case SubstrateStakingActionType.Unbonded:
@@ -34,6 +38,10 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
 
         data.amount = stakingUnbondedEvent.amount;
         data.stash = await getStash(ctx, stakingUnbondedEvent.stash);
+
+        if (ctx.extrinsic) {
+          data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
+        }
 
         break;
 
@@ -86,10 +94,6 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
       default: {
         throw new Error('getStakingEvent::method not supported');
       }
-    }
-
-    if (!data.nominator && ctx.extrinsic) {
-      data.nominator = await getOrCreateNominator(ctx, ctx.extrinsic.signer, symbol, network);
     }
 
     const actionModel = new SubstrateStakingActionHistory({
