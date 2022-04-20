@@ -13,6 +13,7 @@
     "balances.Transfer",
     "balances.Unreserved",
     "balances.Withdraw",
-    "treasury.Deposit"
+    "treasury.Deposit",
+    "treasury.Awarded"
   ]
 }
