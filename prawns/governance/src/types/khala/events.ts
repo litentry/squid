@@ -3,6 +3,52 @@ import {EventContext, Result, deprecateLatest} from './support'
 import * as v1 from './v1'
 import * as v1090 from './v1090'
 
+export class BountiesBountyProposedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'bounties.BountyProposed')
+  }
+
+  /**
+   *  New bounty proposal. \[index\]
+   */
+  get isV1(): boolean {
+    return this.ctx._chain.getEventHash('bounties.BountyProposed') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+  }
+
+  /**
+   *  New bounty proposal. \[index\]
+   */
+  get asV1(): number {
+    assert(this.isV1)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * New bounty proposal.
+   */
+  get isV1090(): boolean {
+    return this.ctx._chain.getEventHash('bounties.BountyProposed') === '25a99cc820e15400356f62165725d9d84847d859e62ca1e5fd6eb340dc5c217e'
+  }
+
+  /**
+   * New bounty proposal.
+   */
+  get asV1090(): {index: number} {
+    assert(this.isV1090)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1090
+  }
+
+  get asLatest(): {index: number} {
+    deprecateLatest()
+    return this.asV1090
+  }
+}
+
 export class CouncilProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'council.Proposed')
@@ -196,5 +242,51 @@ export class TechnicalCommitteeProposedEvent {
   get asLatest(): {account: v1090.AccountId32, proposalIndex: number, proposalHash: v1090.H256, threshold: number} {
     deprecateLatest()
     return this.asV1090
+  }
+}
+
+export class TreasuryProposedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'treasury.Proposed')
+  }
+
+  /**
+   *  New proposal. \[proposal_index\]
+   */
+  get isV1(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Proposed') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+  }
+
+  /**
+   *  New proposal. \[proposal_index\]
+   */
+  get asV1(): number {
+    assert(this.isV1)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * New proposal.
+   */
+  get isV1110(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Proposed') === 'e9ffb62c9cf38a8abb0e419c0655e66f4415cc9c0faa1066316d07cb033b8ff6'
+  }
+
+  /**
+   * New proposal.
+   */
+  get asV1110(): {proposalIndex: number} {
+    assert(this.isV1110)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1110
+  }
+
+  get asLatest(): {proposalIndex: number} {
+    deprecateLatest()
+    return this.asV1110
   }
 }

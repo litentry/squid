@@ -6,10 +6,16 @@ import councilProposedHandler from '../handlers/council.Proposed.event';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
+import bountiesBountyProposedHandler from "../handlers/bounties.BountyProposed.event";
+import treasuryProposedHandler from "../handlers/treasury.Proposed.event";
 import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
 
+processor.setBlockRange({
+  from: 814590,
+  to: 814591
+});
 processor.setTypesBundle('khala');
 processor.setBatchSize(100);
 processor.setIsolationLevel('REPEATABLE READ');
@@ -44,6 +50,18 @@ processor.addEventHandler(
 processor.addExtrinsicHandler(
   'democracy.second',
   democracySecondHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'council.Proposed',
+  councilProposedHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'bounties.BountyProposed',
+  bountiesBountyProposedHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'treasury.Proposed',
+  treasuryProposedHandler(SubstrateNetwork.phala)
 );
 
 processor.run();
