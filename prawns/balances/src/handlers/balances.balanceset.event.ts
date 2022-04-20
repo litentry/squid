@@ -10,9 +10,6 @@ import { getBalancesBalanceSetEvent } from './typeGetters/getBalancesEvents';
 export default (network: SubstrateNetwork, tokenIndex: number) => {
   return async (ctx: EventHandlerContext) => {
 
-    const depositor = ctx.extrinsic?.signer;
-    if (!depositor) return;
-
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const { who, free, reserved } = getBalancesBalanceSetEvent(ctx, network);
