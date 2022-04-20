@@ -36,11 +36,12 @@ export class SubstrateTreasuryProposal {
   @Column_("integer", {nullable: false})
   proposalIndex!: number
 
-  /**
-   * MultiAddress, not dealing with this yet
-   */
   @Column_("text", {nullable: false})
   beneficiary!: string
+
+  @Index_()
+  @ManyToOne_(() => SubstrateGovernanceAccount, {nullable: false})
+  beneficiaryAccount!: SubstrateGovernanceAccount
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   value!: bigint

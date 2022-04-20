@@ -141,7 +141,7 @@ type SubstrateTreasuryProposal @entity {
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
-  "MultiAddress, not dealing with this yet"
   beneficiary: String!
+  beneficiaryAccount: SubstrateGovernanceAccount!
   value: BigInt!
 }

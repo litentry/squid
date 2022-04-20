@@ -1,6 +1,6 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress } from '../utils';
-import { SubstrateBountyProposal, SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
+import { decodeAddress, encodeAddress } from '../utils';
+import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getTreasuryProposedEvent} from "./typeGetters/getTreasuryProposedEvent";
 import { getTreasuryProposedSpendCall} from "./typeGetters/getTreasuryProposeSpendCall";
@@ -16,14 +16,25 @@ export default (network: SubstrateNetwork) =>
     const event = getTreasuryProposedEvent(ctx, network);
     const call = getTreasuryProposedSpendCall(<ExtrinsicHandlerContext>ctx, network);
 
+    const beneficiary = '0x' + Buffer.from(call.beneficiary).toString('hex');
+
+    // proposer
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
       rootAccount,
       network,
     });
     account.totalTreasurySpendProposals++;
-
     await ctx.store.save(account);
+
+    // beneficiary
+    const beneficiaryAccount = await getOrCreateGovernanceAccount(ctx.store, {
+      id: encodeAddress(network, call.beneficiary),
+      rootAccount: beneficiary,
+      network,
+    });
+    await ctx.store.save(beneficiaryAccount);
+
 
     const proposal = new SubstrateTreasuryProposal({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
@@ -33,7 +44,8 @@ export default (network: SubstrateNetwork) =>
       blockNumber,
       date,
       proposalIndex: event.proposalIndex,
-      beneficiary: '0x' + Buffer.from(call.beneficiary).toString('hex'),
+      beneficiary,
+      beneficiaryAccount,
       value: call.value
     });
 

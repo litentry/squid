@@ -1,4 +1,3 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { BountiesBountyProposedEvent as KusamaBountiesProposeEvent } from '../../types/kusama/events';
 import { BountiesBountyProposedEvent as PolkadotBountiesProposeEvent } from '../../types/polkadot/events';
