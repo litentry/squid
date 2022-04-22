@@ -36,9 +36,9 @@ export class SubstrateBountyProposal {
   @Column_("integer", {nullable: false})
   proposalIndex!: number
 
-  @Column_("text", {nullable: false})
-  description!: string
+  @Column_("text", {nullable: true})
+  description!: string | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  value!: bigint
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  value!: bigint | undefined | null
 }

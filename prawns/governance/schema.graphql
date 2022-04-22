@@ -128,8 +128,8 @@ type SubstrateBountyProposal @entity {
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
-  description: String!
-  value: BigInt!
+  description: String
+  value: BigInt
 }
 
 type SubstrateTreasuryProposal @entity {
@@ -141,7 +141,7 @@ type SubstrateTreasuryProposal @entity {
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
-  beneficiary: String!
-  beneficiaryAccount: SubstrateGovernanceAccount!
+  beneficiary: String
+  beneficiaryAccount: SubstrateGovernanceAccount
   value: BigInt!
 }

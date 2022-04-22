@@ -1,5 +1,5 @@
-module.exports = class Data1650470817075 {
-  name = 'Data1650470817075'
+module.exports = class Data1650631197526 {
+  name = 'Data1650631197526'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_council_vote" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "proposal" text NOT NULL, "approve" boolean NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_1f1048f82fd8ea3f80453b0cd35" PRIMARY KEY ("id"))`)
@@ -29,11 +29,11 @@ module.exports = class Data1650470817075 {
     await db.query(`CREATE TABLE "substrate_election_vote" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "candidates" text array NOT NULL, "amount" numeric NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_08102bd051fcdc0b97ec12d6877" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_4418e8a14729709867e599ef70" ON "substrate_election_vote" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_ae13930714d737631f3b6ed9f8" ON "substrate_election_vote" ("root_account") `)
-    await db.query(`CREATE TABLE "substrate_bounty_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "description" text NOT NULL, "value" numeric NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_6533aca0649f7230117a2a3b442" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_bounty_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "description" text, "value" numeric, "account_id" character varying NOT NULL, CONSTRAINT "PK_6533aca0649f7230117a2a3b442" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_e543be8d9d4362e014e0fe6d1e" ON "substrate_bounty_proposal" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_57fed3496c1521a349189c9f3a" ON "substrate_bounty_proposal" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_0d20305509e3fd71d70a48e9ad" ON "substrate_bounty_proposal" ("proposal_index") `)
-    await db.query(`CREATE TABLE "substrate_treasury_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "beneficiary" text NOT NULL, "value" numeric NOT NULL, "account_id" character varying NOT NULL, "beneficiary_account_id" character varying NOT NULL, CONSTRAINT "PK_663a95e6e70180cc40ceb859711" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_treasury_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "beneficiary" text, "value" numeric NOT NULL, "account_id" character varying NOT NULL, "beneficiary_account_id" character varying, CONSTRAINT "PK_663a95e6e70180cc40ceb859711" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_b0f3c2115eea9355b7cae7ea15" ON "substrate_treasury_proposal" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_c8bcd2435106486b0f92983f66" ON "substrate_treasury_proposal" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_ed3e552ca9f85d13c65e29c26b" ON "substrate_treasury_proposal" ("proposal_index") `)

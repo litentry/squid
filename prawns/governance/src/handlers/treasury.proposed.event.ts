@@ -2,8 +2,8 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { decodeAddress, encodeAddress } from '../utils';
 import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
-import { getTreasuryProposedEvent} from "./typeGetters/getTreasuryProposedEvent";
-import { getTreasuryProposedSpendCall} from "./typeGetters/getTreasuryProposeSpendCall";
+import { getTreasuryProposedEvent } from "./typeGetters/getTreasuryProposedEvent";
+import { getTreasuryProposedSpendCall } from "./typeGetters/getTreasuryProposeSpendCall";
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
@@ -14,9 +14,6 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
     const event = getTreasuryProposedEvent(ctx, network);
-    const call = getTreasuryProposedSpendCall(<ExtrinsicHandlerContext>ctx, network);
-
-    const beneficiary = '0x' + Buffer.from(call.beneficiary).toString('hex');
 
     // proposer
     const account = await getOrCreateGovernanceAccount(ctx.store, {
@@ -27,14 +24,24 @@ export default (network: SubstrateNetwork) =>
     account.totalTreasurySpendProposals++;
     await ctx.store.save(account);
 
-    // beneficiary
-    const beneficiaryAccount = await getOrCreateGovernanceAccount(ctx.store, {
-      id: encodeAddress(network, call.beneficiary),
-      rootAccount: beneficiary,
-      network,
-    });
-    await ctx.store.save(beneficiaryAccount);
+    let beneficiary = undefined;
+    let beneficiaryAccount = undefined;
+    let value = BigInt(0);
 
+    // beneficiary and value
+    try {
+      const call = getTreasuryProposedSpendCall(<ExtrinsicHandlerContext>ctx, network);
+      value = call.value;
+      beneficiary = decodeAddress(call.beneficiary);
+      beneficiaryAccount = await getOrCreateGovernanceAccount(ctx.store, {
+        id: encodeAddress(network, call.beneficiary),
+        rootAccount: beneficiary,
+        network,
+      });
+      await ctx.store.save(beneficiaryAccount);
+    } catch (e) {
+      console.warn(`treasury.proposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`);
+    }
 
     const proposal = new SubstrateTreasuryProposal({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
@@ -46,9 +53,8 @@ export default (network: SubstrateNetwork) =>
       proposalIndex: event.proposalIndex,
       beneficiary,
       beneficiaryAccount,
-      value: call.value
+      value
     });
 
     await ctx.store.save(proposal);
   };
-

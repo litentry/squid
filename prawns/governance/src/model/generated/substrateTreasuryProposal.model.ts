@@ -36,12 +36,12 @@ export class SubstrateTreasuryProposal {
   @Column_("integer", {nullable: false})
   proposalIndex!: number
 
-  @Column_("text", {nullable: false})
-  beneficiary!: string
+  @Column_("text", {nullable: true})
+  beneficiary!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => SubstrateGovernanceAccount, {nullable: false})
-  beneficiaryAccount!: SubstrateGovernanceAccount
+  @ManyToOne_(() => SubstrateGovernanceAccount, {nullable: true})
+  beneficiaryAccount!: SubstrateGovernanceAccount | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   value!: bigint

@@ -14,7 +14,6 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
     const event = getBountiesBountyProposedEvent(ctx, network);
-    const call = getBountiesProposedCall(<ExtrinsicHandlerContext>ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
@@ -22,8 +21,19 @@ export default (network: SubstrateNetwork) =>
       network,
     });
     account.totalBountyProposals++;
-
     await ctx.store.save(account);
+
+    let value;
+    let description;
+
+    // bounty info
+    try {
+      const call = getBountiesProposedCall(<ExtrinsicHandlerContext>ctx, network);
+      description = Buffer.from(call.description).toString();
+      value = call.value;
+    } catch (e) {
+      console.warn(`bounties.bountyProposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`);
+    }
 
     const proposal = new SubstrateBountyProposal({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
@@ -33,8 +43,8 @@ export default (network: SubstrateNetwork) =>
       blockNumber,
       date,
       proposalIndex: event.index,
-      description: Buffer.from(call.description).toString(),
-      value: call.value
+      description,
+      value,
     });
 
     await ctx.store.save(proposal);
