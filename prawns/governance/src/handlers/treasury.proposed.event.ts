@@ -7,7 +7,7 @@ import { getTreasuryProposedSpendCall} from "./typeGetters/getTreasuryProposeSpe
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
-    if (!ctx.event || !ctx.event.extrinsic) {
+    if (!ctx.event.extrinsic) {
       return;
     }
     const blockNumber = BigInt(ctx.block.height);

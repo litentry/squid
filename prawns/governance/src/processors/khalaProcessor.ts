@@ -12,10 +12,6 @@ import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
 
-processor.setBlockRange({
-  from: 814590,
-  to: 814591
-});
 processor.setTypesBundle('khala');
 processor.setBatchSize(100);
 processor.setIsolationLevel('REPEATABLE READ');

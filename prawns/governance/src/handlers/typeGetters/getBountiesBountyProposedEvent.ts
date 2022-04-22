@@ -16,6 +16,8 @@ export function getBountiesBountyProposedEvent(
 
       if (event.isV2028) {
         return { index: event.asV2028 };
+      } else if (event.isV9130) {
+        return event.asV9130;
       } else {
         return event.asLatest;
       }
@@ -26,6 +28,8 @@ export function getBountiesBountyProposedEvent(
 
       if (event.isV28) {
         return { index: event.asV28 };
+      } else if (event.isV9140) {
+        return event.asV9140;
       } else {
         return event.asLatest;
       }
@@ -36,6 +40,8 @@ export function getBountiesBountyProposedEvent(
 
       if (event.isV28) {
         return { index: event.asV28 };
+      } else if (event.isV9140) {
+        return event.asV9140;
       } else {
         return event.asLatest;
       }
