@@ -26,6 +26,11 @@ export interface AccountVote_Split {
   value: AccountVoteSplit
 }
 
+export interface Timepoint {
+  height: number
+  index: number
+}
+
 export type GenericMultiAddress = GenericMultiAddress_Id | GenericMultiAddress_Index | GenericMultiAddress_Raw | GenericMultiAddress_Address32 | GenericMultiAddress_Address20
 
 export interface GenericMultiAddress_Id {

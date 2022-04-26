@@ -2,42 +2,12 @@ import type {Result} from './support'
 
 export type AccountId32 = Uint8Array
 
-export type H256 = Uint8Array
-
-export type VoteThreshold = VoteThreshold_SuperMajorityApprove | VoteThreshold_SuperMajorityAgainst | VoteThreshold_SimpleMajority
-
-export interface VoteThreshold_SuperMajorityApprove {
-  __kind: 'SuperMajorityApprove'
-}
-
-export interface VoteThreshold_SuperMajorityAgainst {
-  __kind: 'SuperMajorityAgainst'
-}
-
-export interface VoteThreshold_SimpleMajority {
-  __kind: 'SimpleMajority'
-}
-
-export type AccountVote = AccountVote_Standard | AccountVote_Split
-
-export interface AccountVote_Standard {
-  __kind: 'Standard'
-  vote: Vote
-  balance: bigint
-}
-
-export interface AccountVote_Split {
-  __kind: 'Split'
-  aye: bigint
-  nay: bigint
-}
-
 export interface Timepoint {
   height: number
   index: number
 }
 
-export type Call = Call_System | Call_Timestamp | Call_Utility | Call_Multisig | Call_Proxy | Call_Vesting | Call_Scheduler | Call_ParachainSystem | Call_Balances | Call_Authorship | Call_CollatorSelection | Call_Session | Call_Identity | Call_Democracy | Call_Council | Call_Treasury | Call_Bounties | Call_Lottery | Call_TechnicalCommittee | Call_TechnicalMembership | Call_PhragmenElection | Call_Tips | Call_ChainBridge | Call_BridgeTransfer | Call_PhalaMq | Call_PhalaRegistry | Call_PhalaMining | Call_PhalaStakePool
+export type Call = Call_System | Call_Timestamp | Call_Utility | Call_Multisig | Call_Proxy | Call_Vesting | Call_Scheduler | Call_ParachainSystem | Call_Balances | Call_Authorship | Call_CollatorSelection | Call_Session | Call_Identity | Call_Democracy | Call_Council | Call_Treasury | Call_Bounties | Call_Lottery | Call_TechnicalCommittee | Call_TechnicalMembership | Call_PhragmenElection | Call_Tips | Call_ChainBridge | Call_BridgeTransfer | Call_PhalaMq | Call_PhalaRegistry | Call_PhalaMining | Call_PhalaStakePool | Call_Assets | Call_AssetsWrapper
 
 export interface Call_System {
   __kind: 'System'
@@ -179,36 +149,17 @@ export interface Call_PhalaStakePool {
   value: PhalaStakePoolCall
 }
 
+export interface Call_Assets {
+  __kind: 'Assets'
+  value: AssetsCall
+}
+
+export interface Call_AssetsWrapper {
+  __kind: 'AssetsWrapper'
+  value: AssetsWrapperCall
+}
+
 export type WrapperKeepOpaque = [number, Call]
-
-export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
-
-export interface MultiAddress_Id {
-  __kind: 'Id'
-  value: AccountId32
-}
-
-export interface MultiAddress_Index {
-  __kind: 'Index'
-  value: null
-}
-
-export interface MultiAddress_Raw {
-  __kind: 'Raw'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address32 {
-  __kind: 'Address32'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address20 {
-  __kind: 'Address20'
-  value: Uint8Array
-}
-
-export type Vote = number
 
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
@@ -3284,43 +3235,16 @@ export interface ChainBridgeCall_eval_vote_state {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type BridgeTransferCall = BridgeTransferCall_change_fee | BridgeTransferCall_register_asset | BridgeTransferCall_mint_asset | BridgeTransferCall_burn_asset | BridgeTransferCall_transfer_assets | BridgeTransferCall_transfer_native | BridgeTransferCall_transfer
+export type BridgeTransferCall = BridgeTransferCall_update_fee | BridgeTransferCall_transfer_assets | BridgeTransferCall_transfer_native | BridgeTransferCall_transfer
 
 /**
  * Change extra bridge transfer fee that user should pay
  */
-export interface BridgeTransferCall_change_fee {
-  __kind: 'change_fee'
+export interface BridgeTransferCall_update_fee {
+  __kind: 'update_fee'
   minFee: bigint
   feeScale: number
   destId: number
-}
-
-/**
- * Register an asset.
- */
-export interface BridgeTransferCall_register_asset {
-  __kind: 'register_asset'
-  assetIdentity: Uint8Array
-  destId: number
-}
-
-/**
- * Do mint operation on specific asset
- */
-export interface BridgeTransferCall_mint_asset {
-  __kind: 'mint_asset'
-  asset: Uint8Array
-  amount: bigint
-}
-
-/**
- * Do burn operation on specific asset
- */
-export interface BridgeTransferCall_burn_asset {
-  __kind: 'burn_asset'
-  asset: Uint8Array
-  amount: bigint
 }
 
 /**
@@ -3328,10 +3252,10 @@ export interface BridgeTransferCall_burn_asset {
  */
 export interface BridgeTransferCall_transfer_assets {
   __kind: 'transfer_assets'
-  asset: Uint8Array
-  amount: bigint
-  recipient: Uint8Array
+  asset: XTransferAsset
   destId: number
+  recipient: Uint8Array
+  amount: bigint
 }
 
 /**
@@ -3690,23 +3614,593 @@ export interface PhalaStakePoolCall_reconcile_withdraw_queue {
   account: AccountId32
 }
 
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type AssetsCall = AssetsCall_create | AssetsCall_force_create | AssetsCall_destroy | AssetsCall_mint | AssetsCall_burn | AssetsCall_transfer | AssetsCall_transfer_keep_alive | AssetsCall_force_transfer | AssetsCall_freeze | AssetsCall_thaw | AssetsCall_freeze_asset | AssetsCall_thaw_asset | AssetsCall_transfer_ownership | AssetsCall_set_team | AssetsCall_set_metadata | AssetsCall_clear_metadata | AssetsCall_force_set_metadata | AssetsCall_force_clear_metadata | AssetsCall_force_asset_status | AssetsCall_approve_transfer | AssetsCall_cancel_approval | AssetsCall_force_cancel_approval | AssetsCall_transfer_approved
+
+/**
+ * Issue a new class of fungible assets from a public origin.
+ * 
+ * This new asset class has no assets initially and its owner is the origin.
+ * 
+ * The origin must be Signed and the sender must have sufficient funds free.
+ * 
+ * Funds of sender are reserved by `AssetDeposit`.
+ * 
+ * Parameters:
+ * - `id`: The identifier of the new asset. This must not be currently in use to identify
+ * an existing asset.
+ * - `admin`: The admin of this class of assets. The admin is the initial address of each
+ * member of the asset class's admin team.
+ * - `min_balance`: The minimum balance of this new asset that any single account must
+ * have. If an account's balance is reduced below this, then it collapses to zero.
+ * 
+ * Emits `Created` event when successful.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_create {
+  __kind: 'create'
+  id: number
+  admin: MultiAddress
+  minBalance: bigint
+}
+
+/**
+ * Issue a new class of fungible assets from a privileged origin.
+ * 
+ * This new asset class has no assets initially.
+ * 
+ * The origin must conform to `ForceOrigin`.
+ * 
+ * Unlike `create`, no funds are reserved.
+ * 
+ * - `id`: The identifier of the new asset. This must not be currently in use to identify
+ * an existing asset.
+ * - `owner`: The owner of this class of assets. The owner has full superuser permissions
+ * over this asset, but may later change and configure the permissions using
+ * `transfer_ownership` and `set_team`.
+ * - `min_balance`: The minimum balance of this new asset that any single account must
+ * have. If an account's balance is reduced below this, then it collapses to zero.
+ * 
+ * Emits `ForceCreated` event when successful.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_create {
+  __kind: 'force_create'
+  id: number
+  owner: MultiAddress
+  isSufficient: boolean
+  minBalance: bigint
+}
+
+/**
+ * Destroy a class of fungible assets.
+ * 
+ * The origin must conform to `ForceOrigin` or must be Signed and the sender must be the
+ * owner of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+ * asset.
+ * 
+ * Emits `Destroyed` event when successful.
+ * 
+ * NOTE: It can be helpful to first freeze an asset before destroying it so that you
+ * can provide accurate witness information and prevent users from manipulating state
+ * in a way that can make it harder to destroy.
+ * 
+ * Weight: `O(c + p + a)` where:
+ * - `c = (witness.accounts - witness.sufficients)`
+ * - `s = witness.sufficients`
+ * - `a = witness.approvals`
+ */
+export interface AssetsCall_destroy {
+  __kind: 'destroy'
+  id: number
+  witness: DestroyWitness
+}
+
+/**
+ * Mint assets of a particular class.
+ * 
+ * The origin must be Signed and the sender must be the Issuer of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to have some amount minted.
+ * - `beneficiary`: The account to be credited with the minted assets.
+ * - `amount`: The amount of the asset to be minted.
+ * 
+ * Emits `Issued` event when successful.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existing balance of `beneficiary`; Account pre-existence of `beneficiary`.
+ */
+export interface AssetsCall_mint {
+  __kind: 'mint'
+  id: number
+  beneficiary: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Reduce the balance of `who` by as much as possible up to `amount` assets of `id`.
+ * 
+ * Origin must be Signed and the sender should be the Manager of the asset `id`.
+ * 
+ * Bails with `BalanceZero` if the `who` is already dead.
+ * 
+ * - `id`: The identifier of the asset to have some amount burned.
+ * - `who`: The account to be debited from.
+ * - `amount`: The maximum amount by which `who`'s balance should be reduced.
+ * 
+ * Emits `Burned` with the actual amount burned. If this takes the balance to below the
+ * minimum for the asset, then the amount burned is increased to take it to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Post-existence of `who`; Pre & post Zombie-status of `who`.
+ */
+export interface AssetsCall_burn {
+  __kind: 'burn'
+  id: number
+  who: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Move some assets from the sender account to another.
+ * 
+ * Origin must be Signed.
+ * 
+ * - `id`: The identifier of the asset to have some amount transferred.
+ * - `target`: The account to be credited.
+ * - `amount`: The amount by which the sender's balance of assets should be reduced and
+ * `target`'s balance increased. The amount actually transferred may be slightly greater in
+ * the case that the transfer would otherwise take the sender balance above zero but below
+ * the minimum balance. Must be greater than zero.
+ * 
+ * Emits `Transferred` with the actual amount transferred. If this takes the source balance
+ * to below the minimum for the asset, then the amount transferred is increased to take it
+ * to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existence of `target`; Post-existence of sender; Account pre-existence of
+ * `target`.
+ */
+export interface AssetsCall_transfer {
+  __kind: 'transfer'
+  id: number
+  target: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Move some assets from the sender account to another, keeping the sender account alive.
+ * 
+ * Origin must be Signed.
+ * 
+ * - `id`: The identifier of the asset to have some amount transferred.
+ * - `target`: The account to be credited.
+ * - `amount`: The amount by which the sender's balance of assets should be reduced and
+ * `target`'s balance increased. The amount actually transferred may be slightly greater in
+ * the case that the transfer would otherwise take the sender balance above zero but below
+ * the minimum balance. Must be greater than zero.
+ * 
+ * Emits `Transferred` with the actual amount transferred. If this takes the source balance
+ * to below the minimum for the asset, then the amount transferred is increased to take it
+ * to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existence of `target`; Post-existence of sender; Account pre-existence of
+ * `target`.
+ */
+export interface AssetsCall_transfer_keep_alive {
+  __kind: 'transfer_keep_alive'
+  id: number
+  target: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Move some assets from one account to another.
+ * 
+ * Origin must be Signed and the sender should be the Admin of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to have some amount transferred.
+ * - `source`: The account to be debited.
+ * - `dest`: The account to be credited.
+ * - `amount`: The amount by which the `source`'s balance of assets should be reduced and
+ * `dest`'s balance increased. The amount actually transferred may be slightly greater in
+ * the case that the transfer would otherwise take the `source` balance above zero but
+ * below the minimum balance. Must be greater than zero.
+ * 
+ * Emits `Transferred` with the actual amount transferred. If this takes the source balance
+ * to below the minimum for the asset, then the amount transferred is increased to take it
+ * to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existence of `dest`; Post-existence of `source`; Account pre-existence of
+ * `dest`.
+ */
+export interface AssetsCall_force_transfer {
+  __kind: 'force_transfer'
+  id: number
+  source: MultiAddress
+  dest: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Disallow further unprivileged transfers from an account.
+ * 
+ * Origin must be Signed and the sender should be the Freezer of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * - `who`: The account to be frozen.
+ * 
+ * Emits `Frozen`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_freeze {
+  __kind: 'freeze'
+  id: number
+  who: MultiAddress
+}
+
+/**
+ * Allow unprivileged transfers from an account again.
+ * 
+ * Origin must be Signed and the sender should be the Admin of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * - `who`: The account to be unfrozen.
+ * 
+ * Emits `Thawed`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_thaw {
+  __kind: 'thaw'
+  id: number
+  who: MultiAddress
+}
+
+/**
+ * Disallow further unprivileged transfers for the asset class.
+ * 
+ * Origin must be Signed and the sender should be the Freezer of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * 
+ * Emits `Frozen`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_freeze_asset {
+  __kind: 'freeze_asset'
+  id: number
+}
+
+/**
+ * Allow unprivileged transfers for the asset again.
+ * 
+ * Origin must be Signed and the sender should be the Admin of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be thawed.
+ * 
+ * Emits `Thawed`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_thaw_asset {
+  __kind: 'thaw_asset'
+  id: number
+}
+
+/**
+ * Change the Owner of an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `owner`: The new Owner of this asset.
+ * 
+ * Emits `OwnerChanged`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_transfer_ownership {
+  __kind: 'transfer_ownership'
+  id: number
+  owner: MultiAddress
+}
+
+/**
+ * Change the Issuer, Admin and Freezer of an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * - `issuer`: The new Issuer of this asset.
+ * - `admin`: The new Admin of this asset.
+ * - `freezer`: The new Freezer of this asset.
+ * 
+ * Emits `TeamChanged`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_set_team {
+  __kind: 'set_team'
+  id: number
+  issuer: MultiAddress
+  admin: MultiAddress
+  freezer: MultiAddress
+}
+
+/**
+ * Set the metadata for an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * Funds of sender are reserved according to the formula:
+ * `MetadataDepositBase + MetadataDepositPerByte * (name.len + symbol.len)` taking into
+ * account any already reserved funds.
+ * 
+ * - `id`: The identifier of the asset to update.
+ * - `name`: The user friendly name of this asset. Limited in length by `StringLimit`.
+ * - `symbol`: The exchange symbol for this asset. Limited in length by `StringLimit`.
+ * - `decimals`: The number of decimals this asset uses to represent one unit.
+ * 
+ * Emits `MetadataSet`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_set_metadata {
+  __kind: 'set_metadata'
+  id: number
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+}
+
+/**
+ * Clear the metadata for an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * Any deposit is freed for the asset owner.
+ * 
+ * - `id`: The identifier of the asset to clear.
+ * 
+ * Emits `MetadataCleared`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_clear_metadata {
+  __kind: 'clear_metadata'
+  id: number
+}
+
+/**
+ * Force the metadata for an asset to some value.
+ * 
+ * Origin must be ForceOrigin.
+ * 
+ * Any deposit is left alone.
+ * 
+ * - `id`: The identifier of the asset to update.
+ * - `name`: The user friendly name of this asset. Limited in length by `StringLimit`.
+ * - `symbol`: The exchange symbol for this asset. Limited in length by `StringLimit`.
+ * - `decimals`: The number of decimals this asset uses to represent one unit.
+ * 
+ * Emits `MetadataSet`.
+ * 
+ * Weight: `O(N + S)` where N and S are the length of the name and symbol respectively.
+ */
+export interface AssetsCall_force_set_metadata {
+  __kind: 'force_set_metadata'
+  id: number
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+  isFrozen: boolean
+}
+
+/**
+ * Clear the metadata for an asset.
+ * 
+ * Origin must be ForceOrigin.
+ * 
+ * Any deposit is returned.
+ * 
+ * - `id`: The identifier of the asset to clear.
+ * 
+ * Emits `MetadataCleared`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_clear_metadata {
+  __kind: 'force_clear_metadata'
+  id: number
+}
+
+/**
+ * Alter the attributes of a given asset.
+ * 
+ * Origin must be `ForceOrigin`.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `owner`: The new Owner of this asset.
+ * - `issuer`: The new Issuer of this asset.
+ * - `admin`: The new Admin of this asset.
+ * - `freezer`: The new Freezer of this asset.
+ * - `min_balance`: The minimum balance of this new asset that any single account must
+ * have. If an account's balance is reduced below this, then it collapses to zero.
+ * - `is_sufficient`: Whether a non-zero balance of this asset is deposit of sufficient
+ * value to account for the state bloat associated with its balance storage. If set to
+ * `true`, then non-zero balances may be stored without a `consumer` reference (and thus
+ * an ED in the Balances pallet or whatever else is used to control user-account state
+ * growth).
+ * - `is_frozen`: Whether this asset class is frozen except for permissioned/admin
+ * instructions.
+ * 
+ * Emits `AssetStatusChanged` with the identity of the asset.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_asset_status {
+  __kind: 'force_asset_status'
+  id: number
+  owner: MultiAddress
+  issuer: MultiAddress
+  admin: MultiAddress
+  freezer: MultiAddress
+  minBalance: bigint
+  isSufficient: boolean
+  isFrozen: boolean
+}
+
+/**
+ * Approve an amount of asset for transfer by a delegated third-party account.
+ * 
+ * Origin must be Signed.
+ * 
+ * Ensures that `ApprovalDeposit` worth of `Currency` is reserved from signing account
+ * for the purpose of holding the approval. If some non-zero amount of assets is already
+ * approved from signing account to `delegate`, then it is topped up or unreserved to
+ * meet the right value.
+ * 
+ * NOTE: The signing account does not need to own `amount` of assets at the point of
+ * making this call.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `delegate`: The account to delegate permission to transfer asset.
+ * - `amount`: The amount of asset that may be transferred by `delegate`. If there is
+ * already an approval in place, then this acts additively.
+ * 
+ * Emits `ApprovedTransfer` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_approve_transfer {
+  __kind: 'approve_transfer'
+  id: number
+  delegate: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Cancel all of some asset approved for delegated transfer by a third-party account.
+ * 
+ * Origin must be Signed and there must be an approval in place between signer and
+ * `delegate`.
+ * 
+ * Unreserves any deposit previously reserved by `approve_transfer` for the approval.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `delegate`: The account delegated permission to transfer asset.
+ * 
+ * Emits `ApprovalCancelled` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_cancel_approval {
+  __kind: 'cancel_approval'
+  id: number
+  delegate: MultiAddress
+}
+
+/**
+ * Cancel all of some asset approved for delegated transfer by a third-party account.
+ * 
+ * Origin must be either ForceOrigin or Signed origin with the signer being the Admin
+ * account of the asset `id`.
+ * 
+ * Unreserves any deposit previously reserved by `approve_transfer` for the approval.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `delegate`: The account delegated permission to transfer asset.
+ * 
+ * Emits `ApprovalCancelled` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_cancel_approval {
+  __kind: 'force_cancel_approval'
+  id: number
+  owner: MultiAddress
+  delegate: MultiAddress
+}
+
+/**
+ * Transfer some asset balance from a previously delegated account to some third-party
+ * account.
+ * 
+ * Origin must be Signed and there must be an approval in place by the `owner` to the
+ * signer.
+ * 
+ * If the entire amount approved for transfer is transferred, then any deposit previously
+ * reserved by `approve_transfer` is unreserved.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `owner`: The account which previously approved for a transfer of at least `amount` and
+ * from which the asset balance will be withdrawn.
+ * - `destination`: The account to which the asset balance of `amount` will be transferred.
+ * - `amount`: The amount of assets to transfer.
+ * 
+ * Emits `TransferredApproved` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_transfer_approved {
+  __kind: 'transfer_approved'
+  id: number
+  owner: MultiAddress
+  destination: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type AssetsWrapperCall = AssetsWrapperCall_force_register_asset | AssetsWrapperCall_force_unregister_asset
+
+export interface AssetsWrapperCall_force_register_asset {
+  __kind: 'force_register_asset'
+  asset: XTransferAsset
+  assetId: number
+  owner: MultiAddress
+}
+
+/**
+ * Clean asset info stored in asset wrapper, not call pallet_assets::destory(),
+ * By cleaning them in current pallet, xcm and bridge transfering on this asset
+ * will not success anymore, we should call pallet_assets::destory() manually
+ * if we want to delete this asset from our chain
+ */
+export interface AssetsWrapperCall_force_unregister_asset {
+  __kind: 'force_unregister_asset'
+  assetId: number
+}
+
 export type Perbill = number
 
 export type OriginCaller = OriginCaller_system | OriginCaller_Council | OriginCaller_TechnicalCommittee | OriginCaller_Void
 
 export interface OriginCaller_system {
   __kind: 'system'
-  value: RawOrigin_203
+  value: RawOrigin_215
 }
 
 export interface OriginCaller_Council {
   __kind: 'Council'
-  value: RawOrigin_204
+  value: RawOrigin_216
 }
 
 export interface OriginCaller_TechnicalCommittee {
   __kind: 'TechnicalCommittee'
-  value: RawOrigin_204
+  value: RawOrigin_216
 }
 
 export interface OriginCaller_Void {
@@ -3738,6 +4232,35 @@ export interface ProxyType_Collator {
 
 export interface ProxyType_StakePoolManager {
   __kind: 'StakePoolManager'
+}
+
+export type H256 = Uint8Array
+
+export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
+
+export interface MultiAddress_Id {
+  __kind: 'Id'
+  value: AccountId32
+}
+
+export interface MultiAddress_Index {
+  __kind: 'Index'
+  value: null
+}
+
+export interface MultiAddress_Raw {
+  __kind: 'Raw'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address32 {
+  __kind: 'Address32'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address20 {
+  __kind: 'Address20'
+  value: Uint8Array
 }
 
 export interface VestingInfo {
@@ -4001,6 +4524,20 @@ export interface Judgement_Erroneous {
   __kind: 'Erroneous'
 }
 
+export type AccountVote = AccountVote_Standard | AccountVote_Split
+
+export interface AccountVote_Standard {
+  __kind: 'Standard'
+  vote: Vote
+  balance: bigint
+}
+
+export interface AccountVote_Split {
+  __kind: 'Split'
+  aye: bigint
+  nay: bigint
+}
+
 export type Conviction = Conviction_None | Conviction_Locked1x | Conviction_Locked2x | Conviction_Locked3x | Conviction_Locked4x | Conviction_Locked5x | Conviction_Locked6x
 
 export interface Conviction_None {
@@ -4044,6 +4581,18 @@ export interface Renouncing_RunnerUp {
 export interface Renouncing_Candidate {
   __kind: 'Candidate'
   value: number
+}
+
+export type XTransferAsset = XTransferAsset_ParachainAsset | XTransferAsset_SolochainAsset
+
+export interface XTransferAsset_ParachainAsset {
+  __kind: 'ParachainAsset'
+  value: V1MultiLocation
+}
+
+export interface XTransferAsset_SolochainAsset {
+  __kind: 'SolochainAsset'
+  value: Uint8Array
 }
 
 export interface SignedMessage {
@@ -4092,34 +4641,40 @@ export interface TokenomicParameters {
 
 export type Permill = number
 
-export type RawOrigin_203 = RawOrigin_203_Root | RawOrigin_203_Signed | RawOrigin_203_None
+export interface DestroyWitness {
+  accounts: number
+  sufficients: number
+  approvals: number
+}
 
-export interface RawOrigin_203_Root {
+export type RawOrigin_215 = RawOrigin_215_Root | RawOrigin_215_Signed | RawOrigin_215_None
+
+export interface RawOrigin_215_Root {
   __kind: 'Root'
 }
 
-export interface RawOrigin_203_Signed {
+export interface RawOrigin_215_Signed {
   __kind: 'Signed'
   value: AccountId32
 }
 
-export interface RawOrigin_203_None {
+export interface RawOrigin_215_None {
   __kind: 'None'
 }
 
-export type RawOrigin_204 = RawOrigin_204_Members | RawOrigin_204_Member | RawOrigin_204__Phantom
+export type RawOrigin_216 = RawOrigin_216_Members | RawOrigin_216_Member | RawOrigin_216__Phantom
 
-export interface RawOrigin_204_Members {
+export interface RawOrigin_216_Members {
   __kind: 'Members'
   value: [number, number]
 }
 
-export interface RawOrigin_204_Member {
+export interface RawOrigin_216_Member {
   __kind: 'Member'
   value: AccountId32
 }
 
-export interface RawOrigin_204__Phantom {
+export interface RawOrigin_216__Phantom {
   __kind: '_Phantom'
 }
 
@@ -4150,6 +4705,13 @@ export interface InboundHrmpMessage {
 
 export interface Digest {
   logs: DigestItem[]
+}
+
+export type Vote = number
+
+export interface V1MultiLocation {
+  parents: number
+  interior: V1Junctions
 }
 
 export interface Message {
@@ -4186,6 +4748,52 @@ export interface DigestItem_RuntimeEnvironmentUpdated {
   __kind: 'RuntimeEnvironmentUpdated'
 }
 
+export type V1Junctions = V1Junctions_Here | V1Junctions_X1 | V1Junctions_X2 | V1Junctions_X3 | V1Junctions_X4 | V1Junctions_X5 | V1Junctions_X6 | V1Junctions_X7 | V1Junctions_X8
+
+export interface V1Junctions_Here {
+  __kind: 'Here'
+}
+
+export interface V1Junctions_X1 {
+  __kind: 'X1'
+  value: V1Junction
+}
+
+export interface V1Junctions_X2 {
+  __kind: 'X2'
+  value: [V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X3 {
+  __kind: 'X3'
+  value: [V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X4 {
+  __kind: 'X4'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X5 {
+  __kind: 'X5'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X6 {
+  __kind: 'X6'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X7 {
+  __kind: 'X7'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X8 {
+  __kind: 'X8'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
 export type MessageOrigin = MessageOrigin_Pallet | MessageOrigin_Contract | MessageOrigin_Worker | MessageOrigin_AccountId | MessageOrigin_MultiLocation | MessageOrigin_Gatekeeper
 
 export interface MessageOrigin_Pallet {
@@ -4218,3 +4826,133 @@ export interface MessageOrigin_Gatekeeper {
 }
 
 export type Topic = Uint8Array
+
+export type V1Junction = V1Junction_Parachain | V1Junction_AccountId32 | V1Junction_AccountIndex64 | V1Junction_AccountKey20 | V1Junction_PalletInstance | V1Junction_GeneralIndex | V1Junction_GeneralKey | V1Junction_OnlyChild | V1Junction_Plurality
+
+export interface V1Junction_Parachain {
+  __kind: 'Parachain'
+  value: number
+}
+
+export interface V1Junction_AccountId32 {
+  __kind: 'AccountId32'
+  network: V0NetworkId
+  id: Uint8Array
+}
+
+export interface V1Junction_AccountIndex64 {
+  __kind: 'AccountIndex64'
+  network: V0NetworkId
+  index: bigint
+}
+
+export interface V1Junction_AccountKey20 {
+  __kind: 'AccountKey20'
+  network: V0NetworkId
+  key: Uint8Array
+}
+
+export interface V1Junction_PalletInstance {
+  __kind: 'PalletInstance'
+  value: number
+}
+
+export interface V1Junction_GeneralIndex {
+  __kind: 'GeneralIndex'
+  value: bigint
+}
+
+export interface V1Junction_GeneralKey {
+  __kind: 'GeneralKey'
+  value: Uint8Array
+}
+
+export interface V1Junction_OnlyChild {
+  __kind: 'OnlyChild'
+}
+
+export interface V1Junction_Plurality {
+  __kind: 'Plurality'
+  id: V0BodyId
+  part: V0BodyPart
+}
+
+export type V0NetworkId = V0NetworkId_Any | V0NetworkId_Named | V0NetworkId_Polkadot | V0NetworkId_Kusama
+
+export interface V0NetworkId_Any {
+  __kind: 'Any'
+}
+
+export interface V0NetworkId_Named {
+  __kind: 'Named'
+  value: Uint8Array
+}
+
+export interface V0NetworkId_Polkadot {
+  __kind: 'Polkadot'
+}
+
+export interface V0NetworkId_Kusama {
+  __kind: 'Kusama'
+}
+
+export type V0BodyId = V0BodyId_Unit | V0BodyId_Named | V0BodyId_Index | V0BodyId_Executive | V0BodyId_Technical | V0BodyId_Legislative | V0BodyId_Judicial
+
+export interface V0BodyId_Unit {
+  __kind: 'Unit'
+}
+
+export interface V0BodyId_Named {
+  __kind: 'Named'
+  value: Uint8Array
+}
+
+export interface V0BodyId_Index {
+  __kind: 'Index'
+  value: number
+}
+
+export interface V0BodyId_Executive {
+  __kind: 'Executive'
+}
+
+export interface V0BodyId_Technical {
+  __kind: 'Technical'
+}
+
+export interface V0BodyId_Legislative {
+  __kind: 'Legislative'
+}
+
+export interface V0BodyId_Judicial {
+  __kind: 'Judicial'
+}
+
+export type V0BodyPart = V0BodyPart_Voice | V0BodyPart_Members | V0BodyPart_Fraction | V0BodyPart_AtLeastProportion | V0BodyPart_MoreThanProportion
+
+export interface V0BodyPart_Voice {
+  __kind: 'Voice'
+}
+
+export interface V0BodyPart_Members {
+  __kind: 'Members'
+  count: number
+}
+
+export interface V0BodyPart_Fraction {
+  __kind: 'Fraction'
+  nom: number
+  denom: number
+}
+
+export interface V0BodyPart_AtLeastProportion {
+  __kind: 'AtLeastProportion'
+  nom: number
+  denom: number
+}
+
+export interface V0BodyPart_MoreThanProportion {
+  __kind: 'MoreThanProportion'
+  nom: number
+  denom: number
+}

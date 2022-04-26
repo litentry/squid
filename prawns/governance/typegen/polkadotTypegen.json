@@ -16,6 +16,7 @@
     "democracy.vote",
     "phragmenElection.vote",
     "bounties.propose_bounty",
-    "treasury.propose_spend"
+    "treasury.propose_spend",
+    "multisig.as_multi"
   ]
 }

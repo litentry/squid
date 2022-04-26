@@ -2,42 +2,12 @@ import type {Result} from './support'
 
 export type AccountId32 = Uint8Array
 
-export type H256 = Uint8Array
-
-export type VoteThreshold = VoteThreshold_SuperMajorityApprove | VoteThreshold_SuperMajorityAgainst | VoteThreshold_SimpleMajority
-
-export interface VoteThreshold_SuperMajorityApprove {
-  __kind: 'SuperMajorityApprove'
-}
-
-export interface VoteThreshold_SuperMajorityAgainst {
-  __kind: 'SuperMajorityAgainst'
-}
-
-export interface VoteThreshold_SimpleMajority {
-  __kind: 'SimpleMajority'
-}
-
-export type AccountVote = AccountVote_Standard | AccountVote_Split
-
-export interface AccountVote_Standard {
-  __kind: 'Standard'
-  vote: Vote
-  balance: bigint
-}
-
-export interface AccountVote_Split {
-  __kind: 'Split'
-  aye: bigint
-  nay: bigint
-}
-
 export interface Timepoint {
   height: number
   index: number
 }
 
-export type Call = Call_System | Call_Timestamp | Call_Utility | Call_Multisig | Call_Proxy | Call_Vesting | Call_Scheduler | Call_ParachainSystem | Call_Balances | Call_Authorship | Call_CollatorSelection | Call_Session | Call_Identity | Call_Democracy | Call_Council | Call_Treasury | Call_Bounties | Call_Lottery | Call_TechnicalCommittee | Call_TechnicalMembership | Call_PhragmenElection | Call_Tips | Call_ChainBridge | Call_BridgeTransfer | Call_PhalaMq | Call_PhalaRegistry | Call_PhalaMining | Call_PhalaStakePool
+export type Call = Call_System | Call_Timestamp | Call_Utility | Call_Multisig | Call_Proxy | Call_Vesting | Call_Scheduler | Call_Preimage | Call_ParachainSystem | Call_XcmpQueue | Call_DmpQueue | Call_PolkadotXcm | Call_Balances | Call_Authorship | Call_CollatorSelection | Call_Session | Call_Identity | Call_Democracy | Call_Council | Call_Treasury | Call_Bounties | Call_Lottery | Call_TechnicalCommittee | Call_TechnicalMembership | Call_PhragmenElection | Call_Tips | Call_ChildBounties | Call_ChainBridge | Call_BridgeTransfer | Call_XcmTransfer | Call_PhalaMq | Call_PhalaRegistry | Call_PhalaMining | Call_PhalaStakePool | Call_Assets | Call_AssetsWrapper
 
 export interface Call_System {
   __kind: 'System'
@@ -74,9 +44,29 @@ export interface Call_Scheduler {
   value: SchedulerCall
 }
 
+export interface Call_Preimage {
+  __kind: 'Preimage'
+  value: PreimageCall
+}
+
 export interface Call_ParachainSystem {
   __kind: 'ParachainSystem'
   value: ParachainSystemCall
+}
+
+export interface Call_XcmpQueue {
+  __kind: 'XcmpQueue'
+  value: XcmpQueueCall
+}
+
+export interface Call_DmpQueue {
+  __kind: 'DmpQueue'
+  value: DmpQueueCall
+}
+
+export interface Call_PolkadotXcm {
+  __kind: 'PolkadotXcm'
+  value: PolkadotXcmCall
 }
 
 export interface Call_Balances {
@@ -149,6 +139,11 @@ export interface Call_Tips {
   value: TipsCall
 }
 
+export interface Call_ChildBounties {
+  __kind: 'ChildBounties'
+  value: ChildBountiesCall
+}
+
 export interface Call_ChainBridge {
   __kind: 'ChainBridge'
   value: ChainBridgeCall
@@ -157,6 +152,11 @@ export interface Call_ChainBridge {
 export interface Call_BridgeTransfer {
   __kind: 'BridgeTransfer'
   value: BridgeTransferCall
+}
+
+export interface Call_XcmTransfer {
+  __kind: 'XcmTransfer'
+  value: XcmTransferCall
 }
 
 export interface Call_PhalaMq {
@@ -179,36 +179,17 @@ export interface Call_PhalaStakePool {
   value: PhalaStakePoolCall
 }
 
+export interface Call_Assets {
+  __kind: 'Assets'
+  value: AssetsCall
+}
+
+export interface Call_AssetsWrapper {
+  __kind: 'AssetsWrapper'
+  value: AssetsWrapperCall
+}
+
 export type WrapperKeepOpaque = [number, Call]
-
-export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
-
-export interface MultiAddress_Id {
-  __kind: 'Id'
-  value: AccountId32
-}
-
-export interface MultiAddress_Index {
-  __kind: 'Index'
-  value: null
-}
-
-export interface MultiAddress_Raw {
-  __kind: 'Raw'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address32 {
-  __kind: 'Address32'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address20 {
-  __kind: 'Address20'
-  value: Uint8Array
-}
-
-export type Vote = number
 
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
@@ -1021,7 +1002,7 @@ export interface SchedulerCall_schedule {
   when: number
   maybePeriodic: ([number, number] | undefined)
   priority: number
-  call: Call
+  call: MaybeHashed
 }
 
 /**
@@ -1042,7 +1023,7 @@ export interface SchedulerCall_schedule_named {
   when: number
   maybePeriodic: ([number, number] | undefined)
   priority: number
-  call: Call
+  call: MaybeHashed
 }
 
 /**
@@ -1065,7 +1046,7 @@ export interface SchedulerCall_schedule_after {
   after: number
   maybePeriodic: ([number, number] | undefined)
   priority: number
-  call: Call
+  call: MaybeHashed
 }
 
 /**
@@ -1081,7 +1062,52 @@ export interface SchedulerCall_schedule_named_after {
   after: number
   maybePeriodic: ([number, number] | undefined)
   priority: number
-  call: Call
+  call: MaybeHashed
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type PreimageCall = PreimageCall_note_preimage | PreimageCall_unnote_preimage | PreimageCall_request_preimage | PreimageCall_unrequest_preimage
+
+/**
+ * Register a preimage on-chain.
+ * 
+ * If the preimage was previously requested, no fees or deposits are taken for providing
+ * the preimage. Otherwise, a deposit is taken proportional to the size of the preimage.
+ */
+export interface PreimageCall_note_preimage {
+  __kind: 'note_preimage'
+  bytes: Uint8Array
+}
+
+/**
+ * Clear an unrequested preimage from the runtime storage.
+ */
+export interface PreimageCall_unnote_preimage {
+  __kind: 'unnote_preimage'
+  hash: H256
+}
+
+/**
+ * Request a preimage be uploaded to the chain without paying any fees or deposits.
+ * 
+ * If the preimage requests has already been provided on-chain, we unreserve any deposit
+ * a user may have paid, and take the control of the preimage out of their hands.
+ */
+export interface PreimageCall_request_preimage {
+  __kind: 'request_preimage'
+  hash: H256
+}
+
+/**
+ * Clear a previously made request for a preimage.
+ * 
+ * NOTE: THIS MUST NOT BE CALLED ON `hash` MORE TIMES THAN `request_preimage`.
+ */
+export interface PreimageCall_unrequest_preimage {
+  __kind: 'unrequest_preimage'
+  hash: H256
 }
 
 /**
@@ -1123,13 +1149,245 @@ export interface ParachainSystemCall_enact_authorized_upgrade {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
+export type XcmpQueueCall = XcmpQueueCall_service_overweight
+
+/**
+ * Services a single overweight XCM.
+ * 
+ * - `origin`: Must pass `ExecuteOverweightOrigin`.
+ * - `index`: The index of the overweight XCM to service
+ * - `weight_limit`: The amount of weight that XCM execution may take.
+ * 
+ * Errors:
+ * - `BadOverweightIndex`: XCM under `index` is not found in the `Overweight` storage map.
+ * - `BadXcm`: XCM under `index` cannot be properly decoded into a valid XCM format.
+ * - `WeightOverLimit`: XCM execution may use greater `weight_limit`.
+ * 
+ * Events:
+ * - `OverweightServiced`: On success.
+ */
+export interface XcmpQueueCall_service_overweight {
+  __kind: 'service_overweight'
+  index: bigint
+  weightLimit: bigint
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type DmpQueueCall = DmpQueueCall_service_overweight
+
+/**
+ * Service a single overweight message.
+ * 
+ * - `origin`: Must pass `ExecuteOverweightOrigin`.
+ * - `index`: The index of the overweight message to service.
+ * - `weight_limit`: The amount of weight that message execution may take.
+ * 
+ * Errors:
+ * - `Unknown`: Message of `index` is unknown.
+ * - `OverLimit`: Message execution may use greater than `weight_limit`.
+ * 
+ * Events:
+ * - `OverweightServiced`: On success.
+ */
+export interface DmpQueueCall_service_overweight {
+  __kind: 'service_overweight'
+  index: bigint
+  weightLimit: bigint
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type PolkadotXcmCall = PolkadotXcmCall_send | PolkadotXcmCall_teleport_assets | PolkadotXcmCall_reserve_transfer_assets | PolkadotXcmCall_execute | PolkadotXcmCall_force_xcm_version | PolkadotXcmCall_force_default_xcm_version | PolkadotXcmCall_force_subscribe_version_notify | PolkadotXcmCall_force_unsubscribe_version_notify | PolkadotXcmCall_limited_reserve_transfer_assets | PolkadotXcmCall_limited_teleport_assets
+
+export interface PolkadotXcmCall_send {
+  __kind: 'send'
+  dest: VersionedMultiLocation
+  message: VersionedXcm_175
+}
+
+/**
+ * Teleport some assets from the local chain to some destination chain.
+ * 
+ * Fee payment on the destination side is made from the first asset listed in the `assets` vector and
+ * fee-weight is calculated locally and thus remote weights are assumed to be equal to
+ * local weights.
+ * 
+ * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+ * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+ *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+ * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+ *   an `AccountId32` value.
+ * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+ *   `dest` side. May not be empty.
+ * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+ *   fees.
+ */
+export interface PolkadotXcmCall_teleport_assets {
+  __kind: 'teleport_assets'
+  dest: VersionedMultiLocation
+  beneficiary: VersionedMultiLocation
+  assets: VersionedMultiAssets
+  feeAssetItem: number
+}
+
+/**
+ * Transfer some assets from the local chain to the sovereign account of a destination chain and forward
+ * a notification XCM.
+ * 
+ * Fee payment on the destination side is made from the first asset listed in the `assets` vector and
+ * fee-weight is calculated locally and thus remote weights are assumed to be equal to
+ * local weights.
+ * 
+ * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+ * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+ *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+ * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+ *   an `AccountId32` value.
+ * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+ *   `dest` side.
+ * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+ *   fees.
+ */
+export interface PolkadotXcmCall_reserve_transfer_assets {
+  __kind: 'reserve_transfer_assets'
+  dest: VersionedMultiLocation
+  beneficiary: VersionedMultiLocation
+  assets: VersionedMultiAssets
+  feeAssetItem: number
+}
+
+/**
+ * Execute an XCM message from a local, signed, origin.
+ * 
+ * An event is deposited indicating whether `msg` could be executed completely or only
+ * partially.
+ * 
+ * No more than `max_weight` will be used in its attempted execution. If this is less than the
+ * maximum amount of weight that the message could take to be executed, then no execution
+ * attempt will be made.
+ * 
+ * NOTE: A successful return to this does *not* imply that the `msg` was executed successfully
+ * to completion; only that *some* of it was executed.
+ */
+export interface PolkadotXcmCall_execute {
+  __kind: 'execute'
+  message: VersionedXcm_186
+  maxWeight: bigint
+}
+
+/**
+ * Extoll that a particular destination can be communicated with through a particular
+ * version of XCM.
+ * 
+ * - `origin`: Must be Root.
+ * - `location`: The destination that is being described.
+ * - `xcm_version`: The latest version of XCM that `location` supports.
+ */
+export interface PolkadotXcmCall_force_xcm_version {
+  __kind: 'force_xcm_version'
+  location: V1MultiLocation
+  xcmVersion: number
+}
+
+/**
+ * Set a safe XCM version (the version that XCM should be encoded with if the most recent
+ * version a destination can accept is unknown).
+ * 
+ * - `origin`: Must be Root.
+ * - `maybe_xcm_version`: The default XCM encoding version, or `None` to disable.
+ */
+export interface PolkadotXcmCall_force_default_xcm_version {
+  __kind: 'force_default_xcm_version'
+  maybeXcmVersion: (number | undefined)
+}
+
+/**
+ * Ask a location to notify us regarding their XCM version and any changes to it.
+ * 
+ * - `origin`: Must be Root.
+ * - `location`: The location to which we should subscribe for XCM version notifications.
+ */
+export interface PolkadotXcmCall_force_subscribe_version_notify {
+  __kind: 'force_subscribe_version_notify'
+  location: VersionedMultiLocation
+}
+
+/**
+ * Require that a particular destination should no longer notify us regarding any XCM
+ * version changes.
+ * 
+ * - `origin`: Must be Root.
+ * - `location`: The location to which we are currently subscribed for XCM version
+ *   notifications which we no longer desire.
+ */
+export interface PolkadotXcmCall_force_unsubscribe_version_notify {
+  __kind: 'force_unsubscribe_version_notify'
+  location: VersionedMultiLocation
+}
+
+/**
+ * Transfer some assets from the local chain to the sovereign account of a destination chain and forward
+ * a notification XCM.
+ * 
+ * Fee payment on the destination side is made from the first asset listed in the `assets` vector.
+ * 
+ * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+ * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+ *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+ * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+ *   an `AccountId32` value.
+ * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+ *   `dest` side.
+ * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+ *   fees.
+ * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+ */
+export interface PolkadotXcmCall_limited_reserve_transfer_assets {
+  __kind: 'limited_reserve_transfer_assets'
+  dest: VersionedMultiLocation
+  beneficiary: VersionedMultiLocation
+  assets: VersionedMultiAssets
+  feeAssetItem: number
+  weightLimit: V2WeightLimit
+}
+
+/**
+ * Teleport some assets from the local chain to some destination chain.
+ * 
+ * Fee payment on the destination side is made from the first asset listed in the `assets` vector.
+ * 
+ * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+ * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+ *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+ * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+ *   an `AccountId32` value.
+ * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+ *   `dest` side. May not be empty.
+ * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+ *   fees.
+ * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+ */
+export interface PolkadotXcmCall_limited_teleport_assets {
+  __kind: 'limited_teleport_assets'
+  dest: VersionedMultiLocation
+  beneficiary: VersionedMultiLocation
+  assets: VersionedMultiAssets
+  feeAssetItem: number
+  weightLimit: V2WeightLimit
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
 export type BalancesCall = BalancesCall_transfer | BalancesCall_set_balance | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve
 
 /**
  * Transfer some liquid free balance to another account.
  * 
  * `transfer` will set the `FreeBalance` of the sender and receiver.
- * It will decrease the total issuance of the system by the `TransferFee`.
  * If the sender's account is below the existential deposit as a result
  * of the transfer, the account will be reaped.
  * 
@@ -1163,7 +1421,7 @@ export interface BalancesCall_transfer {
  * Set the balances of a given account.
  * 
  * This will alter `FreeBalance` and `ReservedBalance` in storage. it will
- * also decrease the total issuance of the system (`TotalIssuance`).
+ * also alter the total issuance of the system (`TotalIssuance`) appropriately.
  * If the new free or reserved balance is below the existential deposit,
  * it will reset the account nonce (`frame_system::AccountNonce`).
  * 
@@ -1259,25 +1517,50 @@ export interface AuthorshipCall_set_uncles {
  */
 export type CollatorSelectionCall = CollatorSelectionCall_set_invulnerables | CollatorSelectionCall_set_desired_candidates | CollatorSelectionCall_set_candidacy_bond | CollatorSelectionCall_register_as_candidate | CollatorSelectionCall_leave_intent
 
+/**
+ * Set the list of invulnerable (fixed) collators.
+ */
 export interface CollatorSelectionCall_set_invulnerables {
   __kind: 'set_invulnerables'
   new: AccountId32[]
 }
 
+/**
+ * Set the ideal number of collators (not including the invulnerables).
+ * If lowering this number, then the number of running collators could be higher than this figure.
+ * Aside from that edge case, there should be no other way to have more collators than the desired number.
+ */
 export interface CollatorSelectionCall_set_desired_candidates {
   __kind: 'set_desired_candidates'
   max: number
 }
 
+/**
+ * Set the candidacy bond amount.
+ */
 export interface CollatorSelectionCall_set_candidacy_bond {
   __kind: 'set_candidacy_bond'
   bond: bigint
 }
 
+/**
+ * Register this account as a collator candidate. The account must (a) already have
+ * registered session keys and (b) be able to reserve the `CandidacyBond`.
+ * 
+ * This call is not available to `Invulnerable` collators.
+ */
 export interface CollatorSelectionCall_register_as_candidate {
   __kind: 'register_as_candidate'
 }
 
+/**
+ * Deregister `origin` as a collator candidate. Note that the collator can only leave on
+ * session change. The `CandidacyBond` will be unreserved immediately.
+ * 
+ * This call will fail if the total number of candidates would drop below `MinCandidates`.
+ * 
+ * This call is not available to `Invulnerable` collators.
+ */
 export interface CollatorSelectionCall_leave_intent {
   __kind: 'leave_intent'
 }
@@ -2867,7 +3150,7 @@ export type PhragmenElectionCall = PhragmenElectionCall_vote | PhragmenElectionC
  *   - be less than the number of possible candidates. Note that all current members and
  *     runners-up are also automatically candidates for the next round.
  * 
- * If `value` is more than `who`'s total balance, then the maximum of the two is used.
+ * If `value` is more than `who`'s free balance, then the maximum of the two is used.
  * 
  * The dispatch origin of this call must be signed.
  * 
@@ -3150,7 +3433,214 @@ export interface TipsCall_slash_tip {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type ChainBridgeCall = ChainBridgeCall_set_threshold | ChainBridgeCall_set_resource | ChainBridgeCall_remove_resource | ChainBridgeCall_whitelist_chain | ChainBridgeCall_add_relayer | ChainBridgeCall_remove_relayer | ChainBridgeCall_acknowledge_proposal | ChainBridgeCall_reject_proposal | ChainBridgeCall_eval_vote_state
+export type ChildBountiesCall = ChildBountiesCall_add_child_bounty | ChildBountiesCall_propose_curator | ChildBountiesCall_accept_curator | ChildBountiesCall_unassign_curator | ChildBountiesCall_award_child_bounty | ChildBountiesCall_claim_child_bounty | ChildBountiesCall_close_child_bounty
+
+/**
+ * Add a new child-bounty.
+ * 
+ * The dispatch origin for this call must be the curator of parent
+ * bounty and the parent bounty must be in "active" state.
+ * 
+ * Child-bounty gets added successfully & fund gets transferred from
+ * parent bounty to child-bounty account, if parent bounty has enough
+ * funds, else the call fails.
+ * 
+ * Upper bound to maximum number of active  child-bounties that can be
+ * added are managed via runtime trait config
+ * [`Config::MaxActiveChildBountyCount`].
+ * 
+ * If the call is success, the status of child-bounty is updated to
+ * "Added".
+ * 
+ * - `parent_bounty_id`: Index of parent bounty for which child-bounty is being added.
+ * - `value`: Value for executing the proposal.
+ * - `description`: Text description for the child-bounty.
+ */
+export interface ChildBountiesCall_add_child_bounty {
+  __kind: 'add_child_bounty'
+  parentBountyId: number
+  value: bigint
+  description: Uint8Array
+}
+
+/**
+ * Propose curator for funded child-bounty.
+ * 
+ * The dispatch origin for this call must be curator of parent bounty.
+ * 
+ * Parent bounty must be in active state, for this child-bounty call to
+ * work.
+ * 
+ * Child-bounty must be in "Added" state, for processing the call. And
+ * state of child-bounty is moved to "CuratorProposed" on successful
+ * call completion.
+ * 
+ * - `parent_bounty_id`: Index of parent bounty.
+ * - `child_bounty_id`: Index of child bounty.
+ * - `curator`: Address of child-bounty curator.
+ * - `fee`: payment fee to child-bounty curator for execution.
+ */
+export interface ChildBountiesCall_propose_curator {
+  __kind: 'propose_curator'
+  parentBountyId: number
+  childBountyId: number
+  curator: MultiAddress
+  fee: bigint
+}
+
+/**
+ * Accept the curator role for the child-bounty.
+ * 
+ * The dispatch origin for this call must be the curator of this
+ * child-bounty.
+ * 
+ * A deposit will be reserved from the curator and refund upon
+ * successful payout or cancellation.
+ * 
+ * Fee for curator is deducted from curator fee of parent bounty.
+ * 
+ * Parent bounty must be in active state, for this child-bounty call to
+ * work.
+ * 
+ * Child-bounty must be in "CuratorProposed" state, for processing the
+ * call. And state of child-bounty is moved to "Active" on successful
+ * call completion.
+ * 
+ * - `parent_bounty_id`: Index of parent bounty.
+ * - `child_bounty_id`: Index of child bounty.
+ */
+export interface ChildBountiesCall_accept_curator {
+  __kind: 'accept_curator'
+  parentBountyId: number
+  childBountyId: number
+}
+
+/**
+ * Unassign curator from a child-bounty.
+ * 
+ * The dispatch origin for this call can be either `RejectOrigin`, or
+ * the curator of the parent bounty, or any signed origin.
+ * 
+ * For the origin other than T::RejectOrigin and the child-bounty
+ * curator, parent-bounty must be in active state, for this call to
+ * work. We allow child-bounty curator and T::RejectOrigin to execute
+ * this call irrespective of the parent-bounty state.
+ * 
+ * If this function is called by the `RejectOrigin` or the
+ * parent-bounty curator, we assume that the child-bounty curator is
+ * malicious or inactive. As a result, child-bounty curator deposit is
+ * slashed.
+ * 
+ * If the origin is the child-bounty curator, we take this as a sign
+ * that they are unable to do their job, and are willingly giving up.
+ * We could slash the deposit, but for now we allow them to unreserve
+ * their deposit and exit without issue. (We may want to change this if
+ * it is abused.)
+ * 
+ * Finally, the origin can be anyone iff the child-bounty curator is
+ * "inactive". Expiry update due of parent bounty is used to estimate
+ * inactive state of child-bounty curator.
+ * 
+ * This allows anyone in the community to call out that a child-bounty
+ * curator is not doing their due diligence, and we should pick a new
+ * one. In this case the child-bounty curator deposit is slashed.
+ * 
+ * State of child-bounty is moved to Added state on successful call
+ * completion.
+ * 
+ * - `parent_bounty_id`: Index of parent bounty.
+ * - `child_bounty_id`: Index of child bounty.
+ */
+export interface ChildBountiesCall_unassign_curator {
+  __kind: 'unassign_curator'
+  parentBountyId: number
+  childBountyId: number
+}
+
+/**
+ * Award child-bounty to a beneficiary.
+ * 
+ * The beneficiary will be able to claim the funds after a delay.
+ * 
+ * The dispatch origin for this call must be the master curator or
+ * curator of this child-bounty.
+ * 
+ * Parent bounty must be in active state, for this child-bounty call to
+ * work.
+ * 
+ * Child-bounty must be in active state, for processing the call. And
+ * state of child-bounty is moved to "PendingPayout" on successful call
+ * completion.
+ * 
+ * - `parent_bounty_id`: Index of parent bounty.
+ * - `child_bounty_id`: Index of child bounty.
+ * - `beneficiary`: Beneficiary account.
+ */
+export interface ChildBountiesCall_award_child_bounty {
+  __kind: 'award_child_bounty'
+  parentBountyId: number
+  childBountyId: number
+  beneficiary: MultiAddress
+}
+
+/**
+ * Claim the payout from an awarded child-bounty after payout delay.
+ * 
+ * The dispatch origin for this call may be any signed origin.
+ * 
+ * Call works independent of parent bounty state, No need for parent
+ * bounty to be in active state.
+ * 
+ * The Beneficiary is paid out with agreed bounty value. Curator fee is
+ * paid & curator deposit is unreserved.
+ * 
+ * Child-bounty must be in "PendingPayout" state, for processing the
+ * call. And instance of child-bounty is removed from the state on
+ * successful call completion.
+ * 
+ * - `parent_bounty_id`: Index of parent bounty.
+ * - `child_bounty_id`: Index of child bounty.
+ */
+export interface ChildBountiesCall_claim_child_bounty {
+  __kind: 'claim_child_bounty'
+  parentBountyId: number
+  childBountyId: number
+}
+
+/**
+ * Cancel a proposed or active child-bounty. Child-bounty account funds
+ * are transferred to parent bounty account. The child-bounty curator
+ * deposit may be unreserved if possible.
+ * 
+ * The dispatch origin for this call must be either parent curator or
+ * `T::RejectOrigin`.
+ * 
+ * If the state of child-bounty is `Active`, curator deposit is
+ * unreserved.
+ * 
+ * If the state of child-bounty is `PendingPayout`, call fails &
+ * returns `PendingPayout` error.
+ * 
+ * For the origin other than T::RejectOrigin, parent bounty must be in
+ * active state, for this child-bounty call to work. For origin
+ * T::RejectOrigin execution is forced.
+ * 
+ * Instance of child-bounty is removed from the state on successful
+ * call completion.
+ * 
+ * - `parent_bounty_id`: Index of parent bounty.
+ * - `child_bounty_id`: Index of child bounty.
+ */
+export interface ChildBountiesCall_close_child_bounty {
+  __kind: 'close_child_bounty'
+  parentBountyId: number
+  childBountyId: number
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type ChainBridgeCall = ChainBridgeCall_set_threshold | ChainBridgeCall_whitelist_chain | ChainBridgeCall_add_relayer | ChainBridgeCall_remove_relayer | ChainBridgeCall_acknowledge_proposal | ChainBridgeCall_reject_proposal | ChainBridgeCall_eval_vote_state
 
 /**
  * Sets the vote threshold for proposals.
@@ -3165,34 +3655,6 @@ export type ChainBridgeCall = ChainBridgeCall_set_threshold | ChainBridgeCall_se
 export interface ChainBridgeCall_set_threshold {
   __kind: 'set_threshold'
   threshold: number
-}
-
-/**
- * Stores a method name on chain under an associated resource ID.
- * 
- * # <weight>
- * - O(1) write
- * # </weight>
- */
-export interface ChainBridgeCall_set_resource {
-  __kind: 'set_resource'
-  id: Uint8Array
-  method: Uint8Array
-}
-
-/**
- * Removes a resource ID from the resource mapping.
- * 
- * After this call, bridge transfers with the associated resource ID will
- * be rejected.
- * 
- * # <weight>
- * - O(1) removal
- * # </weight>
- */
-export interface ChainBridgeCall_remove_resource {
-  __kind: 'remove_resource'
-  id: Uint8Array
 }
 
 /**
@@ -3284,43 +3746,16 @@ export interface ChainBridgeCall_eval_vote_state {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type BridgeTransferCall = BridgeTransferCall_change_fee | BridgeTransferCall_register_asset | BridgeTransferCall_mint_asset | BridgeTransferCall_burn_asset | BridgeTransferCall_transfer_assets | BridgeTransferCall_transfer_native | BridgeTransferCall_transfer
+export type BridgeTransferCall = BridgeTransferCall_update_fee | BridgeTransferCall_transfer_assets | BridgeTransferCall_transfer_native | BridgeTransferCall_transfer
 
 /**
  * Change extra bridge transfer fee that user should pay
  */
-export interface BridgeTransferCall_change_fee {
-  __kind: 'change_fee'
+export interface BridgeTransferCall_update_fee {
+  __kind: 'update_fee'
   minFee: bigint
   feeScale: number
   destId: number
-}
-
-/**
- * Register an asset.
- */
-export interface BridgeTransferCall_register_asset {
-  __kind: 'register_asset'
-  assetIdentity: Uint8Array
-  destId: number
-}
-
-/**
- * Do mint operation on specific asset
- */
-export interface BridgeTransferCall_mint_asset {
-  __kind: 'mint_asset'
-  asset: Uint8Array
-  amount: bigint
-}
-
-/**
- * Do burn operation on specific asset
- */
-export interface BridgeTransferCall_burn_asset {
-  __kind: 'burn_asset'
-  asset: Uint8Array
-  amount: bigint
 }
 
 /**
@@ -3328,10 +3763,10 @@ export interface BridgeTransferCall_burn_asset {
  */
 export interface BridgeTransferCall_transfer_assets {
   __kind: 'transfer_assets'
-  asset: Uint8Array
-  amount: bigint
-  recipient: Uint8Array
+  asset: XTransferAsset
   destId: number
+  recipient: Uint8Array
+  amount: bigint
 }
 
 /**
@@ -3349,9 +3784,29 @@ export interface BridgeTransferCall_transfer_native {
  */
 export interface BridgeTransferCall_transfer {
   __kind: 'transfer'
-  to: AccountId32
+  dest: Uint8Array
   amount: bigint
   rid: Uint8Array
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type XcmTransferCall = XcmTransferCall_transfer_asset | XcmTransferCall_transfer_native
+
+export interface XcmTransferCall_transfer_asset {
+  __kind: 'transfer_asset'
+  asset: XTransferAsset
+  dest: V1MultiLocation
+  amount: bigint
+  destWeight: bigint
+}
+
+export interface XcmTransferCall_transfer_native {
+  __kind: 'transfer_native'
+  dest: V1MultiLocation
+  amount: bigint
+  destWeight: bigint
 }
 
 /**
@@ -3382,7 +3837,7 @@ export interface PhalaMqCall_force_push_pallet_message {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type PhalaRegistryCall = PhalaRegistryCall_force_set_benchmark_duration | PhalaRegistryCall_force_register_worker | PhalaRegistryCall_force_register_contract | PhalaRegistryCall_force_register_topic_pubkey | PhalaRegistryCall_register_gatekeeper | PhalaRegistryCall_unregister_gatekeeper | PhalaRegistryCall_register_worker | PhalaRegistryCall_add_pruntime | PhalaRegistryCall_remove_pruntime | PhalaRegistryCall_add_relaychain_genesis_block_hash | PhalaRegistryCall_remove_relaychain_genesis_block_hash
+export type PhalaRegistryCall = PhalaRegistryCall_force_set_benchmark_duration | PhalaRegistryCall_force_register_worker | PhalaRegistryCall_force_register_topic_pubkey | PhalaRegistryCall_register_gatekeeper | PhalaRegistryCall_unregister_gatekeeper | PhalaRegistryCall_register_worker | PhalaRegistryCall_add_pruntime | PhalaRegistryCall_remove_pruntime | PhalaRegistryCall_add_relaychain_genesis_block_hash | PhalaRegistryCall_remove_relaychain_genesis_block_hash
 
 export interface PhalaRegistryCall_force_set_benchmark_duration {
   __kind: 'force_set_benchmark_duration'
@@ -3397,15 +3852,6 @@ export interface PhalaRegistryCall_force_register_worker {
   pubkey: Public
   ecdhPubkey: Public
   operator: (AccountId32 | undefined)
-}
-
-/**
- * Force register a contract pubkey
- */
-export interface PhalaRegistryCall_force_register_contract {
-  __kind: 'force_register_contract'
-  contract: H256
-  pubkey: Public
 }
 
 /**
@@ -3545,10 +3991,10 @@ export interface PhalaStakePoolCall_create {
  * 
  * This will bind a worker to the corresponding pool sub-account. The binding will not be
  * released until the worker is removed gracefully by `remove_worker()`, or a force unbind
- * by the worker opreator via `Mining::unbind()`.
+ * by the worker operator via `Mining::unbind()`.
  * 
  * Requires:
- * 1. The worker is registered and benchmakred
+ * 1. The worker is registered and benchmarked
  * 2. The worker is not bound a pool
  */
 export interface PhalaStakePoolCall_add_worker {
@@ -3563,7 +4009,7 @@ export interface PhalaStakePoolCall_add_worker {
  * Requires:
  * 1. The worker is registered
  * 2. The worker is associated with a pool
- * 3. The worker is removalbe (not in mining)
+ * 3. The worker is removable (not in mining)
  */
 export interface PhalaStakePoolCall_remove_worker {
   __kind: 'remove_worker'
@@ -3613,7 +4059,7 @@ export interface PhalaStakePoolCall_claim_rewards {
  * 
  * Requires:
  * 1. The pool exists
- * 2. After the desposit, the pool doesn't reach the cap
+ * 2. After the deposit, the pool doesn't reach the cap
  */
 export interface PhalaStakePoolCall_contribute {
   __kind: 'contribute'
@@ -3642,7 +4088,7 @@ export interface PhalaStakePoolCall_withdraw {
  * 
  * Requires:
  * 1. The miner is bound to the pool and is in Ready state
- * 2. The remaining stake in the pool can cover the minimal stake requried
+ * 2. The remaining stake in the pool can cover the minimal stake required
  */
 export interface PhalaStakePoolCall_start_mining {
   __kind: 'start_mining'
@@ -3690,23 +4136,656 @@ export interface PhalaStakePoolCall_reconcile_withdraw_queue {
   account: AccountId32
 }
 
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type AssetsCall = AssetsCall_create | AssetsCall_force_create | AssetsCall_destroy | AssetsCall_mint | AssetsCall_burn | AssetsCall_transfer | AssetsCall_transfer_keep_alive | AssetsCall_force_transfer | AssetsCall_freeze | AssetsCall_thaw | AssetsCall_freeze_asset | AssetsCall_thaw_asset | AssetsCall_transfer_ownership | AssetsCall_set_team | AssetsCall_set_metadata | AssetsCall_clear_metadata | AssetsCall_force_set_metadata | AssetsCall_force_clear_metadata | AssetsCall_force_asset_status | AssetsCall_approve_transfer | AssetsCall_cancel_approval | AssetsCall_force_cancel_approval | AssetsCall_transfer_approved | AssetsCall_touch | AssetsCall_refund
+
+/**
+ * Issue a new class of fungible assets from a public origin.
+ * 
+ * This new asset class has no assets initially and its owner is the origin.
+ * 
+ * The origin must be Signed and the sender must have sufficient funds free.
+ * 
+ * Funds of sender are reserved by `AssetDeposit`.
+ * 
+ * Parameters:
+ * - `id`: The identifier of the new asset. This must not be currently in use to identify
+ * an existing asset.
+ * - `admin`: The admin of this class of assets. The admin is the initial address of each
+ * member of the asset class's admin team.
+ * - `min_balance`: The minimum balance of this new asset that any single account must
+ * have. If an account's balance is reduced below this, then it collapses to zero.
+ * 
+ * Emits `Created` event when successful.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_create {
+  __kind: 'create'
+  id: number
+  admin: MultiAddress
+  minBalance: bigint
+}
+
+/**
+ * Issue a new class of fungible assets from a privileged origin.
+ * 
+ * This new asset class has no assets initially.
+ * 
+ * The origin must conform to `ForceOrigin`.
+ * 
+ * Unlike `create`, no funds are reserved.
+ * 
+ * - `id`: The identifier of the new asset. This must not be currently in use to identify
+ * an existing asset.
+ * - `owner`: The owner of this class of assets. The owner has full superuser permissions
+ * over this asset, but may later change and configure the permissions using
+ * `transfer_ownership` and `set_team`.
+ * - `min_balance`: The minimum balance of this new asset that any single account must
+ * have. If an account's balance is reduced below this, then it collapses to zero.
+ * 
+ * Emits `ForceCreated` event when successful.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_create {
+  __kind: 'force_create'
+  id: number
+  owner: MultiAddress
+  isSufficient: boolean
+  minBalance: bigint
+}
+
+/**
+ * Destroy a class of fungible assets.
+ * 
+ * The origin must conform to `ForceOrigin` or must be Signed and the sender must be the
+ * owner of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be destroyed. This must identify an existing
+ * asset.
+ * 
+ * Emits `Destroyed` event when successful.
+ * 
+ * NOTE: It can be helpful to first freeze an asset before destroying it so that you
+ * can provide accurate witness information and prevent users from manipulating state
+ * in a way that can make it harder to destroy.
+ * 
+ * Weight: `O(c + p + a)` where:
+ * - `c = (witness.accounts - witness.sufficients)`
+ * - `s = witness.sufficients`
+ * - `a = witness.approvals`
+ */
+export interface AssetsCall_destroy {
+  __kind: 'destroy'
+  id: number
+  witness: DestroyWitness
+}
+
+/**
+ * Mint assets of a particular class.
+ * 
+ * The origin must be Signed and the sender must be the Issuer of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to have some amount minted.
+ * - `beneficiary`: The account to be credited with the minted assets.
+ * - `amount`: The amount of the asset to be minted.
+ * 
+ * Emits `Issued` event when successful.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existing balance of `beneficiary`; Account pre-existence of `beneficiary`.
+ */
+export interface AssetsCall_mint {
+  __kind: 'mint'
+  id: number
+  beneficiary: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Reduce the balance of `who` by as much as possible up to `amount` assets of `id`.
+ * 
+ * Origin must be Signed and the sender should be the Manager of the asset `id`.
+ * 
+ * Bails with `NoAccount` if the `who` is already dead.
+ * 
+ * - `id`: The identifier of the asset to have some amount burned.
+ * - `who`: The account to be debited from.
+ * - `amount`: The maximum amount by which `who`'s balance should be reduced.
+ * 
+ * Emits `Burned` with the actual amount burned. If this takes the balance to below the
+ * minimum for the asset, then the amount burned is increased to take it to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Post-existence of `who`; Pre & post Zombie-status of `who`.
+ */
+export interface AssetsCall_burn {
+  __kind: 'burn'
+  id: number
+  who: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Move some assets from the sender account to another.
+ * 
+ * Origin must be Signed.
+ * 
+ * - `id`: The identifier of the asset to have some amount transferred.
+ * - `target`: The account to be credited.
+ * - `amount`: The amount by which the sender's balance of assets should be reduced and
+ * `target`'s balance increased. The amount actually transferred may be slightly greater in
+ * the case that the transfer would otherwise take the sender balance above zero but below
+ * the minimum balance. Must be greater than zero.
+ * 
+ * Emits `Transferred` with the actual amount transferred. If this takes the source balance
+ * to below the minimum for the asset, then the amount transferred is increased to take it
+ * to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existence of `target`; Post-existence of sender; Account pre-existence of
+ * `target`.
+ */
+export interface AssetsCall_transfer {
+  __kind: 'transfer'
+  id: number
+  target: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Move some assets from the sender account to another, keeping the sender account alive.
+ * 
+ * Origin must be Signed.
+ * 
+ * - `id`: The identifier of the asset to have some amount transferred.
+ * - `target`: The account to be credited.
+ * - `amount`: The amount by which the sender's balance of assets should be reduced and
+ * `target`'s balance increased. The amount actually transferred may be slightly greater in
+ * the case that the transfer would otherwise take the sender balance above zero but below
+ * the minimum balance. Must be greater than zero.
+ * 
+ * Emits `Transferred` with the actual amount transferred. If this takes the source balance
+ * to below the minimum for the asset, then the amount transferred is increased to take it
+ * to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existence of `target`; Post-existence of sender; Account pre-existence of
+ * `target`.
+ */
+export interface AssetsCall_transfer_keep_alive {
+  __kind: 'transfer_keep_alive'
+  id: number
+  target: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Move some assets from one account to another.
+ * 
+ * Origin must be Signed and the sender should be the Admin of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to have some amount transferred.
+ * - `source`: The account to be debited.
+ * - `dest`: The account to be credited.
+ * - `amount`: The amount by which the `source`'s balance of assets should be reduced and
+ * `dest`'s balance increased. The amount actually transferred may be slightly greater in
+ * the case that the transfer would otherwise take the `source` balance above zero but
+ * below the minimum balance. Must be greater than zero.
+ * 
+ * Emits `Transferred` with the actual amount transferred. If this takes the source balance
+ * to below the minimum for the asset, then the amount transferred is increased to take it
+ * to zero.
+ * 
+ * Weight: `O(1)`
+ * Modes: Pre-existence of `dest`; Post-existence of `source`; Account pre-existence of
+ * `dest`.
+ */
+export interface AssetsCall_force_transfer {
+  __kind: 'force_transfer'
+  id: number
+  source: MultiAddress
+  dest: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Disallow further unprivileged transfers from an account.
+ * 
+ * Origin must be Signed and the sender should be the Freezer of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * - `who`: The account to be frozen.
+ * 
+ * Emits `Frozen`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_freeze {
+  __kind: 'freeze'
+  id: number
+  who: MultiAddress
+}
+
+/**
+ * Allow unprivileged transfers from an account again.
+ * 
+ * Origin must be Signed and the sender should be the Admin of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * - `who`: The account to be unfrozen.
+ * 
+ * Emits `Thawed`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_thaw {
+  __kind: 'thaw'
+  id: number
+  who: MultiAddress
+}
+
+/**
+ * Disallow further unprivileged transfers for the asset class.
+ * 
+ * Origin must be Signed and the sender should be the Freezer of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * 
+ * Emits `Frozen`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_freeze_asset {
+  __kind: 'freeze_asset'
+  id: number
+}
+
+/**
+ * Allow unprivileged transfers for the asset again.
+ * 
+ * Origin must be Signed and the sender should be the Admin of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be thawed.
+ * 
+ * Emits `Thawed`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_thaw_asset {
+  __kind: 'thaw_asset'
+  id: number
+}
+
+/**
+ * Change the Owner of an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `owner`: The new Owner of this asset.
+ * 
+ * Emits `OwnerChanged`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_transfer_ownership {
+  __kind: 'transfer_ownership'
+  id: number
+  owner: MultiAddress
+}
+
+/**
+ * Change the Issuer, Admin and Freezer of an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * - `id`: The identifier of the asset to be frozen.
+ * - `issuer`: The new Issuer of this asset.
+ * - `admin`: The new Admin of this asset.
+ * - `freezer`: The new Freezer of this asset.
+ * 
+ * Emits `TeamChanged`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_set_team {
+  __kind: 'set_team'
+  id: number
+  issuer: MultiAddress
+  admin: MultiAddress
+  freezer: MultiAddress
+}
+
+/**
+ * Set the metadata for an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * Funds of sender are reserved according to the formula:
+ * `MetadataDepositBase + MetadataDepositPerByte * (name.len + symbol.len)` taking into
+ * account any already reserved funds.
+ * 
+ * - `id`: The identifier of the asset to update.
+ * - `name`: The user friendly name of this asset. Limited in length by `StringLimit`.
+ * - `symbol`: The exchange symbol for this asset. Limited in length by `StringLimit`.
+ * - `decimals`: The number of decimals this asset uses to represent one unit.
+ * 
+ * Emits `MetadataSet`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_set_metadata {
+  __kind: 'set_metadata'
+  id: number
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+}
+
+/**
+ * Clear the metadata for an asset.
+ * 
+ * Origin must be Signed and the sender should be the Owner of the asset `id`.
+ * 
+ * Any deposit is freed for the asset owner.
+ * 
+ * - `id`: The identifier of the asset to clear.
+ * 
+ * Emits `MetadataCleared`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_clear_metadata {
+  __kind: 'clear_metadata'
+  id: number
+}
+
+/**
+ * Force the metadata for an asset to some value.
+ * 
+ * Origin must be ForceOrigin.
+ * 
+ * Any deposit is left alone.
+ * 
+ * - `id`: The identifier of the asset to update.
+ * - `name`: The user friendly name of this asset. Limited in length by `StringLimit`.
+ * - `symbol`: The exchange symbol for this asset. Limited in length by `StringLimit`.
+ * - `decimals`: The number of decimals this asset uses to represent one unit.
+ * 
+ * Emits `MetadataSet`.
+ * 
+ * Weight: `O(N + S)` where N and S are the length of the name and symbol respectively.
+ */
+export interface AssetsCall_force_set_metadata {
+  __kind: 'force_set_metadata'
+  id: number
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+  isFrozen: boolean
+}
+
+/**
+ * Clear the metadata for an asset.
+ * 
+ * Origin must be ForceOrigin.
+ * 
+ * Any deposit is returned.
+ * 
+ * - `id`: The identifier of the asset to clear.
+ * 
+ * Emits `MetadataCleared`.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_clear_metadata {
+  __kind: 'force_clear_metadata'
+  id: number
+}
+
+/**
+ * Alter the attributes of a given asset.
+ * 
+ * Origin must be `ForceOrigin`.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `owner`: The new Owner of this asset.
+ * - `issuer`: The new Issuer of this asset.
+ * - `admin`: The new Admin of this asset.
+ * - `freezer`: The new Freezer of this asset.
+ * - `min_balance`: The minimum balance of this new asset that any single account must
+ * have. If an account's balance is reduced below this, then it collapses to zero.
+ * - `is_sufficient`: Whether a non-zero balance of this asset is deposit of sufficient
+ * value to account for the state bloat associated with its balance storage. If set to
+ * `true`, then non-zero balances may be stored without a `consumer` reference (and thus
+ * an ED in the Balances pallet or whatever else is used to control user-account state
+ * growth).
+ * - `is_frozen`: Whether this asset class is frozen except for permissioned/admin
+ * instructions.
+ * 
+ * Emits `AssetStatusChanged` with the identity of the asset.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_asset_status {
+  __kind: 'force_asset_status'
+  id: number
+  owner: MultiAddress
+  issuer: MultiAddress
+  admin: MultiAddress
+  freezer: MultiAddress
+  minBalance: bigint
+  isSufficient: boolean
+  isFrozen: boolean
+}
+
+/**
+ * Approve an amount of asset for transfer by a delegated third-party account.
+ * 
+ * Origin must be Signed.
+ * 
+ * Ensures that `ApprovalDeposit` worth of `Currency` is reserved from signing account
+ * for the purpose of holding the approval. If some non-zero amount of assets is already
+ * approved from signing account to `delegate`, then it is topped up or unreserved to
+ * meet the right value.
+ * 
+ * NOTE: The signing account does not need to own `amount` of assets at the point of
+ * making this call.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `delegate`: The account to delegate permission to transfer asset.
+ * - `amount`: The amount of asset that may be transferred by `delegate`. If there is
+ * already an approval in place, then this acts additively.
+ * 
+ * Emits `ApprovedTransfer` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_approve_transfer {
+  __kind: 'approve_transfer'
+  id: number
+  delegate: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Cancel all of some asset approved for delegated transfer by a third-party account.
+ * 
+ * Origin must be Signed and there must be an approval in place between signer and
+ * `delegate`.
+ * 
+ * Unreserves any deposit previously reserved by `approve_transfer` for the approval.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `delegate`: The account delegated permission to transfer asset.
+ * 
+ * Emits `ApprovalCancelled` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_cancel_approval {
+  __kind: 'cancel_approval'
+  id: number
+  delegate: MultiAddress
+}
+
+/**
+ * Cancel all of some asset approved for delegated transfer by a third-party account.
+ * 
+ * Origin must be either ForceOrigin or Signed origin with the signer being the Admin
+ * account of the asset `id`.
+ * 
+ * Unreserves any deposit previously reserved by `approve_transfer` for the approval.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `delegate`: The account delegated permission to transfer asset.
+ * 
+ * Emits `ApprovalCancelled` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_force_cancel_approval {
+  __kind: 'force_cancel_approval'
+  id: number
+  owner: MultiAddress
+  delegate: MultiAddress
+}
+
+/**
+ * Transfer some asset balance from a previously delegated account to some third-party
+ * account.
+ * 
+ * Origin must be Signed and there must be an approval in place by the `owner` to the
+ * signer.
+ * 
+ * If the entire amount approved for transfer is transferred, then any deposit previously
+ * reserved by `approve_transfer` is unreserved.
+ * 
+ * - `id`: The identifier of the asset.
+ * - `owner`: The account which previously approved for a transfer of at least `amount` and
+ * from which the asset balance will be withdrawn.
+ * - `destination`: The account to which the asset balance of `amount` will be transferred.
+ * - `amount`: The amount of assets to transfer.
+ * 
+ * Emits `TransferredApproved` on success.
+ * 
+ * Weight: `O(1)`
+ */
+export interface AssetsCall_transfer_approved {
+  __kind: 'transfer_approved'
+  id: number
+  owner: MultiAddress
+  destination: MultiAddress
+  amount: bigint
+}
+
+/**
+ * Create an asset account for non-provider assets.
+ * 
+ * A deposit will be taken from the signer account.
+ * 
+ * - `origin`: Must be Signed; the signer account must have sufficient funds for a deposit
+ *   to be taken.
+ * - `id`: The identifier of the asset for the account to be created.
+ * 
+ * Emits `Touched` event when successful.
+ */
+export interface AssetsCall_touch {
+  __kind: 'touch'
+  id: number
+}
+
+/**
+ * Return the deposit (if any) of an asset account.
+ * 
+ * The origin must be Signed.
+ * 
+ * - `id`: The identifier of the asset for the account to be created.
+ * - `allow_burn`: If `true` then assets may be destroyed in order to complete the refund.
+ * 
+ * Emits `Refunded` event when successful.
+ */
+export interface AssetsCall_refund {
+  __kind: 'refund'
+  id: number
+  allowBurn: boolean
+}
+
+/**
+ * Contains one variant per dispatchable that can be called by an extrinsic.
+ */
+export type AssetsWrapperCall = AssetsWrapperCall_force_register_asset | AssetsWrapperCall_force_unregister_asset | AssetsWrapperCall_force_set_metadata | AssetsWrapperCall_force_enable_chainbridge | AssetsWrapperCall_force_disable_chainbridge
+
+export interface AssetsWrapperCall_force_register_asset {
+  __kind: 'force_register_asset'
+  asset: XTransferAsset
+  assetId: number
+  properties: AssetProperties
+  owner: MultiAddress
+}
+
+/**
+ * Clean asset info stored in asset wrapper, not call pallet_assets::destory(),
+ * By cleaning them in current pallet, xcm and bridge transfering on this asset
+ * will not success anymore, we should call pallet_assets::destory() manually
+ * if we want to delete this asset from our chain
+ */
+export interface AssetsWrapperCall_force_unregister_asset {
+  __kind: 'force_unregister_asset'
+  assetId: number
+}
+
+export interface AssetsWrapperCall_force_set_metadata {
+  __kind: 'force_set_metadata'
+  assetId: number
+  properties: AssetProperties
+}
+
+export interface AssetsWrapperCall_force_enable_chainbridge {
+  __kind: 'force_enable_chainbridge'
+  assetId: number
+  chainId: number
+  isMintable: boolean
+  metadata: Uint8Array
+}
+
+export interface AssetsWrapperCall_force_disable_chainbridge {
+  __kind: 'force_disable_chainbridge'
+  assetId: number
+  chainId: number
+}
+
 export type Perbill = number
 
-export type OriginCaller = OriginCaller_system | OriginCaller_Council | OriginCaller_TechnicalCommittee | OriginCaller_Void
+export type OriginCaller = OriginCaller_system | OriginCaller_CumulusXcm | OriginCaller_PolkadotXcm | OriginCaller_Council | OriginCaller_TechnicalCommittee | OriginCaller_Void
 
 export interface OriginCaller_system {
   __kind: 'system'
-  value: RawOrigin_203
+  value: RawOrigin_284
+}
+
+export interface OriginCaller_CumulusXcm {
+  __kind: 'CumulusXcm'
+  value: Origin_285
+}
+
+export interface OriginCaller_PolkadotXcm {
+  __kind: 'PolkadotXcm'
+  value: Origin_286
 }
 
 export interface OriginCaller_Council {
   __kind: 'Council'
-  value: RawOrigin_204
+  value: RawOrigin_287
 }
 
 export interface OriginCaller_TechnicalCommittee {
   __kind: 'TechnicalCommittee'
-  value: RawOrigin_204
+  value: RawOrigin_287
 }
 
 export interface OriginCaller_Void {
@@ -3740,10 +4819,51 @@ export interface ProxyType_StakePoolManager {
   __kind: 'StakePoolManager'
 }
 
+export type H256 = Uint8Array
+
+export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
+
+export interface MultiAddress_Id {
+  __kind: 'Id'
+  value: AccountId32
+}
+
+export interface MultiAddress_Index {
+  __kind: 'Index'
+  value: null
+}
+
+export interface MultiAddress_Raw {
+  __kind: 'Raw'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address32 {
+  __kind: 'Address32'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address20 {
+  __kind: 'Address20'
+  value: Uint8Array
+}
+
 export interface VestingInfo {
   locked: bigint
   perBlock: bigint
   startingBlock: number
+}
+
+export type MaybeHashed = MaybeHashed_Value | MaybeHashed_Hash
+
+export interface MaybeHashed_Value {
+  __kind: 'Value'
+  value: Call
+}
+
+export interface MaybeHashed_Hash {
+  __kind: 'Hash'
+  value: H256
 }
 
 export interface ParachainInherentData {
@@ -3751,6 +4871,80 @@ export interface ParachainInherentData {
   relayChainState: StorageProof
   downwardMessages: InboundDownwardMessage[]
   horizontalMessages: [Id, InboundHrmpMessage[]][]
+}
+
+export type VersionedMultiLocation = VersionedMultiLocation_V0 | VersionedMultiLocation_V1
+
+export interface VersionedMultiLocation_V0 {
+  __kind: 'V0'
+  value: V0MultiLocation
+}
+
+export interface VersionedMultiLocation_V1 {
+  __kind: 'V1'
+  value: V1MultiLocation
+}
+
+export type VersionedXcm_175 = VersionedXcm_175_V0 | VersionedXcm_175_V1 | VersionedXcm_175_V2
+
+export interface VersionedXcm_175_V0 {
+  __kind: 'V0'
+  value: V0Xcm_176
+}
+
+export interface VersionedXcm_175_V1 {
+  __kind: 'V1'
+  value: V1Xcm_181
+}
+
+export interface VersionedXcm_175_V2 {
+  __kind: 'V2'
+  value: V2Instruction_62[]
+}
+
+export type VersionedMultiAssets = VersionedMultiAssets_V0 | VersionedMultiAssets_V1
+
+export interface VersionedMultiAssets_V0 {
+  __kind: 'V0'
+  value: V0MultiAsset[]
+}
+
+export interface VersionedMultiAssets_V1 {
+  __kind: 'V1'
+  value: V1MultiAssets
+}
+
+export type VersionedXcm_186 = VersionedXcm_186_V0 | VersionedXcm_186_V1 | VersionedXcm_186_V2
+
+export interface VersionedXcm_186_V0 {
+  __kind: 'V0'
+  value: V0Xcm_187
+}
+
+export interface VersionedXcm_186_V1 {
+  __kind: 'V1'
+  value: V1Xcm_192
+}
+
+export interface VersionedXcm_186_V2 {
+  __kind: 'V2'
+  value: V2Instruction_198[]
+}
+
+export interface V1MultiLocation {
+  parents: number
+  interior: V1Junctions
+}
+
+export type V2WeightLimit = V2WeightLimit_Unlimited | V2WeightLimit_Limited
+
+export interface V2WeightLimit_Unlimited {
+  __kind: 'Unlimited'
+}
+
+export interface V2WeightLimit_Limited {
+  __kind: 'Limited'
+  value: bigint
 }
 
 export interface Header {
@@ -4001,6 +5195,20 @@ export interface Judgement_Erroneous {
   __kind: 'Erroneous'
 }
 
+export type AccountVote = AccountVote_Standard | AccountVote_Split
+
+export interface AccountVote_Standard {
+  __kind: 'Standard'
+  vote: Vote
+  balance: bigint
+}
+
+export interface AccountVote_Split {
+  __kind: 'Split'
+  aye: bigint
+  nay: bigint
+}
+
 export type Conviction = Conviction_None | Conviction_Locked1x | Conviction_Locked2x | Conviction_Locked3x | Conviction_Locked4x | Conviction_Locked5x | Conviction_Locked6x
 
 export interface Conviction_None {
@@ -4044,6 +5252,11 @@ export interface Renouncing_RunnerUp {
 export interface Renouncing_Candidate {
   __kind: 'Candidate'
   value: number
+}
+
+export interface XTransferAsset {
+  parents: number
+  interior: V1Junctions
 }
 
 export interface SignedMessage {
@@ -4092,34 +5305,69 @@ export interface TokenomicParameters {
 
 export type Permill = number
 
-export type RawOrigin_203 = RawOrigin_203_Root | RawOrigin_203_Signed | RawOrigin_203_None
+export interface DestroyWitness {
+  accounts: number
+  sufficients: number
+  approvals: number
+}
 
-export interface RawOrigin_203_Root {
+export interface AssetProperties {
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+}
+
+export type RawOrigin_284 = RawOrigin_284_Root | RawOrigin_284_Signed | RawOrigin_284_None
+
+export interface RawOrigin_284_Root {
   __kind: 'Root'
 }
 
-export interface RawOrigin_203_Signed {
+export interface RawOrigin_284_Signed {
   __kind: 'Signed'
   value: AccountId32
 }
 
-export interface RawOrigin_203_None {
+export interface RawOrigin_284_None {
   __kind: 'None'
 }
 
-export type RawOrigin_204 = RawOrigin_204_Members | RawOrigin_204_Member | RawOrigin_204__Phantom
+export type Origin_285 = Origin_285_Relay | Origin_285_SiblingParachain
 
-export interface RawOrigin_204_Members {
+export interface Origin_285_Relay {
+  __kind: 'Relay'
+}
+
+export interface Origin_285_SiblingParachain {
+  __kind: 'SiblingParachain'
+  value: Id
+}
+
+export type Origin_286 = Origin_286_Xcm | Origin_286_Response
+
+export interface Origin_286_Xcm {
+  __kind: 'Xcm'
+  value: V1MultiLocation
+}
+
+export interface Origin_286_Response {
+  __kind: 'Response'
+  value: V1MultiLocation
+}
+
+export type RawOrigin_287 = RawOrigin_287_Members | RawOrigin_287_Member | RawOrigin_287__Phantom
+
+export interface RawOrigin_287_Members {
   __kind: 'Members'
   value: [number, number]
 }
 
-export interface RawOrigin_204_Member {
+export interface RawOrigin_287_Member {
   __kind: 'Member'
   value: AccountId32
 }
 
-export interface RawOrigin_204__Phantom {
+export interface RawOrigin_287__Phantom {
   __kind: '_Phantom'
 }
 
@@ -4148,9 +5396,810 @@ export interface InboundHrmpMessage {
   data: Uint8Array
 }
 
+export type V0MultiLocation = V0MultiLocation_Null | V0MultiLocation_X1 | V0MultiLocation_X2 | V0MultiLocation_X3 | V0MultiLocation_X4 | V0MultiLocation_X5 | V0MultiLocation_X6 | V0MultiLocation_X7 | V0MultiLocation_X8
+
+export interface V0MultiLocation_Null {
+  __kind: 'Null'
+}
+
+export interface V0MultiLocation_X1 {
+  __kind: 'X1'
+  value: V0Junction
+}
+
+export interface V0MultiLocation_X2 {
+  __kind: 'X2'
+  value: [V0Junction, V0Junction]
+}
+
+export interface V0MultiLocation_X3 {
+  __kind: 'X3'
+  value: [V0Junction, V0Junction, V0Junction]
+}
+
+export interface V0MultiLocation_X4 {
+  __kind: 'X4'
+  value: [V0Junction, V0Junction, V0Junction, V0Junction]
+}
+
+export interface V0MultiLocation_X5 {
+  __kind: 'X5'
+  value: [V0Junction, V0Junction, V0Junction, V0Junction, V0Junction]
+}
+
+export interface V0MultiLocation_X6 {
+  __kind: 'X6'
+  value: [V0Junction, V0Junction, V0Junction, V0Junction, V0Junction, V0Junction]
+}
+
+export interface V0MultiLocation_X7 {
+  __kind: 'X7'
+  value: [V0Junction, V0Junction, V0Junction, V0Junction, V0Junction, V0Junction, V0Junction]
+}
+
+export interface V0MultiLocation_X8 {
+  __kind: 'X8'
+  value: [V0Junction, V0Junction, V0Junction, V0Junction, V0Junction, V0Junction, V0Junction, V0Junction]
+}
+
+export type V0Xcm_176 = V0Xcm_176_WithdrawAsset | V0Xcm_176_ReserveAssetDeposit | V0Xcm_176_TeleportAsset | V0Xcm_176_QueryResponse | V0Xcm_176_TransferAsset | V0Xcm_176_TransferReserveAsset | V0Xcm_176_Transact | V0Xcm_176_HrmpNewChannelOpenRequest | V0Xcm_176_HrmpChannelAccepted | V0Xcm_176_HrmpChannelClosing | V0Xcm_176_RelayedFrom
+
+export interface V0Xcm_176_WithdrawAsset {
+  __kind: 'WithdrawAsset'
+  assets: V0MultiAsset[]
+  effects: V0Order_178[]
+}
+
+export interface V0Xcm_176_ReserveAssetDeposit {
+  __kind: 'ReserveAssetDeposit'
+  assets: V0MultiAsset[]
+  effects: V0Order_178[]
+}
+
+export interface V0Xcm_176_TeleportAsset {
+  __kind: 'TeleportAsset'
+  assets: V0MultiAsset[]
+  effects: V0Order_178[]
+}
+
+export interface V0Xcm_176_QueryResponse {
+  __kind: 'QueryResponse'
+  queryId: bigint
+  response: V0Response
+}
+
+export interface V0Xcm_176_TransferAsset {
+  __kind: 'TransferAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+}
+
+export interface V0Xcm_176_TransferReserveAsset {
+  __kind: 'TransferReserveAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Xcm_176_Transact {
+  __kind: 'Transact'
+  originType: V0OriginKind
+  requireWeightAtMost: bigint
+  call: DoubleEncoded
+}
+
+export interface V0Xcm_176_HrmpNewChannelOpenRequest {
+  __kind: 'HrmpNewChannelOpenRequest'
+  sender: number
+  maxMessageSize: number
+  maxCapacity: number
+}
+
+export interface V0Xcm_176_HrmpChannelAccepted {
+  __kind: 'HrmpChannelAccepted'
+  recipient: number
+}
+
+export interface V0Xcm_176_HrmpChannelClosing {
+  __kind: 'HrmpChannelClosing'
+  initiator: number
+  sender: number
+  recipient: number
+}
+
+export interface V0Xcm_176_RelayedFrom {
+  __kind: 'RelayedFrom'
+  who: V0MultiLocation
+  message: V0Xcm_176
+}
+
+export type V1Xcm_181 = V1Xcm_181_WithdrawAsset | V1Xcm_181_ReserveAssetDeposited | V1Xcm_181_ReceiveTeleportedAsset | V1Xcm_181_QueryResponse | V1Xcm_181_TransferAsset | V1Xcm_181_TransferReserveAsset | V1Xcm_181_Transact | V1Xcm_181_HrmpNewChannelOpenRequest | V1Xcm_181_HrmpChannelAccepted | V1Xcm_181_HrmpChannelClosing | V1Xcm_181_RelayedFrom | V1Xcm_181_SubscribeVersion | V1Xcm_181_UnsubscribeVersion
+
+export interface V1Xcm_181_WithdrawAsset {
+  __kind: 'WithdrawAsset'
+  assets: V1MultiAssets
+  effects: V1Order_183[]
+}
+
+export interface V1Xcm_181_ReserveAssetDeposited {
+  __kind: 'ReserveAssetDeposited'
+  assets: V1MultiAssets
+  effects: V1Order_183[]
+}
+
+export interface V1Xcm_181_ReceiveTeleportedAsset {
+  __kind: 'ReceiveTeleportedAsset'
+  assets: V1MultiAssets
+  effects: V1Order_183[]
+}
+
+export interface V1Xcm_181_QueryResponse {
+  __kind: 'QueryResponse'
+  queryId: bigint
+  response: V1Response
+}
+
+export interface V1Xcm_181_TransferAsset {
+  __kind: 'TransferAsset'
+  assets: V1MultiAssets
+  beneficiary: V1MultiLocation
+}
+
+export interface V1Xcm_181_TransferReserveAsset {
+  __kind: 'TransferReserveAsset'
+  assets: V1MultiAssets
+  dest: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Xcm_181_Transact {
+  __kind: 'Transact'
+  originType: V0OriginKind
+  requireWeightAtMost: bigint
+  call: DoubleEncoded
+}
+
+export interface V1Xcm_181_HrmpNewChannelOpenRequest {
+  __kind: 'HrmpNewChannelOpenRequest'
+  sender: number
+  maxMessageSize: number
+  maxCapacity: number
+}
+
+export interface V1Xcm_181_HrmpChannelAccepted {
+  __kind: 'HrmpChannelAccepted'
+  recipient: number
+}
+
+export interface V1Xcm_181_HrmpChannelClosing {
+  __kind: 'HrmpChannelClosing'
+  initiator: number
+  sender: number
+  recipient: number
+}
+
+export interface V1Xcm_181_RelayedFrom {
+  __kind: 'RelayedFrom'
+  who: V1Junctions
+  message: V1Xcm_181
+}
+
+export interface V1Xcm_181_SubscribeVersion {
+  __kind: 'SubscribeVersion'
+  queryId: bigint
+  maxResponseWeight: bigint
+}
+
+export interface V1Xcm_181_UnsubscribeVersion {
+  __kind: 'UnsubscribeVersion'
+}
+
+export type V2Instruction_62 = V2Instruction_62_WithdrawAsset | V2Instruction_62_ReserveAssetDeposited | V2Instruction_62_ReceiveTeleportedAsset | V2Instruction_62_QueryResponse | V2Instruction_62_TransferAsset | V2Instruction_62_TransferReserveAsset | V2Instruction_62_Transact | V2Instruction_62_HrmpNewChannelOpenRequest | V2Instruction_62_HrmpChannelAccepted | V2Instruction_62_HrmpChannelClosing | V2Instruction_62_ClearOrigin | V2Instruction_62_DescendOrigin | V2Instruction_62_ReportError | V2Instruction_62_DepositAsset | V2Instruction_62_DepositReserveAsset | V2Instruction_62_ExchangeAsset | V2Instruction_62_InitiateReserveWithdraw | V2Instruction_62_InitiateTeleport | V2Instruction_62_QueryHolding | V2Instruction_62_BuyExecution | V2Instruction_62_RefundSurplus | V2Instruction_62_SetErrorHandler | V2Instruction_62_SetAppendix | V2Instruction_62_ClearError | V2Instruction_62_ClaimAsset | V2Instruction_62_Trap | V2Instruction_62_SubscribeVersion | V2Instruction_62_UnsubscribeVersion
+
+export interface V2Instruction_62_WithdrawAsset {
+  __kind: 'WithdrawAsset'
+  value: V1MultiAssets
+}
+
+export interface V2Instruction_62_ReserveAssetDeposited {
+  __kind: 'ReserveAssetDeposited'
+  value: V1MultiAssets
+}
+
+export interface V2Instruction_62_ReceiveTeleportedAsset {
+  __kind: 'ReceiveTeleportedAsset'
+  value: V1MultiAssets
+}
+
+export interface V2Instruction_62_QueryResponse {
+  __kind: 'QueryResponse'
+  queryId: bigint
+  response: V2Response
+  maxWeight: bigint
+}
+
+export interface V2Instruction_62_TransferAsset {
+  __kind: 'TransferAsset'
+  assets: V1MultiAssets
+  beneficiary: V1MultiLocation
+}
+
+export interface V2Instruction_62_TransferReserveAsset {
+  __kind: 'TransferReserveAsset'
+  assets: V1MultiAssets
+  dest: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_62_Transact {
+  __kind: 'Transact'
+  originType: V0OriginKind
+  requireWeightAtMost: bigint
+  call: DoubleEncoded
+}
+
+export interface V2Instruction_62_HrmpNewChannelOpenRequest {
+  __kind: 'HrmpNewChannelOpenRequest'
+  sender: number
+  maxMessageSize: number
+  maxCapacity: number
+}
+
+export interface V2Instruction_62_HrmpChannelAccepted {
+  __kind: 'HrmpChannelAccepted'
+  recipient: number
+}
+
+export interface V2Instruction_62_HrmpChannelClosing {
+  __kind: 'HrmpChannelClosing'
+  initiator: number
+  sender: number
+  recipient: number
+}
+
+export interface V2Instruction_62_ClearOrigin {
+  __kind: 'ClearOrigin'
+}
+
+export interface V2Instruction_62_DescendOrigin {
+  __kind: 'DescendOrigin'
+  value: V1Junctions
+}
+
+export interface V2Instruction_62_ReportError {
+  __kind: 'ReportError'
+  queryId: bigint
+  dest: V1MultiLocation
+  maxResponseWeight: bigint
+}
+
+export interface V2Instruction_62_DepositAsset {
+  __kind: 'DepositAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  beneficiary: V1MultiLocation
+}
+
+export interface V2Instruction_62_DepositReserveAsset {
+  __kind: 'DepositReserveAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  dest: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_62_ExchangeAsset {
+  __kind: 'ExchangeAsset'
+  give: V1MultiAssetFilter
+  receive: V1MultiAssets
+}
+
+export interface V2Instruction_62_InitiateReserveWithdraw {
+  __kind: 'InitiateReserveWithdraw'
+  assets: V1MultiAssetFilter
+  reserve: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_62_InitiateTeleport {
+  __kind: 'InitiateTeleport'
+  assets: V1MultiAssetFilter
+  dest: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_62_QueryHolding {
+  __kind: 'QueryHolding'
+  queryId: bigint
+  dest: V1MultiLocation
+  assets: V1MultiAssetFilter
+  maxResponseWeight: bigint
+}
+
+export interface V2Instruction_62_BuyExecution {
+  __kind: 'BuyExecution'
+  fees: V1MultiAsset
+  weightLimit: V2WeightLimit
+}
+
+export interface V2Instruction_62_RefundSurplus {
+  __kind: 'RefundSurplus'
+}
+
+export interface V2Instruction_62_SetErrorHandler {
+  __kind: 'SetErrorHandler'
+  value: V2Instruction_62[]
+}
+
+export interface V2Instruction_62_SetAppendix {
+  __kind: 'SetAppendix'
+  value: V2Instruction_62[]
+}
+
+export interface V2Instruction_62_ClearError {
+  __kind: 'ClearError'
+}
+
+export interface V2Instruction_62_ClaimAsset {
+  __kind: 'ClaimAsset'
+  assets: V1MultiAssets
+  ticket: V1MultiLocation
+}
+
+export interface V2Instruction_62_Trap {
+  __kind: 'Trap'
+  value: bigint
+}
+
+export interface V2Instruction_62_SubscribeVersion {
+  __kind: 'SubscribeVersion'
+  queryId: bigint
+  maxResponseWeight: bigint
+}
+
+export interface V2Instruction_62_UnsubscribeVersion {
+  __kind: 'UnsubscribeVersion'
+}
+
+export type V0MultiAsset = V0MultiAsset_None | V0MultiAsset_All | V0MultiAsset_AllFungible | V0MultiAsset_AllNonFungible | V0MultiAsset_AllAbstractFungible | V0MultiAsset_AllAbstractNonFungible | V0MultiAsset_AllConcreteFungible | V0MultiAsset_AllConcreteNonFungible | V0MultiAsset_AbstractFungible | V0MultiAsset_AbstractNonFungible | V0MultiAsset_ConcreteFungible | V0MultiAsset_ConcreteNonFungible
+
+export interface V0MultiAsset_None {
+  __kind: 'None'
+}
+
+export interface V0MultiAsset_All {
+  __kind: 'All'
+}
+
+export interface V0MultiAsset_AllFungible {
+  __kind: 'AllFungible'
+}
+
+export interface V0MultiAsset_AllNonFungible {
+  __kind: 'AllNonFungible'
+}
+
+export interface V0MultiAsset_AllAbstractFungible {
+  __kind: 'AllAbstractFungible'
+  id: Uint8Array
+}
+
+export interface V0MultiAsset_AllAbstractNonFungible {
+  __kind: 'AllAbstractNonFungible'
+  class: Uint8Array
+}
+
+export interface V0MultiAsset_AllConcreteFungible {
+  __kind: 'AllConcreteFungible'
+  id: V0MultiLocation
+}
+
+export interface V0MultiAsset_AllConcreteNonFungible {
+  __kind: 'AllConcreteNonFungible'
+  class: V0MultiLocation
+}
+
+export interface V0MultiAsset_AbstractFungible {
+  __kind: 'AbstractFungible'
+  id: Uint8Array
+  amount: bigint
+}
+
+export interface V0MultiAsset_AbstractNonFungible {
+  __kind: 'AbstractNonFungible'
+  class: Uint8Array
+  instance: V1AssetInstance
+}
+
+export interface V0MultiAsset_ConcreteFungible {
+  __kind: 'ConcreteFungible'
+  id: V0MultiLocation
+  amount: bigint
+}
+
+export interface V0MultiAsset_ConcreteNonFungible {
+  __kind: 'ConcreteNonFungible'
+  class: V0MultiLocation
+  instance: V1AssetInstance
+}
+
+export interface V1MultiAsset {
+  id: V1AssetId
+  fun: V1Fungibility
+}
+
+export type V1MultiAssets = V1MultiAsset[]
+
+export type V0Xcm_187 = V0Xcm_187_WithdrawAsset | V0Xcm_187_ReserveAssetDeposit | V0Xcm_187_TeleportAsset | V0Xcm_187_QueryResponse | V0Xcm_187_TransferAsset | V0Xcm_187_TransferReserveAsset | V0Xcm_187_Transact | V0Xcm_187_HrmpNewChannelOpenRequest | V0Xcm_187_HrmpChannelAccepted | V0Xcm_187_HrmpChannelClosing | V0Xcm_187_RelayedFrom
+
+export interface V0Xcm_187_WithdrawAsset {
+  __kind: 'WithdrawAsset'
+  assets: V0MultiAsset[]
+  effects: V0Order_189[]
+}
+
+export interface V0Xcm_187_ReserveAssetDeposit {
+  __kind: 'ReserveAssetDeposit'
+  assets: V0MultiAsset[]
+  effects: V0Order_189[]
+}
+
+export interface V0Xcm_187_TeleportAsset {
+  __kind: 'TeleportAsset'
+  assets: V0MultiAsset[]
+  effects: V0Order_189[]
+}
+
+export interface V0Xcm_187_QueryResponse {
+  __kind: 'QueryResponse'
+  queryId: bigint
+  response: V0Response
+}
+
+export interface V0Xcm_187_TransferAsset {
+  __kind: 'TransferAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+}
+
+export interface V0Xcm_187_TransferReserveAsset {
+  __kind: 'TransferReserveAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Xcm_187_Transact {
+  __kind: 'Transact'
+  originType: V0OriginKind
+  requireWeightAtMost: bigint
+  call: DoubleEncoded
+}
+
+export interface V0Xcm_187_HrmpNewChannelOpenRequest {
+  __kind: 'HrmpNewChannelOpenRequest'
+  sender: number
+  maxMessageSize: number
+  maxCapacity: number
+}
+
+export interface V0Xcm_187_HrmpChannelAccepted {
+  __kind: 'HrmpChannelAccepted'
+  recipient: number
+}
+
+export interface V0Xcm_187_HrmpChannelClosing {
+  __kind: 'HrmpChannelClosing'
+  initiator: number
+  sender: number
+  recipient: number
+}
+
+export interface V0Xcm_187_RelayedFrom {
+  __kind: 'RelayedFrom'
+  who: V0MultiLocation
+  message: V0Xcm_187
+}
+
+export type V1Xcm_192 = V1Xcm_192_WithdrawAsset | V1Xcm_192_ReserveAssetDeposited | V1Xcm_192_ReceiveTeleportedAsset | V1Xcm_192_QueryResponse | V1Xcm_192_TransferAsset | V1Xcm_192_TransferReserveAsset | V1Xcm_192_Transact | V1Xcm_192_HrmpNewChannelOpenRequest | V1Xcm_192_HrmpChannelAccepted | V1Xcm_192_HrmpChannelClosing | V1Xcm_192_RelayedFrom | V1Xcm_192_SubscribeVersion | V1Xcm_192_UnsubscribeVersion
+
+export interface V1Xcm_192_WithdrawAsset {
+  __kind: 'WithdrawAsset'
+  assets: V1MultiAssets
+  effects: V1Order_194[]
+}
+
+export interface V1Xcm_192_ReserveAssetDeposited {
+  __kind: 'ReserveAssetDeposited'
+  assets: V1MultiAssets
+  effects: V1Order_194[]
+}
+
+export interface V1Xcm_192_ReceiveTeleportedAsset {
+  __kind: 'ReceiveTeleportedAsset'
+  assets: V1MultiAssets
+  effects: V1Order_194[]
+}
+
+export interface V1Xcm_192_QueryResponse {
+  __kind: 'QueryResponse'
+  queryId: bigint
+  response: V1Response
+}
+
+export interface V1Xcm_192_TransferAsset {
+  __kind: 'TransferAsset'
+  assets: V1MultiAssets
+  beneficiary: V1MultiLocation
+}
+
+export interface V1Xcm_192_TransferReserveAsset {
+  __kind: 'TransferReserveAsset'
+  assets: V1MultiAssets
+  dest: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Xcm_192_Transact {
+  __kind: 'Transact'
+  originType: V0OriginKind
+  requireWeightAtMost: bigint
+  call: DoubleEncoded
+}
+
+export interface V1Xcm_192_HrmpNewChannelOpenRequest {
+  __kind: 'HrmpNewChannelOpenRequest'
+  sender: number
+  maxMessageSize: number
+  maxCapacity: number
+}
+
+export interface V1Xcm_192_HrmpChannelAccepted {
+  __kind: 'HrmpChannelAccepted'
+  recipient: number
+}
+
+export interface V1Xcm_192_HrmpChannelClosing {
+  __kind: 'HrmpChannelClosing'
+  initiator: number
+  sender: number
+  recipient: number
+}
+
+export interface V1Xcm_192_RelayedFrom {
+  __kind: 'RelayedFrom'
+  who: V1Junctions
+  message: V1Xcm_192
+}
+
+export interface V1Xcm_192_SubscribeVersion {
+  __kind: 'SubscribeVersion'
+  queryId: bigint
+  maxResponseWeight: bigint
+}
+
+export interface V1Xcm_192_UnsubscribeVersion {
+  __kind: 'UnsubscribeVersion'
+}
+
+export type V2Instruction_198 = V2Instruction_198_WithdrawAsset | V2Instruction_198_ReserveAssetDeposited | V2Instruction_198_ReceiveTeleportedAsset | V2Instruction_198_QueryResponse | V2Instruction_198_TransferAsset | V2Instruction_198_TransferReserveAsset | V2Instruction_198_Transact | V2Instruction_198_HrmpNewChannelOpenRequest | V2Instruction_198_HrmpChannelAccepted | V2Instruction_198_HrmpChannelClosing | V2Instruction_198_ClearOrigin | V2Instruction_198_DescendOrigin | V2Instruction_198_ReportError | V2Instruction_198_DepositAsset | V2Instruction_198_DepositReserveAsset | V2Instruction_198_ExchangeAsset | V2Instruction_198_InitiateReserveWithdraw | V2Instruction_198_InitiateTeleport | V2Instruction_198_QueryHolding | V2Instruction_198_BuyExecution | V2Instruction_198_RefundSurplus | V2Instruction_198_SetErrorHandler | V2Instruction_198_SetAppendix | V2Instruction_198_ClearError | V2Instruction_198_ClaimAsset | V2Instruction_198_Trap | V2Instruction_198_SubscribeVersion | V2Instruction_198_UnsubscribeVersion
+
+export interface V2Instruction_198_WithdrawAsset {
+  __kind: 'WithdrawAsset'
+  value: V1MultiAssets
+}
+
+export interface V2Instruction_198_ReserveAssetDeposited {
+  __kind: 'ReserveAssetDeposited'
+  value: V1MultiAssets
+}
+
+export interface V2Instruction_198_ReceiveTeleportedAsset {
+  __kind: 'ReceiveTeleportedAsset'
+  value: V1MultiAssets
+}
+
+export interface V2Instruction_198_QueryResponse {
+  __kind: 'QueryResponse'
+  queryId: bigint
+  response: V2Response
+  maxWeight: bigint
+}
+
+export interface V2Instruction_198_TransferAsset {
+  __kind: 'TransferAsset'
+  assets: V1MultiAssets
+  beneficiary: V1MultiLocation
+}
+
+export interface V2Instruction_198_TransferReserveAsset {
+  __kind: 'TransferReserveAsset'
+  assets: V1MultiAssets
+  dest: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_198_Transact {
+  __kind: 'Transact'
+  originType: V0OriginKind
+  requireWeightAtMost: bigint
+  call: DoubleEncoded
+}
+
+export interface V2Instruction_198_HrmpNewChannelOpenRequest {
+  __kind: 'HrmpNewChannelOpenRequest'
+  sender: number
+  maxMessageSize: number
+  maxCapacity: number
+}
+
+export interface V2Instruction_198_HrmpChannelAccepted {
+  __kind: 'HrmpChannelAccepted'
+  recipient: number
+}
+
+export interface V2Instruction_198_HrmpChannelClosing {
+  __kind: 'HrmpChannelClosing'
+  initiator: number
+  sender: number
+  recipient: number
+}
+
+export interface V2Instruction_198_ClearOrigin {
+  __kind: 'ClearOrigin'
+}
+
+export interface V2Instruction_198_DescendOrigin {
+  __kind: 'DescendOrigin'
+  value: V1Junctions
+}
+
+export interface V2Instruction_198_ReportError {
+  __kind: 'ReportError'
+  queryId: bigint
+  dest: V1MultiLocation
+  maxResponseWeight: bigint
+}
+
+export interface V2Instruction_198_DepositAsset {
+  __kind: 'DepositAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  beneficiary: V1MultiLocation
+}
+
+export interface V2Instruction_198_DepositReserveAsset {
+  __kind: 'DepositReserveAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  dest: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_198_ExchangeAsset {
+  __kind: 'ExchangeAsset'
+  give: V1MultiAssetFilter
+  receive: V1MultiAssets
+}
+
+export interface V2Instruction_198_InitiateReserveWithdraw {
+  __kind: 'InitiateReserveWithdraw'
+  assets: V1MultiAssetFilter
+  reserve: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_198_InitiateTeleport {
+  __kind: 'InitiateTeleport'
+  assets: V1MultiAssetFilter
+  dest: V1MultiLocation
+  xcm: V2Instruction_62[]
+}
+
+export interface V2Instruction_198_QueryHolding {
+  __kind: 'QueryHolding'
+  queryId: bigint
+  dest: V1MultiLocation
+  assets: V1MultiAssetFilter
+  maxResponseWeight: bigint
+}
+
+export interface V2Instruction_198_BuyExecution {
+  __kind: 'BuyExecution'
+  fees: V1MultiAsset
+  weightLimit: V2WeightLimit
+}
+
+export interface V2Instruction_198_RefundSurplus {
+  __kind: 'RefundSurplus'
+}
+
+export interface V2Instruction_198_SetErrorHandler {
+  __kind: 'SetErrorHandler'
+  value: V2Instruction_198[]
+}
+
+export interface V2Instruction_198_SetAppendix {
+  __kind: 'SetAppendix'
+  value: V2Instruction_198[]
+}
+
+export interface V2Instruction_198_ClearError {
+  __kind: 'ClearError'
+}
+
+export interface V2Instruction_198_ClaimAsset {
+  __kind: 'ClaimAsset'
+  assets: V1MultiAssets
+  ticket: V1MultiLocation
+}
+
+export interface V2Instruction_198_Trap {
+  __kind: 'Trap'
+  value: bigint
+}
+
+export interface V2Instruction_198_SubscribeVersion {
+  __kind: 'SubscribeVersion'
+  queryId: bigint
+  maxResponseWeight: bigint
+}
+
+export interface V2Instruction_198_UnsubscribeVersion {
+  __kind: 'UnsubscribeVersion'
+}
+
+export type V1Junctions = V1Junctions_Here | V1Junctions_X1 | V1Junctions_X2 | V1Junctions_X3 | V1Junctions_X4 | V1Junctions_X5 | V1Junctions_X6 | V1Junctions_X7 | V1Junctions_X8
+
+export interface V1Junctions_Here {
+  __kind: 'Here'
+}
+
+export interface V1Junctions_X1 {
+  __kind: 'X1'
+  value: V1Junction
+}
+
+export interface V1Junctions_X2 {
+  __kind: 'X2'
+  value: [V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X3 {
+  __kind: 'X3'
+  value: [V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X4 {
+  __kind: 'X4'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X5 {
+  __kind: 'X5'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X6 {
+  __kind: 'X6'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X7 {
+  __kind: 'X7'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
+export interface V1Junctions_X8 {
+  __kind: 'X8'
+  value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
+}
+
 export interface Digest {
   logs: DigestItem[]
 }
+
+export type Vote = number
 
 export interface Message {
   sender: MessageOrigin
@@ -4159,6 +6208,468 @@ export interface Message {
 }
 
 export type HeadData = Uint8Array
+
+export type V0Junction = V0Junction_Parent | V0Junction_Parachain | V0Junction_AccountId32 | V0Junction_AccountIndex64 | V0Junction_AccountKey20 | V0Junction_PalletInstance | V0Junction_GeneralIndex | V0Junction_GeneralKey | V0Junction_OnlyChild | V0Junction_Plurality
+
+export interface V0Junction_Parent {
+  __kind: 'Parent'
+}
+
+export interface V0Junction_Parachain {
+  __kind: 'Parachain'
+  value: number
+}
+
+export interface V0Junction_AccountId32 {
+  __kind: 'AccountId32'
+  network: V0NetworkId
+  id: Uint8Array
+}
+
+export interface V0Junction_AccountIndex64 {
+  __kind: 'AccountIndex64'
+  network: V0NetworkId
+  index: bigint
+}
+
+export interface V0Junction_AccountKey20 {
+  __kind: 'AccountKey20'
+  network: V0NetworkId
+  key: Uint8Array
+}
+
+export interface V0Junction_PalletInstance {
+  __kind: 'PalletInstance'
+  value: number
+}
+
+export interface V0Junction_GeneralIndex {
+  __kind: 'GeneralIndex'
+  value: bigint
+}
+
+export interface V0Junction_GeneralKey {
+  __kind: 'GeneralKey'
+  value: Uint8Array
+}
+
+export interface V0Junction_OnlyChild {
+  __kind: 'OnlyChild'
+}
+
+export interface V0Junction_Plurality {
+  __kind: 'Plurality'
+  id: V0BodyId
+  part: V0BodyPart
+}
+
+export type V0Order_178 = V0Order_178_Null | V0Order_178_DepositAsset | V0Order_178_DepositReserveAsset | V0Order_178_ExchangeAsset | V0Order_178_InitiateReserveWithdraw | V0Order_178_InitiateTeleport | V0Order_178_QueryHolding | V0Order_178_BuyExecution
+
+export interface V0Order_178_Null {
+  __kind: 'Null'
+}
+
+export interface V0Order_178_DepositAsset {
+  __kind: 'DepositAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+}
+
+export interface V0Order_178_DepositReserveAsset {
+  __kind: 'DepositReserveAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Order_178_ExchangeAsset {
+  __kind: 'ExchangeAsset'
+  give: V0MultiAsset[]
+  receive: V0MultiAsset[]
+}
+
+export interface V0Order_178_InitiateReserveWithdraw {
+  __kind: 'InitiateReserveWithdraw'
+  assets: V0MultiAsset[]
+  reserve: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Order_178_InitiateTeleport {
+  __kind: 'InitiateTeleport'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Order_178_QueryHolding {
+  __kind: 'QueryHolding'
+  queryId: bigint
+  dest: V0MultiLocation
+  assets: V0MultiAsset[]
+}
+
+export interface V0Order_178_BuyExecution {
+  __kind: 'BuyExecution'
+  fees: V0MultiAsset
+  weight: bigint
+  debt: bigint
+  haltOnError: boolean
+  xcm: V0Xcm_176[]
+}
+
+export type V0Response = V0Response_Assets
+
+export interface V0Response_Assets {
+  __kind: 'Assets'
+  value: V0MultiAsset[]
+}
+
+export type V0OriginKind = V0OriginKind_Native | V0OriginKind_SovereignAccount | V0OriginKind_Superuser | V0OriginKind_Xcm
+
+export interface V0OriginKind_Native {
+  __kind: 'Native'
+}
+
+export interface V0OriginKind_SovereignAccount {
+  __kind: 'SovereignAccount'
+}
+
+export interface V0OriginKind_Superuser {
+  __kind: 'Superuser'
+}
+
+export interface V0OriginKind_Xcm {
+  __kind: 'Xcm'
+}
+
+export interface DoubleEncoded {
+  encoded: Uint8Array
+}
+
+export type V1Order_183 = V1Order_183_Noop | V1Order_183_DepositAsset | V1Order_183_DepositReserveAsset | V1Order_183_ExchangeAsset | V1Order_183_InitiateReserveWithdraw | V1Order_183_InitiateTeleport | V1Order_183_QueryHolding | V1Order_183_BuyExecution
+
+export interface V1Order_183_Noop {
+  __kind: 'Noop'
+}
+
+export interface V1Order_183_DepositAsset {
+  __kind: 'DepositAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  beneficiary: V1MultiLocation
+}
+
+export interface V1Order_183_DepositReserveAsset {
+  __kind: 'DepositReserveAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  dest: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Order_183_ExchangeAsset {
+  __kind: 'ExchangeAsset'
+  give: V1MultiAssetFilter
+  receive: V1MultiAssets
+}
+
+export interface V1Order_183_InitiateReserveWithdraw {
+  __kind: 'InitiateReserveWithdraw'
+  assets: V1MultiAssetFilter
+  reserve: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Order_183_InitiateTeleport {
+  __kind: 'InitiateTeleport'
+  assets: V1MultiAssetFilter
+  dest: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Order_183_QueryHolding {
+  __kind: 'QueryHolding'
+  queryId: bigint
+  dest: V1MultiLocation
+  assets: V1MultiAssetFilter
+}
+
+export interface V1Order_183_BuyExecution {
+  __kind: 'BuyExecution'
+  fees: V1MultiAsset
+  weight: bigint
+  debt: bigint
+  haltOnError: boolean
+  instructions: V1Xcm_181[]
+}
+
+export type V1Response = V1Response_Assets | V1Response_Version
+
+export interface V1Response_Assets {
+  __kind: 'Assets'
+  value: V1MultiAssets
+}
+
+export interface V1Response_Version {
+  __kind: 'Version'
+  value: number
+}
+
+export type V2Response = V2Response_Null | V2Response_Assets | V2Response_ExecutionResult | V2Response_Version
+
+export interface V2Response_Null {
+  __kind: 'Null'
+}
+
+export interface V2Response_Assets {
+  __kind: 'Assets'
+  value: V1MultiAssets
+}
+
+export interface V2Response_ExecutionResult {
+  __kind: 'ExecutionResult'
+  value: ([number, V2Error] | undefined)
+}
+
+export interface V2Response_Version {
+  __kind: 'Version'
+  value: number
+}
+
+export type V1MultiAssetFilter = V1MultiAssetFilter_Definite | V1MultiAssetFilter_Wild
+
+export interface V1MultiAssetFilter_Definite {
+  __kind: 'Definite'
+  value: V1MultiAssets
+}
+
+export interface V1MultiAssetFilter_Wild {
+  __kind: 'Wild'
+  value: V1WildMultiAsset
+}
+
+export type V1AssetInstance = V1AssetInstance_Undefined | V1AssetInstance_Index | V1AssetInstance_Array4 | V1AssetInstance_Array8 | V1AssetInstance_Array16 | V1AssetInstance_Array32 | V1AssetInstance_Blob
+
+export interface V1AssetInstance_Undefined {
+  __kind: 'Undefined'
+}
+
+export interface V1AssetInstance_Index {
+  __kind: 'Index'
+  value: bigint
+}
+
+export interface V1AssetInstance_Array4 {
+  __kind: 'Array4'
+  value: Uint8Array
+}
+
+export interface V1AssetInstance_Array8 {
+  __kind: 'Array8'
+  value: Uint8Array
+}
+
+export interface V1AssetInstance_Array16 {
+  __kind: 'Array16'
+  value: Uint8Array
+}
+
+export interface V1AssetInstance_Array32 {
+  __kind: 'Array32'
+  value: Uint8Array
+}
+
+export interface V1AssetInstance_Blob {
+  __kind: 'Blob'
+  value: Uint8Array
+}
+
+export type V1AssetId = V1AssetId_Concrete | V1AssetId_Abstract
+
+export interface V1AssetId_Concrete {
+  __kind: 'Concrete'
+  value: V1MultiLocation
+}
+
+export interface V1AssetId_Abstract {
+  __kind: 'Abstract'
+  value: Uint8Array
+}
+
+export type V1Fungibility = V1Fungibility_Fungible | V1Fungibility_NonFungible
+
+export interface V1Fungibility_Fungible {
+  __kind: 'Fungible'
+  value: bigint
+}
+
+export interface V1Fungibility_NonFungible {
+  __kind: 'NonFungible'
+  value: V1AssetInstance
+}
+
+export type V0Order_189 = V0Order_189_Null | V0Order_189_DepositAsset | V0Order_189_DepositReserveAsset | V0Order_189_ExchangeAsset | V0Order_189_InitiateReserveWithdraw | V0Order_189_InitiateTeleport | V0Order_189_QueryHolding | V0Order_189_BuyExecution
+
+export interface V0Order_189_Null {
+  __kind: 'Null'
+}
+
+export interface V0Order_189_DepositAsset {
+  __kind: 'DepositAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+}
+
+export interface V0Order_189_DepositReserveAsset {
+  __kind: 'DepositReserveAsset'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Order_189_ExchangeAsset {
+  __kind: 'ExchangeAsset'
+  give: V0MultiAsset[]
+  receive: V0MultiAsset[]
+}
+
+export interface V0Order_189_InitiateReserveWithdraw {
+  __kind: 'InitiateReserveWithdraw'
+  assets: V0MultiAsset[]
+  reserve: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Order_189_InitiateTeleport {
+  __kind: 'InitiateTeleport'
+  assets: V0MultiAsset[]
+  dest: V0MultiLocation
+  effects: V0Order_178[]
+}
+
+export interface V0Order_189_QueryHolding {
+  __kind: 'QueryHolding'
+  queryId: bigint
+  dest: V0MultiLocation
+  assets: V0MultiAsset[]
+}
+
+export interface V0Order_189_BuyExecution {
+  __kind: 'BuyExecution'
+  fees: V0MultiAsset
+  weight: bigint
+  debt: bigint
+  haltOnError: boolean
+  xcm: V0Xcm_187[]
+}
+
+export type V1Order_194 = V1Order_194_Noop | V1Order_194_DepositAsset | V1Order_194_DepositReserveAsset | V1Order_194_ExchangeAsset | V1Order_194_InitiateReserveWithdraw | V1Order_194_InitiateTeleport | V1Order_194_QueryHolding | V1Order_194_BuyExecution
+
+export interface V1Order_194_Noop {
+  __kind: 'Noop'
+}
+
+export interface V1Order_194_DepositAsset {
+  __kind: 'DepositAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  beneficiary: V1MultiLocation
+}
+
+export interface V1Order_194_DepositReserveAsset {
+  __kind: 'DepositReserveAsset'
+  assets: V1MultiAssetFilter
+  maxAssets: number
+  dest: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Order_194_ExchangeAsset {
+  __kind: 'ExchangeAsset'
+  give: V1MultiAssetFilter
+  receive: V1MultiAssets
+}
+
+export interface V1Order_194_InitiateReserveWithdraw {
+  __kind: 'InitiateReserveWithdraw'
+  assets: V1MultiAssetFilter
+  reserve: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Order_194_InitiateTeleport {
+  __kind: 'InitiateTeleport'
+  assets: V1MultiAssetFilter
+  dest: V1MultiLocation
+  effects: V1Order_183[]
+}
+
+export interface V1Order_194_QueryHolding {
+  __kind: 'QueryHolding'
+  queryId: bigint
+  dest: V1MultiLocation
+  assets: V1MultiAssetFilter
+}
+
+export interface V1Order_194_BuyExecution {
+  __kind: 'BuyExecution'
+  fees: V1MultiAsset
+  weight: bigint
+  debt: bigint
+  haltOnError: boolean
+  instructions: V1Xcm_192[]
+}
+
+export type V1Junction = V1Junction_Parachain | V1Junction_AccountId32 | V1Junction_AccountIndex64 | V1Junction_AccountKey20 | V1Junction_PalletInstance | V1Junction_GeneralIndex | V1Junction_GeneralKey | V1Junction_OnlyChild | V1Junction_Plurality
+
+export interface V1Junction_Parachain {
+  __kind: 'Parachain'
+  value: number
+}
+
+export interface V1Junction_AccountId32 {
+  __kind: 'AccountId32'
+  network: V0NetworkId
+  id: Uint8Array
+}
+
+export interface V1Junction_AccountIndex64 {
+  __kind: 'AccountIndex64'
+  network: V0NetworkId
+  index: bigint
+}
+
+export interface V1Junction_AccountKey20 {
+  __kind: 'AccountKey20'
+  network: V0NetworkId
+  key: Uint8Array
+}
+
+export interface V1Junction_PalletInstance {
+  __kind: 'PalletInstance'
+  value: number
+}
+
+export interface V1Junction_GeneralIndex {
+  __kind: 'GeneralIndex'
+  value: bigint
+}
+
+export interface V1Junction_GeneralKey {
+  __kind: 'GeneralKey'
+  value: Uint8Array
+}
+
+export interface V1Junction_OnlyChild {
+  __kind: 'OnlyChild'
+}
+
+export interface V1Junction_Plurality {
+  __kind: 'Plurality'
+  id: V0BodyId
+  part: V0BodyPart
+}
 
 export type DigestItem = DigestItem_PreRuntime | DigestItem_Consensus | DigestItem_Seal | DigestItem_Other | DigestItem_RuntimeEnvironmentUpdated
 
@@ -4218,3 +6729,213 @@ export interface MessageOrigin_Gatekeeper {
 }
 
 export type Topic = Uint8Array
+
+export type V0NetworkId = V0NetworkId_Any | V0NetworkId_Named | V0NetworkId_Polkadot | V0NetworkId_Kusama
+
+export interface V0NetworkId_Any {
+  __kind: 'Any'
+}
+
+export interface V0NetworkId_Named {
+  __kind: 'Named'
+  value: Uint8Array
+}
+
+export interface V0NetworkId_Polkadot {
+  __kind: 'Polkadot'
+}
+
+export interface V0NetworkId_Kusama {
+  __kind: 'Kusama'
+}
+
+export type V0BodyId = V0BodyId_Unit | V0BodyId_Named | V0BodyId_Index | V0BodyId_Executive | V0BodyId_Technical | V0BodyId_Legislative | V0BodyId_Judicial
+
+export interface V0BodyId_Unit {
+  __kind: 'Unit'
+}
+
+export interface V0BodyId_Named {
+  __kind: 'Named'
+  value: Uint8Array
+}
+
+export interface V0BodyId_Index {
+  __kind: 'Index'
+  value: number
+}
+
+export interface V0BodyId_Executive {
+  __kind: 'Executive'
+}
+
+export interface V0BodyId_Technical {
+  __kind: 'Technical'
+}
+
+export interface V0BodyId_Legislative {
+  __kind: 'Legislative'
+}
+
+export interface V0BodyId_Judicial {
+  __kind: 'Judicial'
+}
+
+export type V0BodyPart = V0BodyPart_Voice | V0BodyPart_Members | V0BodyPart_Fraction | V0BodyPart_AtLeastProportion | V0BodyPart_MoreThanProportion
+
+export interface V0BodyPart_Voice {
+  __kind: 'Voice'
+}
+
+export interface V0BodyPart_Members {
+  __kind: 'Members'
+  count: number
+}
+
+export interface V0BodyPart_Fraction {
+  __kind: 'Fraction'
+  nom: number
+  denom: number
+}
+
+export interface V0BodyPart_AtLeastProportion {
+  __kind: 'AtLeastProportion'
+  nom: number
+  denom: number
+}
+
+export interface V0BodyPart_MoreThanProportion {
+  __kind: 'MoreThanProportion'
+  nom: number
+  denom: number
+}
+
+export type V2Error = V2Error_Overflow | V2Error_Unimplemented | V2Error_UntrustedReserveLocation | V2Error_UntrustedTeleportLocation | V2Error_MultiLocationFull | V2Error_MultiLocationNotInvertible | V2Error_BadOrigin | V2Error_InvalidLocation | V2Error_AssetNotFound | V2Error_FailedToTransactAsset | V2Error_NotWithdrawable | V2Error_LocationCannotHold | V2Error_ExceedsMaxMessageSize | V2Error_DestinationUnsupported | V2Error_Transport | V2Error_Unroutable | V2Error_UnknownClaim | V2Error_FailedToDecode | V2Error_MaxWeightInvalid | V2Error_NotHoldingFees | V2Error_TooExpensive | V2Error_Trap | V2Error_UnhandledXcmVersion | V2Error_WeightLimitReached | V2Error_Barrier | V2Error_WeightNotComputable
+
+export interface V2Error_Overflow {
+  __kind: 'Overflow'
+}
+
+export interface V2Error_Unimplemented {
+  __kind: 'Unimplemented'
+}
+
+export interface V2Error_UntrustedReserveLocation {
+  __kind: 'UntrustedReserveLocation'
+}
+
+export interface V2Error_UntrustedTeleportLocation {
+  __kind: 'UntrustedTeleportLocation'
+}
+
+export interface V2Error_MultiLocationFull {
+  __kind: 'MultiLocationFull'
+}
+
+export interface V2Error_MultiLocationNotInvertible {
+  __kind: 'MultiLocationNotInvertible'
+}
+
+export interface V2Error_BadOrigin {
+  __kind: 'BadOrigin'
+}
+
+export interface V2Error_InvalidLocation {
+  __kind: 'InvalidLocation'
+}
+
+export interface V2Error_AssetNotFound {
+  __kind: 'AssetNotFound'
+}
+
+export interface V2Error_FailedToTransactAsset {
+  __kind: 'FailedToTransactAsset'
+}
+
+export interface V2Error_NotWithdrawable {
+  __kind: 'NotWithdrawable'
+}
+
+export interface V2Error_LocationCannotHold {
+  __kind: 'LocationCannotHold'
+}
+
+export interface V2Error_ExceedsMaxMessageSize {
+  __kind: 'ExceedsMaxMessageSize'
+}
+
+export interface V2Error_DestinationUnsupported {
+  __kind: 'DestinationUnsupported'
+}
+
+export interface V2Error_Transport {
+  __kind: 'Transport'
+}
+
+export interface V2Error_Unroutable {
+  __kind: 'Unroutable'
+}
+
+export interface V2Error_UnknownClaim {
+  __kind: 'UnknownClaim'
+}
+
+export interface V2Error_FailedToDecode {
+  __kind: 'FailedToDecode'
+}
+
+export interface V2Error_MaxWeightInvalid {
+  __kind: 'MaxWeightInvalid'
+}
+
+export interface V2Error_NotHoldingFees {
+  __kind: 'NotHoldingFees'
+}
+
+export interface V2Error_TooExpensive {
+  __kind: 'TooExpensive'
+}
+
+export interface V2Error_Trap {
+  __kind: 'Trap'
+  value: bigint
+}
+
+export interface V2Error_UnhandledXcmVersion {
+  __kind: 'UnhandledXcmVersion'
+}
+
+export interface V2Error_WeightLimitReached {
+  __kind: 'WeightLimitReached'
+  value: bigint
+}
+
+export interface V2Error_Barrier {
+  __kind: 'Barrier'
+}
+
+export interface V2Error_WeightNotComputable {
+  __kind: 'WeightNotComputable'
+}
+
+export type V1WildMultiAsset = V1WildMultiAsset_All | V1WildMultiAsset_AllOf
+
+export interface V1WildMultiAsset_All {
+  __kind: 'All'
+}
+
+export interface V1WildMultiAsset_AllOf {
+  __kind: 'AllOf'
+  id: V1AssetId
+  fun: V1WildFungibility
+}
+
+export type V1WildFungibility = V1WildFungibility_Fungible | V1WildFungibility_NonFungible
+
+export interface V1WildFungibility_Fungible {
+  __kind: 'Fungible'
+}
+
+export interface V1WildFungibility_NonFungible {
+  __kind: 'NonFungible'
+}

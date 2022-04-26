@@ -1,8 +1,16 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
 import * as v0 from './v0'
+import * as v10 from './v10'
 import * as v28 from './v28'
+import * as v5 from './v5'
+import * as v6 from './v6'
+import * as v7 from './v7'
+import * as v9 from './v9'
 import * as v9110 from './v9110'
+import * as v9140 from './v9140'
+import * as v9170 from './v9170'
+import * as v9180 from './v9180'
 
 export class BountiesProposeBountyCall {
   constructor(private ctx: CallContext) {
@@ -264,6 +272,904 @@ export class DemocracyVoteCall {
   get asLatest(): {refIndex: number, vote: v9110.AccountVote} {
     deprecateLatest()
     return this.asV9110
+  }
+}
+
+export class MultisigAsMultiCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'multisig.asMulti' || this.ctx.extrinsic.name === 'multisig.as_multi')
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+   *  filter.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get isV5(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '080532e153b3a5675fd25a02c2b30a069b9111693a19a3ee2d937547081f577b'
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+   *  filter.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get asV5(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v5.Timepoint | undefined), call: v5.Type_21} {
+    assert(this.isV5)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+   *  filter.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get isV6(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'f017b486609e794e241c31998fd2fc01afb1b28e0a4a6ebf3b2ae5bb4585d02e'
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+   *  filter.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get asV6(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v6.Timepoint | undefined), call: v6.Type_21} {
+    assert(this.isV6)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+   *  filter.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get isV7(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '721612c7f0b513fe76924dcc518fa13d8ea5689ec85d440396794fb05d199a44'
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
+   *  filter.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get asV7(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v7.Timepoint | undefined), call: v7.Type_21} {
+    assert(this.isV7)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get isV9(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'fc21051767b99d7888bb16b0838fef08a6b17be27f45945578424364b2861251'
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create: 46.55 + 0.089 * S µs
+   *      - Approve: 34.03 + .112 * S µs
+   *      - Complete: 40.36 + .225 * S µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account]
+   *      - Writes: Multisig Storage, [Caller Account]
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get asV9(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9.Timepoint | undefined), call: v9.Type_21} {
+    assert(this.isV9)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create:          41.89 + 0.118 * S + .002 * Z µs
+   *      - Create w/ Store: 53.57 + 0.119 * S + .003 * Z µs
+   *      - Approve:         31.39 + 0.136 * S + .002 * Z µs
+   *      - Complete:        39.94 + 0.26  * S + .002 * Z µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *      - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get isV10(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '548dea53ff79fe99438cf591950a533c93f9772d03a3995ec72a80376fcae222'
+  }
+
+  /**
+   *  Register approval for a dispatch to be made from a deterministic composite account if
+   *  approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   *  If there are enough, then dispatch the call.
+   * 
+   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
+   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   *  is cancelled.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
+   *  - `other_signatories`: The accounts (other than the sender) who can approve this
+   *  dispatch. May not be empty.
+   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   *  not the first approval, then it must be `Some`, with the timepoint (block number and
+   *  transaction index) of the first approval transaction.
+   *  - `call`: The call to be executed.
+   * 
+   *  NOTE: Unless this is the final approval, you will generally want to use
+   *  `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   *  on success, result is `Ok` and the result from the interior call, if it was executed,
+   *  may be found in the deposited `MultisigExecuted` event.
+   * 
+   *  # <weight>
+   *  - `O(S + Z + Call)`.
+   *  - Up to one balance-reserve or unreserve operation.
+   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   *  - One encode & hash, both of complexity `O(S)`.
+   *  - Up to one binary search and insert (`O(logS + S)`).
+   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   *  - One event.
+   *  - The weight of the `call`.
+   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
+   *    deposit taken for its lifetime of
+   *    `DepositBase + threshold * DepositFactor`.
+   *  -------------------------------
+   *  - Base Weight:
+   *      - Create:          41.89 + 0.118 * S + .002 * Z µs
+   *      - Create w/ Store: 53.57 + 0.119 * S + .003 * Z µs
+   *      - Approve:         31.39 + 0.136 * S + .002 * Z µs
+   *      - Complete:        39.94 + 0.26  * S + .002 * Z µs
+   *  - DB Weight:
+   *      - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *      - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *  - Plus Call Weight
+   *  # </weight>
+   */
+  get asV10(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v10.Timepoint | undefined), call: Uint8Array, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV10)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '82a8ce453a724ebb4bed43494ef68355c74db6b50677475d218208c684bba5f9'
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get asV9140(): {threshold: number, otherSignatories: v9140.AccountId32[], maybeTimepoint: (v9140.Timepoint | undefined), call: v9140.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '411e02a2f127b35ed79d4b66e58b64f4c578dae1b00a6b752838611191cd0f07'
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get asV9170(): {threshold: number, otherSignatories: v9170.AccountId32[], maybeTimepoint: (v9170.Timepoint | undefined), call: v9170.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get isV9180(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'a4a252ef7e0097d5a4df5ce4f9d588973f078826359c56e676cfd8ca76731188'
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get asV9180(): {threshold: number, otherSignatories: v9180.AccountId32[], maybeTimepoint: (v9180.Timepoint | undefined), call: v9180.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV9180)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9180
+  }
+
+  get asLatest(): {threshold: number, otherSignatories: v9180.AccountId32[], maybeTimepoint: (v9180.Timepoint | undefined), call: v9180.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    deprecateLatest()
+    return this.asV9180
   }
 }
 
