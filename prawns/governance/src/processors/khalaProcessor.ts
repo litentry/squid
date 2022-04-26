@@ -6,8 +6,8 @@ import councilProposedHandler from '../handlers/council.Proposed.event';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
-import bountiesBountyProposedHandler from "../handlers/bounties.BountyProposed.event";
-import treasuryProposedHandler from "../handlers/treasury.Proposed.event";
+import bountiesBountyProposedHandler from "../handlers/bounties.bountyProposed.event";
+import treasuryProposedHandler from "../handlers/treasury.proposed.event";
 import { SubstrateNetwork } from '../model';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
