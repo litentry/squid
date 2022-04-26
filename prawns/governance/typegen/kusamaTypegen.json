@@ -2,11 +2,20 @@
   "outDir": "../src/types/kusama",
   "chainVersions": "../../../metadata/kusamaVersions.json",
   "typesBundle": "kusama",
-  "events": ["democracy.Proposed", "council.Proposed", "technicalCommittee.Proposed", "democracy.Started"],
+  "events": [
+    "democracy.Proposed",
+    "council.Proposed",
+    "technicalCommittee.Proposed",
+    "democracy.Started",
+    "bounties.BountyProposed",
+    "treasury.Proposed"
+  ],
   "calls": [
     "council.vote",
     "democracy.second",
     "democracy.vote",
-    "phragmenElection.vote"
+    "phragmenElection.vote",
+    "bounties.propose_bounty",
+    "treasury.propose_spend"
   ]
 }

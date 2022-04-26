@@ -7,6 +7,8 @@ import { SubstrateNetwork } from '../model';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
 import councilProposedHandler from '../handlers/council.Proposed.event';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
+import bountiesBountyProposedHandler from "../handlers/bounties.BountyProposed.event";
+import treasuryProposedHandler from "../handlers/treasury.Proposed.event";
 
 const processor = new SubstrateProcessor('litentry_squid_governance_polkadot');
 
@@ -44,6 +46,14 @@ processor.addExtrinsicHandler(
 processor.addExtrinsicHandler(
   'democracy.second',
   democracySecondHandler(SubstrateNetwork.polkadot)
+);
+processor.addEventHandler(
+  'bounties.BountyProposed',
+  bountiesBountyProposedHandler(SubstrateNetwork.polkadot)
+);
+processor.addEventHandler(
+  'treasury.Proposed',
+  treasuryProposedHandler(SubstrateNetwork.polkadot)
 );
 
 processor.run();

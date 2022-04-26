@@ -1,7 +1,61 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
 import * as v1055 from './v1055'
+import * as v2028 from './v2028'
 import * as v9111 from './v9111'
+
+export class BountiesProposeBountyCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'bounties.proposeBounty' || this.ctx.extrinsic.name === 'bounties.propose_bounty')
+  }
+
+  /**
+   *  Propose a new bounty.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
+   *  `DataDepositPerByte` for each byte in `reason`. It will be unreserved upon approval,
+   *  or slashed when rejected.
+   * 
+   *  - `curator`: The curator account whom will manage this bounty.
+   *  - `fee`: The curator fee.
+   *  - `value`: The total payment amount of this bounty, curator fee included.
+   *  - `description`: The description of this bounty.
+   */
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('bounties.propose_bounty') === '6a012b4069a991972d0d3268cb20dfba3163919c325c7ebbe980b2dc15f1b1f5'
+  }
+
+  /**
+   *  Propose a new bounty.
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Payment: `TipReportDepositBase` will be reserved from the origin account, as well as
+   *  `DataDepositPerByte` for each byte in `reason`. It will be unreserved upon approval,
+   *  or slashed when rejected.
+   * 
+   *  - `curator`: The curator account whom will manage this bounty.
+   *  - `fee`: The curator fee.
+   *  - `value`: The total payment amount of this bounty, curator fee included.
+   *  - `description`: The description of this bounty.
+   */
+  get asV2028(): {value: bigint, description: Uint8Array} {
+    assert(this.isV2028)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV2028
+  }
+
+  get asLatest(): {value: bigint, description: Uint8Array} {
+    deprecateLatest()
+    return this.asV2028
+  }
+}
 
 export class CouncilVoteCall {
   constructor(private ctx: CallContext) {
@@ -309,5 +363,145 @@ export class PhragmenElectionVoteCall {
   get asLatest(): {votes: Uint8Array[], value: bigint} {
     deprecateLatest()
     return this.asV9010
+  }
+}
+
+export class TreasuryProposeSpendCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'treasury.proposeSpend' || this.ctx.extrinsic.name === 'treasury.propose_spend')
+  }
+
+  /**
+   *  Put forward a suggestion for spending. A deposit proportional to the value
+   *  is reserved and slashed if the proposal is rejected. It is returned once the
+   *  proposal is awarded.
+   * 
+   *  # <weight>
+   *  - O(1).
+   *  - Limited storage reads.
+   *  - One DB change, one extra DB entry.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('treasury.propose_spend') === 'd3901783e7ffe7cbf936f14df5ea28956c53356275248ae4f7a803fe5a6018ff'
+  }
+
+  /**
+   *  Put forward a suggestion for spending. A deposit proportional to the value
+   *  is reserved and slashed if the proposal is rejected. It is returned once the
+   *  proposal is awarded.
+   * 
+   *  # <weight>
+   *  - O(1).
+   *  - Limited storage reads.
+   *  - One DB change, one extra DB entry.
+   *  # </weight>
+   */
+  get asV1020(): {value: bigint, beneficiary: never} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Put forward a suggestion for spending. A deposit proportional to the value
+   *  is reserved and slashed if the proposal is rejected. It is returned once the
+   *  proposal is awarded.
+   * 
+   *  # <weight>
+   *  - O(1).
+   *  - Limited storage reads.
+   *  - One DB change, one extra DB entry.
+   *  # </weight>
+   */
+  get isV1050(): boolean {
+    return this.ctx._chain.getCallHash('treasury.propose_spend') === '98e9af32f46010396e58ac70ce7c017f7e95d81b05c03d5e5aeb94ce27732909'
+  }
+
+  /**
+   *  Put forward a suggestion for spending. A deposit proportional to the value
+   *  is reserved and slashed if the proposal is rejected. It is returned once the
+   *  proposal is awarded.
+   * 
+   *  # <weight>
+   *  - O(1).
+   *  - Limited storage reads.
+   *  - One DB change, one extra DB entry.
+   *  # </weight>
+   */
+  get asV1050(): {value: bigint, beneficiary: Uint8Array} {
+    assert(this.isV1050)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Put forward a suggestion for spending. A deposit proportional to the value
+   *  is reserved and slashed if the proposal is rejected. It is returned once the
+   *  proposal is awarded.
+   * 
+   *  # <weight>
+   *  - Complexity: O(1)
+   *  - DbReads: `ProposalCount`, `origin account`
+   *  - DbWrites: `ProposalCount`, `Proposals`, `origin account`
+   *  # </weight>
+   */
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('treasury.propose_spend') === 'c9f0fb5ad91e84a77c5f948f4140d239e238788ae3191c594dc1e6592472d5a7'
+  }
+
+  /**
+   *  Put forward a suggestion for spending. A deposit proportional to the value
+   *  is reserved and slashed if the proposal is rejected. It is returned once the
+   *  proposal is awarded.
+   * 
+   *  # <weight>
+   *  - Complexity: O(1)
+   *  - DbReads: `ProposalCount`, `origin account`
+   *  - DbWrites: `ProposalCount`, `Proposals`, `origin account`
+   *  # </weight>
+   */
+  get asV2028(): {value: bigint, beneficiary: v2028.GenericMultiAddress} {
+    assert(this.isV2028)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Put forward a suggestion for spending. A deposit proportional to the value
+   * is reserved and slashed if the proposal is rejected. It is returned once the
+   * proposal is awarded.
+   * 
+   * # <weight>
+   * - Complexity: O(1)
+   * - DbReads: `ProposalCount`, `origin account`
+   * - DbWrites: `ProposalCount`, `Proposals`, `origin account`
+   * # </weight>
+   */
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('treasury.propose_spend') === 'ffef9f31e8ae5085e7c0a55a685daef52218f0bf7083015ac904dafceedf09ee'
+  }
+
+  /**
+   * Put forward a suggestion for spending. A deposit proportional to the value
+   * is reserved and slashed if the proposal is rejected. It is returned once the
+   * proposal is awarded.
+   * 
+   * # <weight>
+   * - Complexity: O(1)
+   * - DbReads: `ProposalCount`, `origin account`
+   * - DbWrites: `ProposalCount`, `Proposals`, `origin account`
+   * # </weight>
+   */
+  get asV9111(): {value: bigint, beneficiary: v9111.MultiAddress} {
+    assert(this.isV9111)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9111
+  }
+
+  get asLatest(): {value: bigint, beneficiary: v9111.MultiAddress} {
+    deprecateLatest()
+    return this.asV9111
   }
 }
