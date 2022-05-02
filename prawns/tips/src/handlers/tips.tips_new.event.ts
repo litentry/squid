@@ -2,27 +2,28 @@ import { ApiDecoration } from '@polkadot/api/types';
 import type { Balance, OpenTipTo225 } from '@polkadot/types/interfaces';
 import type { PalletTipsOpenTip } from '@polkadot/types/lookup';
 import { hexToString, u8aToHex } from '@polkadot/util';
-import { EventHandlerContext, ExtrinsicArg } from '@subsquid/substrate-processor';
+import { Codec } from '@subsquid/scale-codec';
+import { EventHandlerContext, ExtrinsicArg, SubstrateExtrinsic } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateTip } from '../model';
 import { SubstrateTipStatus } from '../model/generated/_substrateTipStatus';
 import { decodeAddress } from '../utils';
 import getApi from '../utils/getApi';
 import { getTipsNewTipEvent } from './typeGetters/getTipsTipNewEvent';
 
+interface TipCallArgs {
+  who: string,
+  reason: string,
+  tipValue: bigint | null,
+}
+
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     if (!ctx.extrinsic) {
-      console.log(ctx.event);
       return;
     }
 
     const proxyCallArgs = getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'call');
-
-    const [who, reason, tipValue] = [
-      proxyCallArgs ? proxyCallArgs.args.who : getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'who') as string,
-      proxyCallArgs ? proxyCallArgs.args.reason : getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'reason') as string,
-      proxyCallArgs ? proxyCallArgs.args.tipValue : getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'tipValue') as bigint,
-    ];
+    const {who, reason, tipValue} = getArgsFromCall(ctx, ctx.extrinsic, proxyCallArgs);
 
     const newTipEvent = getTipsNewTipEvent(ctx, network);
     const blockNumber = BigInt(ctx.block.height);
@@ -46,12 +47,43 @@ export default (network: SubstrateNetwork) =>
       who: decodeAddress(who),
       finder: rootAccount,
       tipValue,
-      reason: hexToString(reason),
+      reason,
       deposit: (await getDeposit(apiAtBlock, newTipEvent.tipHash))?.toBigInt(),
     });
 
     await ctx.store.save(tipModel);
   };
+
+function getMultiSigCallArgs(ctx: EventHandlerContext, proxyCallArgs: any): TipCallArgs {
+  const c = new Codec(ctx._chain.description.types);
+  const data = c.decodeBinary(ctx._chain.description.call, proxyCallArgs);
+
+  const who = data.value?.who ? '0x' + Buffer.from(data.value.who).toString('hex') : null;
+  const reason = data.value?.reason ? Buffer.from(data.value.reason).toString() : null;
+  const tipValue = data.value?.tipValue ? Buffer.from(data.value.tipValue).toString() : null;
+
+  if (!who || !reason) {
+    throw new Error(`Could not decode multisig call for: ${data}`)
+  }
+
+  return {
+    who,
+    reason,
+    tipValue: tipValue ? BigInt(tipValue) : null,
+  };
+}
+
+function getArgsFromCall(ctx: EventHandlerContext, extrinsic: SubstrateExtrinsic, proxyCallArgs: any): TipCallArgs {
+  if (extrinsic.method === 'asMulti') {
+    return getMultiSigCallArgs(ctx, proxyCallArgs);
+  }
+
+  return {
+    who: proxyCallArgs ? proxyCallArgs.args.who : getFieldFromExtrinsicArgs(extrinsic.args, 'who') as string,
+    reason: hexToString(proxyCallArgs ? proxyCallArgs.args.reason : getFieldFromExtrinsicArgs(extrinsic.args, 'reason') as string),
+    tipValue: proxyCallArgs ? proxyCallArgs.args.tipValue : getFieldFromExtrinsicArgs(extrinsic.args, 'tipValue') as bigint,
+  };
+}
 
 function isCurrentTip(tip: PalletTipsOpenTip | OpenTipTo225): tip is PalletTipsOpenTip {
   return !!(tip as PalletTipsOpenTip)?.findersFee;
@@ -72,5 +104,3 @@ async function getDeposit(apiAtBlock: ApiDecoration<"promise">, hash: Uint8Array
 function getFieldFromExtrinsicArgs(args: ExtrinsicArg[], name: string): any {
   return (args.find(arg => arg.name === name))?.value;
 }
-
-
