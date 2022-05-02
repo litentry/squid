@@ -17,13 +17,7 @@ export default (network: SubstrateNetwork) =>
     }
 
     const proxyCallArgs = getFieldFromExtrinsicArgs(ctx.extrinsic.args, 'call');
-    const args = getArgsFromCall(ctx, ctx.extrinsic, proxyCallArgs);
-
-    if (!args) {
-      return;
-    }
-
-    const {who, reason, tipValue} = args;
+    const {who, reason, tipValue} = getArgsFromCall(ctx, ctx.extrinsic, proxyCallArgs);
 
     const newTipEvent = getTipsNewTipEvent(ctx, network);
     const blockNumber = BigInt(ctx.block.height);
@@ -58,16 +52,16 @@ function getMultiSigCallArgs(ctx: EventHandlerContext, proxyCallArgs: any): {
   who: string,
   reason: string,
   tipValue: bigint | null,
-} | null {
+} {
   const c = new Codec(ctx._chain.description.types);
   const data = c.decodeBinary(ctx._chain.description.call, proxyCallArgs);
 
-  const who = data.value.who ? '0x' + Buffer.from(data.value.who).toString('hex') : null;
-  const reason = data.value.reason ? Buffer.from(data.value.reason).toString() : null;
-  const tipValue = data.value.tipValue ? Buffer.from(data.value.tipValue).toString() : null;
+  const who = data.value?.who ? '0x' + Buffer.from(data.value.who).toString('hex') : null;
+  const reason = data.value?.reason ? Buffer.from(data.value.reason).toString() : null;
+  const tipValue = data.value?.tipValue ? Buffer.from(data.value.tipValue).toString() : null;
 
   if (!who || !reason) {
-    return null;
+    throw new Error(`Could not decode multisig call for: ${data}`)
   }
 
   return {
@@ -81,7 +75,7 @@ function getArgsFromCall(ctx: EventHandlerContext, extrinsic: SubstrateExtrinsic
   who: string,
   reason: string,
   tipValue: bigint | null,
-} | null {
+} {
   if (extrinsic.method === 'asMulti') {
     return getMultiSigCallArgs(ctx, proxyCallArgs);
   }
