@@ -10,6 +10,12 @@ import { decodeAddress } from '../utils';
 import getApi from '../utils/getApi';
 import { getTipsNewTipEvent } from './typeGetters/getTipsTipNewEvent';
 
+interface TipCallArgs {
+  who: string,
+  reason: string,
+  tipValue: bigint | null,
+}
+
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     if (!ctx.extrinsic) {
@@ -48,11 +54,7 @@ export default (network: SubstrateNetwork) =>
     await ctx.store.save(tipModel);
   };
 
-function getMultiSigCallArgs(ctx: EventHandlerContext, proxyCallArgs: any): {
-  who: string,
-  reason: string,
-  tipValue: bigint | null,
-} {
+function getMultiSigCallArgs(ctx: EventHandlerContext, proxyCallArgs: any): TipCallArgs {
   const c = new Codec(ctx._chain.description.types);
   const data = c.decodeBinary(ctx._chain.description.call, proxyCallArgs);
 
@@ -71,11 +73,7 @@ function getMultiSigCallArgs(ctx: EventHandlerContext, proxyCallArgs: any): {
   };
 }
 
-function getArgsFromCall(ctx: EventHandlerContext, extrinsic: SubstrateExtrinsic, proxyCallArgs: any): {
-  who: string,
-  reason: string,
-  tipValue: bigint | null,
-} {
+function getArgsFromCall(ctx: EventHandlerContext, extrinsic: SubstrateExtrinsic, proxyCallArgs: any): TipCallArgs {
   if (extrinsic.method === 'asMulti') {
     return getMultiSigCallArgs(ctx, proxyCallArgs);
   }
