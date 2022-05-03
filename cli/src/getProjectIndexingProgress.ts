@@ -16,11 +16,11 @@ const getIndexingProcessorContainers = (projectName: string) => {
 
 export default async (projectName: string) => Promise.all(
   getIndexingProcessorContainers(projectName).map(async (container) => {
-    const chainHeight = (await axios.get(`http://${container.host}/metrics/sqd_processor_chain_height`)).data.toString();
-    const chainHeightMatches = /([\d.]+)/g.exec(chainHeight)?.[0] || 0;
-
     const lastBlock = (await axios.get(`http://${container.host}/metrics/sqd_processor_last_block`)).data.toString();
-    const lastBlockMatches = /([\d.]+)/g.exec(lastBlock)?.[0] || 1;
+    const lastBlockMatches = /([\d.]+)/g.exec(lastBlock)?.[0] || 0;
+
+    const chainHeight = (await axios.get(`http://${container.host}/metrics/sqd_processor_chain_height`)).data.toString();
+    const chainHeightMatches = /([\d.]+)/g.exec(chainHeight)?.[0] || 1;
 
     const progress = Math.round(Number(lastBlockMatches) / Number(chainHeightMatches) * ROUNDING_MULTIPLIER) / ROUNDING_DIVIDER;
 
