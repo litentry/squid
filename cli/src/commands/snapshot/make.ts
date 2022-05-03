@@ -1,11 +1,10 @@
 import { Command } from '@oclif/core';
-import { existsSync } from 'fs';
-import { execSync } from 'child_process';
-import getProjectIndexingProgress from '../../getProjectIndexingProgress';
-import cli from 'cli-ux';
-import { promises as fs } from 'fs';
 import * as AWS from 'aws-sdk';
-import config from  '../../config';
+import { execSync } from 'child_process';
+import cli from 'cli-ux';
+import { existsSync, promises as fs } from 'fs';
+import config from '../../config';
+import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 
 const s3 = new AWS.S3();
 
@@ -46,7 +45,7 @@ export default class MakeSnapshot extends Command {
         process.stdout.moveCursor(0, linesToDelete * -1);
       }
       const containers = await getProjectIndexingProgress(this.getProjectName());
-      indexingComplete = containers.every((container) => container.progress === 1);
+      indexingComplete = containers.every((container) => container.progress === 100);
       this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
       cli.table(containers, { name: {}, progress: {} });
       linesToDelete = containers.length + 3;

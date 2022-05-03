@@ -1,8 +1,8 @@
-import {Command, Flags} from '@oclif/core'
-import {existsSync, mkdirSync, unlinkSync, writeFileSync} from 'fs';
+import { Command, Flags } from '@oclif/core';
 import { execSync } from 'child_process';
-import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 
 export default class Deploy extends Command {
 
@@ -53,7 +53,7 @@ export default class Deploy extends Command {
         process.stdout.moveCursor(0, linesToDelete * -1);
       }
       const containers = await getProjectIndexingProgress(this.getProjectName());
-      indexingComplete = containers.every((container) => container.progress === 1);
+      indexingComplete = containers.every((container) => container.progress === 100);
       this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
       cli.table(containers, { name: {}, progress: {} });
       linesToDelete = containers.length + 3;
