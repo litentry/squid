@@ -1,0 +1,10 @@
+{
+  "outDir": "../src/types/polkadot",
+  "chainVersions": "../../../metadata/polkadotVersions.json",
+  "typesBundle": "polkadot",
+  "calls": [
+    "identity.set_identity",
+    "identity.clear_identity",
+    "identity.kill_identity"
+  ]
+}

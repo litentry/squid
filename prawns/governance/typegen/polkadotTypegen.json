@@ -1,0 +1,21 @@
+{
+  "outDir": "../src/types/polkadot",
+  "chainVersions": "../../../metadata/polkadotVersions.json",
+  "typesBundle": "polkadot",
+  "events": [
+    "democracy.Proposed",
+    "council.Proposed",
+    "technicalCommittee.Proposed",
+    "democracy.Started",
+    "bounties.BountyProposed",
+    "treasury.Proposed"
+  ],
+  "calls": [
+    "council.vote",
+    "democracy.second",
+    "democracy.vote",
+    "phragmenElection.vote",
+    "bounties.propose_bounty",
+    "treasury.propose_spend"
+  ]
+}

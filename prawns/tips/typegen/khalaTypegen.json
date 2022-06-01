@@ -1,0 +1,11 @@
+{
+  "outDir": "../src/types/khala",
+  "chainVersions": "../../../metadata/khalaVersions.json",
+  "typesBundle": "khala",
+  "events": [
+    "tips.NewTip"
+  ],
+  "calls": [
+    "tips.tip"
+  ]
+}

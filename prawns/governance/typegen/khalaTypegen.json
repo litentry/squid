@@ -1,0 +1,21 @@
+{
+  "outDir": "../src/types/khala",
+  "chainVersions": "../../../metadata/khalaVersions.json",
+  "typesBundle": "khala",
+  "events": [
+    "democracy.Proposed",
+    "council.Proposed",
+    "technicalCommittee.Proposed",
+    "democracy.Started",
+    "bounties.BountyProposed",
+    "treasury.Proposed"
+  ],
+  "calls": [
+    "council.vote",
+    "democracy.second",
+    "democracy.vote",
+    "phragmenElection.vote",
+    "bounties.propose_bounty",
+    "treasury.propose_spend"
+  ]
+}

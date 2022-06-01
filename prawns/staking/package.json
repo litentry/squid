@@ -1,0 +1,36 @@
+{
+  "name": "squid-staking",
+  "description": "Squid processors for substrate staking.",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && yarn build && yarn migrate",
+    "dev:polkadot": "node -r dotenv/config lib/processors/polkadotProcessor.js",
+    "dev:kusama": "node -r dotenv/config lib/processors/kusamaProcessor.js",
+    "process:polkadot": "node lib/processors/polkadotProcessor.js",
+    "process:kusama": "node lib/processors/kusamaProcessor.js",
+    "query-node": "squid-graphql-server",
+    "build": "rm -rf lib && tsc",
+    "codegen": "sqd codegen",
+    "migrate": "sqd db:migrate",
+    "migrate:revert": "sqd db revert",
+    "migration": "sqd db:create-migration Data"
+  },
+  "dependencies": {
+    "@polkadot/util-crypto": "^8.4.1",
+    "@subsquid/graphql-server": "^0.1.5",
+    "@subsquid/ss58": "^0.0.4",
+    "@subsquid/substrate-processor": "^0.4.1",
+    "dotenv": "^10.0.0",
+    "pg": "^8.7.1",
+    "typeorm": "^0.2.41"
+  },
+  "devDependencies": {
+    "@subsquid/cli": "^0.1.4",
+    "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "eslint": "7.26.0",
+    "prettier": "^2.3.2",
+    "typescript": "~4.5.4"
+  }
+}

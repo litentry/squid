@@ -2,19 +2,32 @@ export enum ConfigChainsEnum {
   'polkadot' = 'polkadot',
   'khala' = 'khala',
   'kusama' = 'kusama',
-  'moonbeam' = 'moonbeam'
+  'moonbeam' = 'moonbeam',
+  'clover' = 'clover',
 }
 
 export interface ConfigInterface {
-  chains: {
-    [key in ConfigChainsEnum]: {
-      chain: string,
-      archive: string
+  snapshot: {
+    s3: {
+      bucket: string;
+      path: string;
     }
   }
+  chains: {
+    [key in ConfigChainsEnum]: {
+      chain: string;
+      archive: string;
+    };
+  };
 }
 
 export default {
+  snapshot: {
+    s3: {
+      bucket: 'litentry-db-backup',
+      path: 'litentry-squid/prod'
+    }
+  },
   chains: {
     polkadot: {
       chain: 'wss://polkadot.api.onfinality.io/public-ws',
@@ -30,7 +43,11 @@ export default {
     },
     moonbeam: {
       chain: 'wss://moonbeam.api.onfinality.io/public-ws',
-      archive: 'https://moonbeam.indexer.gc.subsquid.io/v4/graphql',
+      archive: 'https://moonbeam-squid-archive.litentry.io/graphql/v1/graphql',
+    },
+    clover: {
+      chain: 'wss://api-ivy-elastic.clover.finance',
+      archive: 'https://clover-squid-archive.litentry.io/graphql/v1/graphql',
     },
   },
-} as ConfigInterface
+} as ConfigInterface;

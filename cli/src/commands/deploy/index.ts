@@ -1,8 +1,8 @@
-import {Command, Flags} from '@oclif/core'
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { Command, Flags } from '@oclif/core';
 import { execSync } from 'child_process';
-import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 import cli from 'cli-ux';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import getProjectIndexingProgress from '../../getProjectIndexingProgress';
 
 export default class Deploy extends Command {
 
@@ -35,7 +35,7 @@ export default class Deploy extends Command {
     }
 
     this.log("Pull latest changes:");
-    this.log(this.gitPull().toString());
+    this.gitPull();
 
     this.version = this.getVersion();
 
@@ -43,43 +43,54 @@ export default class Deploy extends Command {
     this.createLockFile({version: this.version});
 
     this.log("Start indexing:");
-    this.log(this.startIndexing().toString());
+    this.startIndexing();
 
     let indexingComplete = false;
+    let linesToDelete = 0;
     while (!indexingComplete) {
       await this.sleep(10000);
+      if (process.stdout.moveCursor) {
+        process.stdout.moveCursor(0, linesToDelete * -1);
+      }
       const containers = await getProjectIndexingProgress(this.getProjectName());
-      indexingComplete = containers.every((container) => container.progress === 1);
+      indexingComplete = containers.every((container) => container.progress === 100);
+      this.log(`Updated at ${new Date().toISOString().replace('T', ' ').substring(11, 19)}`);
       cli.table(containers, { name: {}, progress: {} });
+      linesToDelete = containers.length + 3;
     }
 
     this.log("Indexing complete");
 
     this.log("Start query node:");
-    this.log(this.startQueryNode().toString());
+    this.startQueryNode();
 
     await this.sleep(2000);
 
     this.log("Reload Nginx:");
-    this.log(this.reloadNginx().toString());
+    this.reloadNginx();
 
     this.log("Take down old version:");
-    this.log(this.takeDownOldVersion().toString());
+    this.takeDownOldVersion();
 
     await this.sleep(2000);
 
     this.log("Reload Nginx:");
-    this.log(this.reloadNginx().toString());
+    this.reloadNginx();
+
+    this.log("Delete lock file:");
+    this.removeLockFile();
 
   }
 
   private getVersion = () => execSync('git rev-parse --short HEAD').toString().trim();
 
-  private gitPull = () => execSync('git pull');
+  private gitPull = () => execSync('git pull', {stdio: 'inherit'});
 
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
-  private getModuleDir = () => `${this.getProjectRootDir()}/${this.module}`;
+  private getModuleDir = () => `${this.getProjectRootDir()}/prawns/${this.module}`;
+
+  private getDbDataDir = () => `${this.getProjectRootDir()}/data/db/`;
 
   private getLockfileName = () => `${this.getProjectRootDir()}/.deployments/${this.module}`;
 
@@ -99,17 +110,40 @@ export default class Deploy extends Command {
 
   private getProjectName = () => `${this.module}_${this.version}`;
 
-  private startIndexing = () => execSync(`docker-compose --profile indexing -p ${this.getProjectName()} up --build -d`, {cwd: this.getModuleDir()});
+  private startIndexing = () => execSync(
+    `COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose --profile indexing up --build -d`,
+    {cwd: this.getModuleDir(), stdio: 'inherit'}
+    );
 
-  private startQueryNode = () => execSync(`docker-compose --profile querying -p ${this.getProjectName()} up --build -d`, {cwd: this.getModuleDir()});
+  private startQueryNode = () => execSync(
+    `COMPOSE_PROJECT_NAME=${this.getProjectName()} docker-compose --profile querying up --build -d`,
+    {cwd: this.getModuleDir(), stdio: 'inherit'}
+    );
 
-  private reloadNginx = () => execSync(`docker exec $(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload`);
+  private reloadNginx = () => execSync(
+    `docker exec $(docker ps -f name=nginx --quiet) /usr/sbin/nginx -s reload`,
+    {stdio: 'inherit'}
+    );
 
   private takeDownOldVersion = () => {
     const projects = execSync(`docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'`).toString().trim().split("\n");
-    console.log(projects);
+
     const projectsToCleanUp = [...new Set(projects)].filter((project: string) => project.startsWith(`${this.module}_`) && project !== this.getProjectName());
-    console.log(projectsToCleanUp);
-    return projectsToCleanUp.map(project => execSync(`docker-compose -p ${project} down`, {cwd: this.getModuleDir()}).toString()).join("\n");
+
+    projectsToCleanUp.map(project => {
+      this.log(`Take down project: ${project}`);
+      execSync(
+        `COMPOSE_PROJECT_NAME=${project} docker-compose down`,
+        {cwd: this.getModuleDir(), stdio: 'inherit'}
+        );
+
+      this.log(`Delete data for project: ${project}`);
+      execSync(
+        `sudo rm -rf ${project}`,
+        {cwd: this.getDbDataDir(), stdio: 'inherit'}
+      );
+    })
   }
+
+  private removeLockFile = () => unlinkSync(this.getLockfileName());
 }

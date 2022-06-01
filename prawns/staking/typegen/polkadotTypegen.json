@@ -1,0 +1,15 @@
+{
+  "outDir": "../src/types/polkadot",
+  "chainVersions": "../../../metadata/polkadotVersions.json",
+  "typesBundle": "polkadot",
+  "events": [
+    "staking.Bonded",
+    "staking.Unbonded",
+    "staking.Chilled",
+    "staking.Kicked",
+    "staking.PayoutStarted",
+    "staking.Rewarded",
+    "staking.Slashed",
+    "staking.Withdrawn"
+  ]
+}

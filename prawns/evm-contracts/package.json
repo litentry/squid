@@ -1,0 +1,40 @@
+{
+  "name": "squid-evm-contracts",
+  "description": "Squid processors for evm contracts.",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && yarn build && yarn migrate",
+    "dev:moonbeam": "node -r dotenv/config lib/processors/moonbeamProcessor.js",
+    "process:moonbeam": "node lib/processors/moonbeamProcessor.js",
+    "query-node": "squid-graphql-server",
+    "build": "rm -rf lib && tsc",
+    "codegen": "sqd codegen",
+    "migrate": "sqd db:migrate",
+    "migrate:revert": "sqd db revert",
+    "migration": "sqd db:create-migration Data"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.5.0",
+    "@polkadot/util-crypto": "^8.4.1",
+    "@subsquid/graphql-server": "^0.1.4",
+    "@subsquid/ss58": "^0.0.3",
+    "@subsquid/substrate-evm-processor": "^0.0.1",
+    "@subsquid/substrate-processor": "^0.4.1",
+    "dotenv": "^10.0.0",
+    "ethers": "^5.5.4",
+    "evm": "^0.2.0",
+    "pg": "^8.7.1",
+    "typeorm": "^0.2.41"
+  },
+  "devDependencies": {
+    "@subsquid/cli": "^0.1.1",
+    "@subsquid/substrate-metadata-explorer": "^0.0.7",
+    "@subsquid/substrate-typegen": "^0.2.0",
+    "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "eslint": "7.26.0",
+    "prettier": "^2.3.2",
+    "typescript": "~4.5.4"
+  }
+}
