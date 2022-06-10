@@ -1,5 +1,6 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import balanceTransferHandler from '../handlers/balances.transfer.event';
+import balanceEndowedHandler from '../handlers/balances.endowed.event';
 import treasuryDepositHandler from '../handlers/treasury.deposit.event';
 import { SubstrateNetwork } from '../model';
 import treasuryAwardedHandler from "../handlers/treasury.awarded.event";
@@ -29,6 +30,10 @@ processor.addEventHandler(
 processor.addEventHandler(
   'balances.BalanceSet',
   balanceSetHandler(SubstrateNetwork.kusama, 0)
+);
+processor.addEventHandler(
+  'balances.Endowed',
+  balanceEndowedHandler(SubstrateNetwork.kusama, 0)
 );
 
 processor.run();
