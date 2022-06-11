@@ -5,6 +5,7 @@ import treasuryDepositHandler from '../handlers/treasury.deposit.event';
 import { SubstrateNetwork } from '../model';
 import treasuryAwardedHandler from "../handlers/treasury.awarded.event";
 import balanceSetHandler from "../handlers/balances.balanceset.event";
+import balanceDepositHandler from "../handlers/balances.deposit.event";
 
 const processor = new SubstrateProcessor('litentry_squid_balances_kusama');
 
@@ -15,6 +16,11 @@ processor.setDataSource({
   archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
   chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
+
+if (process.env.START_BLOCK && process.env.END_BLOCK) {
+  processor.setBlockRange({from: parseInt(process.env.START_BLOCK), to: parseInt(process.env.END_BLOCK)});
+}
+
 processor.addEventHandler(
   'balances.Transfer',
   balanceTransferHandler(SubstrateNetwork.kusama, 0)
@@ -34,6 +40,10 @@ processor.addEventHandler(
 processor.addEventHandler(
   'balances.Endowed',
   balanceEndowedHandler(SubstrateNetwork.kusama, 0)
+);
+processor.addEventHandler(
+  'balances.Deposit',
+  balanceDepositHandler(SubstrateNetwork.polkadot, 0)
 );
 
 processor.run();
