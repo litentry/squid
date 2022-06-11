@@ -35,5 +35,5 @@ processor.addEventHandler(
   'balances.Endowed',
   balanceEndowedHandler(SubstrateNetwork.polkadot, 0)
 );
-processor.setBlockRange({from: 5988, to: 5990})
+
 processor.run();
