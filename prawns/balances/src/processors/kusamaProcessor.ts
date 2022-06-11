@@ -17,10 +17,6 @@ processor.setDataSource({
   chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
 
-if (process.env.START_BLOCK && process.env.END_BLOCK) {
-  processor.setBlockRange({from: parseInt(process.env.START_BLOCK), to: parseInt(process.env.END_BLOCK)});
-}
-
 processor.addEventHandler(
   'balances.Transfer',
   balanceTransferHandler(SubstrateNetwork.kusama, 0)
