@@ -14,6 +14,11 @@ processor.setDataSource({
   archive: 'https://polkadot-squid-archive.litentry.io/graphql/v1/graphql',
   chain: 'wss://polkadot.api.onfinality.io/public-ws',
 });
+
+if (process.env.START_BLOCK && process.env.END_BLOCK) {
+  processor.setBlockRange({from: parseInt(process.env.START_BLOCK), to: parseInt(process.env.END_BLOCK)});
+}
+
 processor.addEventHandler(
   'balances.Transfer',
   balanceTransferHandler(SubstrateNetwork.polkadot, 0)
