@@ -48,7 +48,7 @@ export default class Scaffolding extends Command {
 
   private waitForDb = () => execSync('while ! nc -z 0.0.0.0 5555; do sleep 1; done;');
 
-  private runCreateMigration = () => execSync(`yarn build && DB_PORT=5555 sqd db:create-migration Data`, {cwd: this.getModuleDir()});
+  private runCreateMigration = () => execSync(`yarn build && DB_PORT=5555 yarn sqd db:create-migration Data`, {cwd: this.getModuleDir()});
 
   private stopDb = () => execSync(`docker stop "scaffolding-db"`, {cwd: this.getProjectRootDir()});
 
