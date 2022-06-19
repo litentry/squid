@@ -5,6 +5,10 @@
   "events": [
     "democracy.Proposed",
     "council.Proposed",
+    "council.Voted",
+    "council.Closed",
+    "council.Approved",
+    "council.Executed",
     "technicalCommittee.Proposed",
     "democracy.Started",
     "bounties.BountyProposed",
@@ -17,5 +21,9 @@
     "phragmenElection.vote",
     "bounties.propose_bounty",
     "treasury.propose_spend"
+  ],
+  "storage":  [
+    "Council.ProposalOf",
+    "Council.Members"
   ]
 }

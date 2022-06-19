@@ -63,8 +63,16 @@ type SubstrateCouncilProposal @entity {
   rootAccount: String! @index
   blockNumber: BigInt!
   date: DateTime!
-  proposalIndex: Int! @index
-  proposalHash: String!
+  lastUpdate: DateTime!
+  proposalId: Int @index
+  proposalIndex: Int @index
+  proposalHash: String! @index
+  pallet: String
+  method: String
+  status: String!
+  ayeCount: Int!
+  nayCount: Int!
+  votes: [SubstrateCouncilVote]! @derivedFrom(field: "proposal")
   threshold: Int!
 }
 
@@ -90,7 +98,7 @@ type SubstrateCouncilVote @entity {
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
-  proposal: String!
+  proposal: SubstrateCouncilProposal!
   approve: Boolean!
 }
 

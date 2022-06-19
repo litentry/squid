@@ -3,6 +3,7 @@ import { SubstrateNetwork } from '../../model';
 import { TreasuryProposeSpendCall as KusamaTreasuryProposedSpendCall } from '../../types/kusama/calls';
 import { TreasuryProposeSpendCall as PolkadotTreasuryProposedSpendCall } from '../../types/polkadot/calls';
 import { TreasuryProposeSpendCall as KhalaTreasuryProposedSpendCall } from '../../types/polkadot/calls';
+import {Type_17_AccountId} from "../../types/kusama/v1020";
 
 export function getTreasuryProposedSpendCall(
   ctx: ExtrinsicHandlerContext,
@@ -16,7 +17,8 @@ export function getTreasuryProposedSpendCall(
       const call = new KusamaTreasuryProposedSpendCall(ctx);
 
       if (call.isV1020) {
-        return call.asV1020;
+         const ret = call.asV1020;
+         return {value: ret.value, beneficiary: (ret.beneficiary as Type_17_AccountId).value};
       } else if (call.isV1050) {
         return call.asV1050;
       } else if (call.isV2028) {

@@ -33,7 +33,7 @@ export class SubstrateProposalVote {
   date!: Date
 
   @Index_()
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   refIndex!: number
 
   /**

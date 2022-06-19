@@ -44,7 +44,7 @@ export default class Scaffolding extends Command {
 
   private getExistingMigrations = () => readdirSync(this.getMigrationsDir());
 
-  private startDb = () => execSync(`docker run --name "scaffolding-db" -p 5555:5432 -e POSTGRES_HOST_AUTH_METHOD=trust --rm -d postgres:12`, {cwd: this.getProjectRootDir()});
+  private startDb = () => execSync(`docker stop "scaffolding-db" || true && docker run --name "scaffolding-db" -p 5555:5432 -e POSTGRES_HOST_AUTH_METHOD=trust --rm -d postgres:12`, {cwd: this.getProjectRootDir()});
 
   private waitForDb = () => execSync('while ! nc -z 0.0.0.0 5555; do sleep 1; done;');
 

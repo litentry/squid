@@ -1,7 +1,8 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateCouncilVote} from "./substrateCouncilVote.model"
 
 @Entity_()
 export class SubstrateCouncilProposal {
@@ -32,13 +33,39 @@ export class SubstrateCouncilProposal {
   @Column_("timestamp with time zone", {nullable: false})
   date!: Date
 
-  @Index_()
-  @Column_("integer", {nullable: false})
-  proposalIndex!: number
+  @Column_("timestamp with time zone", {nullable: false})
+  lastUpdate!: Date
 
+  @Index_()
+  @Column_("int4", {nullable: true})
+  proposalId!: number | undefined | null
+
+  @Index_()
+  @Column_("int4", {nullable: true})
+  proposalIndex!: number | undefined | null
+
+  @Index_()
   @Column_("text", {nullable: false})
   proposalHash!: string
 
-  @Column_("integer", {nullable: false})
+  @Column_("text", {nullable: true})
+  pallet!: string | undefined | null
+
+  @Column_("text", {nullable: true})
+  method!: string | undefined | null
+
+  @Column_("text", {nullable: false})
+  status!: string
+
+  @Column_("int4", {nullable: false})
+  ayeCount!: number
+
+  @Column_("int4", {nullable: false})
+  nayCount!: number
+
+  @OneToMany_(() => SubstrateCouncilVote, e => e.proposal)
+  votes!: SubstrateCouncilVote[]
+
+  @Column_("int4", {nullable: false})
   threshold!: number
 }

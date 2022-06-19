@@ -1,11 +1,14 @@
-import { SubstrateProcessor } from '@subsquid/substrate-processor';
+import {SubstrateProcessor} from '@subsquid/substrate-processor';
 import councilVoteHandler from '../handlers/council.vote.extrinsic';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
-import { SubstrateNetwork } from '../model';
+import {SubstrateNetwork} from '../model';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
 import councilProposedHandler from '../handlers/council.Proposed.event';
+import councilApprovedEventHandler from '../handlers/council.Approved.event';
+import councilClosedEventHandler from '../handlers/council.Closed.event';
+import councilExecutedEventHandler from '../handlers/council.Executed.event';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import bountiesBountyProposedHandler from "../handlers/bounties.bountyProposed.event";
 import treasuryProposedHandler from "../handlers/treasury.proposed.event";
@@ -40,6 +43,20 @@ processor.addEventHandler(
   'council.Proposed',
   councilProposedHandler(SubstrateNetwork.polkadot)
 );
+
+processor.addEventHandler(
+  'council.Approved',
+  councilApprovedEventHandler(SubstrateNetwork.polkadot)
+);
+processor.addEventHandler(
+  'council.Closed',
+  councilClosedEventHandler(SubstrateNetwork.polkadot)
+);
+processor.addEventHandler(
+  'council.Executed',
+  councilExecutedEventHandler(SubstrateNetwork.polkadot)
+);
+
 processor.addExtrinsicHandler(
   'democracy.vote',
   democracyVoteHandler(SubstrateNetwork.polkadot)

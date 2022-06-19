@@ -1,7 +1,10 @@
 import assert from 'assert'
 import {EventContext, Result, deprecateLatest} from './support'
 import * as v0 from './v0'
+import * as v9110 from './v9110'
 import * as v9140 from './v9140'
+import * as v9170 from './v9170'
+import * as v9190 from './v9190'
 
 export class BountiesBountyProposedEvent {
   constructor(private ctx: EventContext) {
@@ -46,6 +49,191 @@ export class BountiesBountyProposedEvent {
   get asLatest(): {index: number} {
     deprecateLatest()
     return this.asV9140
+  }
+}
+
+export class CouncilApprovedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'council.Approved')
+  }
+
+  /**
+   *  A motion was approved by the required threshold.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('council.Approved') === '21ea0c8f2488eafafdea1de92b54cd17d8b1caff525e37616abf0ff93f11531d'
+  }
+
+  /**
+   *  A motion was approved by the required threshold.
+   */
+  get asV0(): Uint8Array {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion was approved by the required threshold.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('council.Approved') === 'b8668610145a6851ad2d5b7dd4bfc15e29402d9a8558401ab955896007f866a5'
+  }
+
+  /**
+   * A motion was approved by the required threshold.
+   */
+  get asV9140(): {proposalHash: v9140.H256} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {proposalHash: v9140.H256} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
+export class CouncilClosedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'council.Closed')
+  }
+
+  /**
+   *  A proposal was closed after its duration was up.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('council.Closed') === '7d509ca6ee36d401f2d5410aa32038550c256cc3ce4b34cdfe1f8adea0e1679c'
+  }
+
+  /**
+   *  A proposal was closed after its duration was up.
+   */
+  get asV0(): [Uint8Array, number, number] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal was closed because its threshold was reached or after its duration was up.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('council.Closed') === '084e73926c22836c888c17e49053d3b72e2feaa904b8f0175d21fb5b800542f9'
+  }
+
+  /**
+   * A proposal was closed because its threshold was reached or after its duration was up.
+   */
+  get asV9140(): {proposalHash: v9140.H256, yes: number, no: number} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {proposalHash: v9140.H256, yes: number, no: number} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
+export class CouncilExecutedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'council.Executed')
+  }
+
+  /**
+   *  A motion was executed; `bool` is true if returned without error.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('council.Executed') === 'f98b87482f886396f52d6875083e9b201ac0e3f97d718c37613afad51e85a9b7'
+  }
+
+  /**
+   *  A motion was executed; `bool` is true if returned without error.
+   */
+  get asV0(): [Uint8Array, Result<null, v0.DispatchError>] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   * \[proposal_hash, result\]
+   */
+  get isV9110(): boolean {
+    return this.ctx._chain.getEventHash('council.Executed') === '019142f0bd31225b17a5d98473d6ee9928b1e71bb401e1e42248abdb9dca92c7'
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   * \[proposal_hash, result\]
+   */
+  get asV9110(): [v9110.H256, Result<null, v9110.DispatchError>] {
+    assert(this.isV9110)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('council.Executed') === '5b848c4d2e38fbfb6752ba650f8662bd0df106f400d22ae305ed497d7574ee03'
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   */
+  get asV9140(): {proposalHash: v9140.H256, result: Result<null, v9140.DispatchError>} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getEventHash('council.Executed') === 'e7bba992b17737087cf79037068ecde07b0ef6afb29be3ddbe1d7afe57e365aa'
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   */
+  get asV9170(): {proposalHash: v9170.H256, result: Result<null, v9170.DispatchError>} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   */
+  get isV9190(): boolean {
+    return this.ctx._chain.getEventHash('council.Executed') === '891fd2ad27e5f8bc799d45bb765ef77383902fd4e1cc4c6981cba99123803ac7'
+  }
+
+  /**
+   * A motion was executed; result will be `Ok` if it returned without error.
+   */
+  get asV9190(): {proposalHash: v9190.H256, result: Result<null, v9190.DispatchError>} {
+    assert(this.isV9190)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9190
+  }
+
+  get asLatest(): {proposalHash: v9190.H256, result: Result<null, v9190.DispatchError>} {
+    deprecateLatest()
+    return this.asV9190
   }
 }
 
@@ -94,6 +282,56 @@ export class CouncilProposedEvent {
   }
 
   get asLatest(): {account: v9140.AccountId32, proposalIndex: number, proposalHash: v9140.H256, threshold: number} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
+export class CouncilVotedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'council.Voted')
+  }
+
+  /**
+   *  A motion (given hash) has been voted on by given account, leaving
+   *  a tally (yes votes and no votes given respectively as `MemberCount`).
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('council.Voted') === '5693223b18444daea47c5d959a8026ce5084d3e9c76fe5a2be5ef93f3526e0ac'
+  }
+
+  /**
+   *  A motion (given hash) has been voted on by given account, leaving
+   *  a tally (yes votes and no votes given respectively as `MemberCount`).
+   */
+  get asV0(): [Uint8Array, Uint8Array, boolean, number, number] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A motion (given hash) has been voted on by given account, leaving
+   * a tally (yes votes and no votes given respectively as `MemberCount`).
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('council.Voted') === 'b69e97272b7c060192bbc1a5e91692b0a8b905727af6d9eb5627b7857ede0846'
+  }
+
+  /**
+   * A motion (given hash) has been voted on by given account, leaving
+   * a tally (yes votes and no votes given respectively as `MemberCount`).
+   */
+  get asV9140(): {account: v9140.AccountId32, proposalHash: v9140.H256, voted: boolean, yes: number, no: number} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {account: v9140.AccountId32, proposalHash: v9140.H256, voted: boolean, yes: number, no: number} {
     deprecateLatest()
     return this.asV9140
   }

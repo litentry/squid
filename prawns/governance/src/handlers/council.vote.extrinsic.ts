@@ -3,6 +3,7 @@ import { decodeAddress } from '../utils';
 import { SubstrateNetwork, SubstrateCouncilVote } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilVoteCall } from './typeGetters/getCouncilVoteCall';
+import substrateCouncilProposalRepository from "../repositories/substrateCouncilProposalRepository";
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
@@ -19,6 +20,12 @@ export default (network: SubstrateNetwork) =>
     account.totalProposalVotes = account.totalProposalVotes + 1;
     await ctx.store.save(account);
 
+    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, call.proposal);
+
+    if (!councilProposal) {
+      throw new Error(`Proposal not found`);
+    }
+
     const vote = new SubstrateCouncilVote({
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
@@ -27,9 +34,16 @@ export default (network: SubstrateNetwork) =>
       blockNumber,
       date,
       proposalIndex: call.index,
-      proposal: '0x' + Buffer.from(call.proposal).toString('hex'),
+      proposal: councilProposal,
       approve: call.approve,
     });
 
-    await ctx.store.save(vote);
+    if (call.approve) {
+      councilProposal.ayeCount++;
+    } else {
+      councilProposal.nayCount++;
+    }
+    councilProposal.lastUpdate = date;
+
+    await Promise.all([ctx.store.save(vote), ctx.store.save(councilProposal)]);
   };

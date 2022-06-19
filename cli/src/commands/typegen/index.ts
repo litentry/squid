@@ -1,30 +1,42 @@
-import {Command} from '@oclif/core'
+import { Command } from '@oclif/core'
 import { execSync } from 'child_process';
+import { readdirSync } from "fs";
 
 export default class Typegen extends Command {
 
-  private module: string = '';
-  private chain: string = '';
+  private prawn: string = '';
 
-  static description = 'Generate types for a chain / module'
+  static description = 'Generate types for a prawn'
 
   static examples = [
-    `$ devkit typegen balances polkadot`,
+    `$ devkit typegen balances`,
   ]
 
   static args = [
-    {name: 'module', description: 'Module to typegen into', required: true},
-    {name: 'chain', description: 'Chain to typegen for', required: true},
+    {name: 'prawn', description: 'Module to typegen into', required: true}
     ]
 
   async run(): Promise<void> {
     const {args} = await this.parse(Typegen);
-    this.module = args.module;
-    this.chain = args.chain;
-    this.log(this.runTypeGen().toString());
-
+    this.prawn = args.prawn;
+    this.getChains().forEach((chain) => {
+      console.log(`Running type generation for ${chain}`);
+      this.log(this.runTypeGen(chain).toString());
+    })
   }
   private getProjectRootDir = () => `${__dirname}/../../../..`;
 
-  private runTypeGen = () => execSync(`yarn squid-substrate-typegen prawns/${this.module}/typegen/${this.chain}Typegen.json`, {cwd: this.getProjectRootDir()});
+  private getChains = () => {
+    const typgenFiles = readdirSync(`${this.getProjectRootDir()}/prawns/${this.prawn}/typegen/`, {withFileTypes: true});
+    const regex = /([a-z]+)Typegen\.json/;
+    return typgenFiles.reduce((all: string[], curr) => {
+      const matches = regex.exec(curr.name);
+      if (matches === null) {
+        return all;
+      }
+      return [...all, matches[1]];
+    }, []);
+  }
+
+  private runTypeGen = (chain: string) => execSync(`yarn squid-substrate-typegen prawns/${this.prawn}/typegen/${chain}Typegen.json`, {cwd: this.getProjectRootDir()});
 }

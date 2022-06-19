@@ -33,7 +33,7 @@ export class SubstrateTreasuryProposal {
   date!: Date
 
   @Index_()
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   proposalIndex!: number
 
   @Column_("text", {nullable: true})
