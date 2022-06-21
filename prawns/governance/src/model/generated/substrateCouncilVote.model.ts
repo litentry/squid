@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateCouncilProposal} from "./substrateCouncilProposal.model"
 
 @Entity_()
 export class SubstrateCouncilVote {
@@ -33,11 +34,12 @@ export class SubstrateCouncilVote {
   date!: Date
 
   @Index_()
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   proposalIndex!: number
 
-  @Column_("text", {nullable: false})
-  proposal!: string
+  @Index_()
+  @ManyToOne_(() => SubstrateCouncilProposal, {nullable: false})
+  proposal!: SubstrateCouncilProposal
 
   @Column_("bool", {nullable: false})
   approve!: boolean

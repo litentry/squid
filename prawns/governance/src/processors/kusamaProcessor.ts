@@ -9,6 +9,9 @@ import councilProposedHandler from '../handlers/council.Proposed.event';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import bountiesBountyProposedHandler from "../handlers/bounties.bountyProposed.event";
 import treasuryProposedHandler from "../handlers/treasury.proposed.event";
+import councilApprovedEventHandler from "../handlers/council.Approved.event";
+import councilClosedEventHandler from "../handlers/council.Closed.event";
+import councilExecutedEventHandler from "../handlers/council.Executed.event";
 
 const processor = new SubstrateProcessor('litentry_squid_governance_kusama');
 
@@ -54,6 +57,18 @@ processor.addEventHandler(
 processor.addEventHandler(
   'treasury.Proposed',
   treasuryProposedHandler(SubstrateNetwork.kusama)
+);
+processor.addEventHandler(
+  'council.Approved',
+  councilApprovedEventHandler(SubstrateNetwork.kusama)
+);
+processor.addEventHandler(
+  'council.Closed',
+  councilClosedEventHandler(SubstrateNetwork.kusama)
+);
+processor.addEventHandler(
+  'council.Executed',
+  councilExecutedEventHandler(SubstrateNetwork.kusama)
 );
 
 processor.run();

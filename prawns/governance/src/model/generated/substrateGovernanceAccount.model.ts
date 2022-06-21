@@ -32,31 +32,31 @@ export class SubstrateGovernanceAccount {
   @Column_("varchar", {length: 8, nullable: false})
   network!: SubstrateNetwork
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalProposalSeconds!: number
 
   /**
    * includes both normal proposal votes and votes as a council member from council.vote()
    */
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalProposalVotes!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalElectionVotes!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalDemocracyProposals!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalCouncilProposals!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalTechnicalCommitteeProposals!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalBountyProposals!: number
 
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   totalTreasurySpendProposals!: number
 
   @OneToMany_(() => SubstrateCouncilVote, e => e.account)

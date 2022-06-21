@@ -9,6 +9,9 @@ import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import treasuryProposedHandler from "../handlers/treasury.proposed.event";
 import { SubstrateNetwork } from '../model';
+import councilApprovedEventHandler from "../handlers/council.Approved.event";
+import councilClosedEventHandler from "../handlers/council.Closed.event";
+import councilExecutedEventHandler from "../handlers/council.Executed.event";
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
 
@@ -55,5 +58,18 @@ processor.addEventHandler(
   'treasury.Proposed',
   treasuryProposedHandler(SubstrateNetwork.phala)
 );
+processor.addEventHandler(
+  'council.Approved',
+  councilApprovedEventHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'council.Closed',
+  councilClosedEventHandler(SubstrateNetwork.phala)
+);
+processor.addEventHandler(
+  'council.Executed',
+  councilExecutedEventHandler(SubstrateNetwork.phala)
+);
+
 
 processor.run();

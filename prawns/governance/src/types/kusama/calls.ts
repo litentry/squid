@@ -1,5 +1,6 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
+import * as v1020 from './v1020'
 import * as v1055 from './v1055'
 import * as v2028 from './v2028'
 import * as v9111 from './v9111'
@@ -383,7 +384,7 @@ export class TreasuryProposeSpendCall {
    *  # </weight>
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('treasury.propose_spend') === 'd3901783e7ffe7cbf936f14df5ea28956c53356275248ae4f7a803fe5a6018ff'
+    return this.ctx._chain.getCallHash('treasury.propose_spend') === '716689a9bf600e2a2fed633501a80e9ae7082f3d19352663230c0a56fa8652c3'
   }
 
   /**
@@ -397,7 +398,7 @@ export class TreasuryProposeSpendCall {
    *  - One DB change, one extra DB entry.
    *  # </weight>
    */
-  get asV1020(): {value: bigint, beneficiary: never} {
+  get asV1020(): {value: bigint, beneficiary: v1020.Type_17} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }

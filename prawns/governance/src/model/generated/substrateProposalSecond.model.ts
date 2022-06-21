@@ -33,9 +33,9 @@ export class SubstrateProposalSecond {
   date!: Date
 
   @Index_()
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   proposalIndex!: number
 
-  @Column_("integer", {nullable: true})
+  @Column_("int4", {nullable: true})
   upperBound!: number | undefined | null
 }

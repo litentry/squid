@@ -33,7 +33,7 @@ export class SubstrateDemocracyProposal {
   date!: Date
 
   @Index_()
-  @Column_("integer", {nullable: false})
+  @Column_("int4", {nullable: false})
   proposalIndex!: number
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
