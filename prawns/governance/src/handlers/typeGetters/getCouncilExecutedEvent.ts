@@ -2,7 +2,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { CouncilExecutedEvent as KusamaCouncilExecutedEvent } from '../../types/kusama/events';
 import { CouncilExecutedEvent as PolkadotCouncilExecutedEvent } from '../../types/polkadot/events';
-import { CouncilExecutedEvent as KhalaCouncilExecutedEvent } from '../../types/polkadot/events';
+import { CouncilExecutedEvent as KhalaCouncilExecutedEvent } from '../../types/khala/events';
 
 
 export function getCouncilExecutedEvent(
@@ -116,41 +116,44 @@ export function getCouncilExecutedEvent(
     case SubstrateNetwork.phala: {
       const event = new KhalaCouncilExecutedEvent(ctx);
 
-      if (event.isV9110) {
-        const [proposalHash, result] = event.asV9110;
+      if (event.isV1) {
+        const [proposalHash, result] = event.asV1;
         return {
           proposalHash,
           result: result.__kind === 'Ok',
           originalResult: result
         }
       }
-      if (event.isV9170) {
+
+      if (event.isV1090) {
         return {
-          proposalHash: event.asV9170.proposalHash,
-          result: event.asV9170.result.__kind === 'Ok',
-          originalResult: event.asV9170.result
+          proposalHash: event.asV1090.proposalHash,
+          result: event.asV1090.result.__kind === 'Ok',
+          originalResult: event.asV1090.result
         }
       }
-      if (event.isV9140) {
+
+      if (event.isV1110) {
         return {
-          proposalHash: event.asV9140.proposalHash,
-          result: event.asV9140.result.__kind === 'Ok',
-          originalResult: event.asV9140.result
+          proposalHash: event.asV1110.proposalHash,
+          result: event.asV1110.result.__kind === 'Ok',
+          originalResult: event.asV1110.result
         }
       }
-      if (event.isV9190) {
+
+      if (event.isV1120) {
         return {
-          proposalHash: event.asV9190.proposalHash,
-          result: event.asV9190.result.__kind === 'Ok',
-          originalResult: event.asV9190.result
+          proposalHash: event.asV1120.proposalHash,
+          result: event.asV1120.result.__kind === 'Ok',
+          originalResult: event.asV1120.result
         }
       }
-      if (event.isV0) {
-        const [proposalHash, result] = event.asV0;
+
+      if (event.isV1140) {
         return {
-          proposalHash,
-          result: result.__kind === 'Ok',
-          originalResult: result
+          proposalHash: event.asV1140.proposalHash,
+          result: event.asV1140.result.__kind === 'Ok',
+          originalResult: event.asV1140.result
         }
       }
 

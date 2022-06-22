@@ -15,7 +15,7 @@ export default (network: SubstrateNetwork) =>
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
     const event = getCouncilProposedEvent(ctx, network);
 
-    const storage = await getCouncilProposalOfStorage(ctx, SubstrateNetwork.polkadot, event.proposalHash);
+    const storage = await getCouncilProposalOfStorage(ctx, network, event.proposalHash);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
