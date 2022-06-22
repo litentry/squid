@@ -1,8 +1,9 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateNetwork, SubstrateProposalSecond } from '../model';
+import { SubstrateNetwork, SubstrateDemocracyProposalSecond } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getDemocracySecondCall } from './typeGetters/getDemocracySecondCall';
+import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
@@ -16,17 +17,23 @@ export default (network: SubstrateNetwork) =>
       rootAccount,
       network,
     });
-    account.totalProposalSeconds = account.totalProposalSeconds + 1;
+    account.totalDemocracyProposalSeconds = account.totalDemocracyProposalSeconds + 1;
     await ctx.store.save(account);
 
-    const vote = new SubstrateProposalSecond({
+    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, call.proposal);
+
+    if (!proposal) {
+      throw new Error(`Proposal not found`);
+    }
+
+    const vote = new SubstrateDemocracyProposalSecond({
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
       rootAccount,
       blockNumber,
       date,
-      proposalIndex: call.proposal,
+      proposal,
       upperBound: call.upperBound,
     });
 

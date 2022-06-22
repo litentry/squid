@@ -1,7 +1,8 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateDemocracyProposalSecond} from "./substrateDemocracyProposalSecond.model"
 
 @Entity_()
 export class SubstrateDemocracyProposal {
@@ -38,4 +39,7 @@ export class SubstrateDemocracyProposal {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   amount!: bigint
+
+  @OneToMany_(() => SubstrateDemocracyProposalSecond, e => e.proposal)
+  seconds!: SubstrateDemocracyProposalSecond[]
 }
