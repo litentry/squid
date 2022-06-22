@@ -3,7 +3,6 @@ import {SubstrateCouncilProposal, SubstrateNetwork} from '../model';
 import substrateCouncilProposalRepository from "../repositories/substrateCouncilProposalRepository";
 import {getCouncilExecutedEvent} from "./typeGetters/getCouncilExecutedEvent";
 import {decodeAddress, getOrCreateGovernanceAccount} from "../utils";
-import {getCouncilProposedEvent} from "./typeGetters/getCouncilProposedEvent";
 import {getCouncilProposalOfStorage} from "./typeGetters/getCouncilProposalOfStorage";
 
 export default (network: SubstrateNetwork) =>
@@ -18,7 +17,7 @@ export default (network: SubstrateNetwork) =>
     const blockNumber = BigInt(ctx.block.height);
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
 
-    const storage = await getCouncilProposalOfStorage(ctx, SubstrateNetwork.polkadot, event.proposalHash);
+    const storage = await getCouncilProposalOfStorage(ctx, network, event.proposalHash);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
