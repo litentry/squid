@@ -6,6 +6,7 @@ import {
   AccountVote,
   getDemocracyVoteCall,
 } from './typeGetters/getDemocracyVoteCall';
+import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {

@@ -2,10 +2,11 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateDemocracyProposal} from "./substrateDemocracyProposal.model"
 
 @Entity_()
-export class SubstrateProposalSecond {
-  constructor(props?: Partial<SubstrateProposalSecond>) {
+export class SubstrateDemocracyProposalSecond {
+  constructor(props?: Partial<SubstrateDemocracyProposalSecond>) {
     Object.assign(this, props)
   }
 
@@ -33,8 +34,8 @@ export class SubstrateProposalSecond {
   date!: Date
 
   @Index_()
-  @Column_("int4", {nullable: false})
-  proposalIndex!: number
+  @ManyToOne_(() => SubstrateDemocracyProposal, {nullable: false})
+  proposal!: SubstrateDemocracyProposal
 
   @Column_("int4", {nullable: true})
   upperBound!: number | undefined | null
