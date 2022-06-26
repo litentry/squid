@@ -25,65 +25,65 @@ processor.setDataSource({
   chain: 'wss://polkadot.api.onfinality.io/public-ws',
 });
 
+const network = SubstrateNetwork.polkadot
+
 processor.addExtrinsicHandler(
   'phragmenElection.vote',
-  electionVoteHandler(SubstrateNetwork.polkadot)
+  electionVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'council.vote',
-  councilVoteHandler(SubstrateNetwork.polkadot)
+  councilVoteHandler(network)
 );
 processor.addEventHandler(
   'democracy.Proposed',
-  democracyProposedHandler(SubstrateNetwork.polkadot)
+  democracyProposedHandler(network)
 );
 processor.addEventHandler(
   'technicalCommittee.Proposed',
-  technicalCommitteeProposedHandler(SubstrateNetwork.polkadot)
+  technicalCommitteeProposedHandler(network)
 );
 processor.addEventHandler(
   'council.Proposed',
-  councilProposedHandler(SubstrateNetwork.polkadot)
+  councilProposedHandler(network)
 );
 
 processor.addEventHandler(
   'council.Approved',
-  councilApprovedEventHandler(SubstrateNetwork.polkadot)
+  councilApprovedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Closed',
-  councilClosedEventHandler(SubstrateNetwork.polkadot)
+  councilClosedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Executed',
-  councilExecutedEventHandler(SubstrateNetwork.polkadot)
+  councilExecutedEventHandler(network)
 );
 
 processor.addExtrinsicHandler(
   'democracy.vote',
-  democracyVoteHandler(SubstrateNetwork.polkadot)
+  democracyVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.second',
-  democracySecondHandler(SubstrateNetwork.polkadot)
+  democracySecondHandler(network)
 );
 processor.addEventHandler(
   'bounties.BountyProposed',
-  bountiesBountyProposedHandler(SubstrateNetwork.polkadot)
+  bountiesBountyProposedHandler(network)
 );
 processor.addEventHandler(
   'treasury.Proposed',
-  treasuryProposedHandler(SubstrateNetwork.polkadot)
+  treasuryProposedHandler(network)
 );
-
 processor.addEventHandler(
   'democracy.Tabled',
-  democracyTabledEventHandler(SubstrateNetwork.polkadot)
+  democracyTabledEventHandler(network)
 );
-
 processor.addEventHandler(
   'democracy.Started',
-  democracyStartedEventHandler(SubstrateNetwork.polkadot)
+  democracyStartedEventHandler(network)
 );
 
 processor.run();
