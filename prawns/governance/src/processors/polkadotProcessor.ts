@@ -2,6 +2,8 @@ import {SubstrateProcessor} from '@subsquid/substrate-processor';
 import councilVoteHandler from '../handlers/council.vote.extrinsic';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
+import democracyTabledEventHandler from '../handlers/democracy.Tabled.event';
+import democracyStartedEventHandler from '../handlers/democracy.Started.event';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import {SubstrateNetwork} from '../model';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
@@ -72,6 +74,16 @@ processor.addEventHandler(
 processor.addEventHandler(
   'treasury.Proposed',
   treasuryProposedHandler(SubstrateNetwork.polkadot)
+);
+
+processor.addEventHandler(
+  'democracy.Tabled',
+  democracyTabledEventHandler(SubstrateNetwork.polkadot)
+);
+
+processor.addEventHandler(
+  'democracy.Started',
+  democracyStartedEventHandler(SubstrateNetwork.polkadot)
 );
 
 processor.run();

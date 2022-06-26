@@ -4,6 +4,8 @@
   "typesBundle": "polkadot",
   "events": [
     "democracy.Proposed",
+    "democracy.Tabled",
+    "democracy.Started",
     "council.Proposed",
     "council.Voted",
     "council.Closed",

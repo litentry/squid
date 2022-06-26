@@ -40,6 +40,20 @@ export class SubstrateDemocracyProposal {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   amount!: bigint
 
+  @Column_("text", {nullable: false})
+  status!: string
+
+  @Column_("timestamp with time zone", {nullable: false})
+  updatedAt!: Date
+
+  @Index_()
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  tabledAtBlock!: bigint | undefined | null
+
+  @Index_()
+  @Column_("text", {nullable: true})
+  referendaId!: string | undefined | null
+
   @OneToMany_(() => SubstrateDemocracyProposalSecond, e => e.proposal)
   seconds!: SubstrateDemocracyProposalSecond[]
 }

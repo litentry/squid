@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { DemocracySecondCall as KusamaDemocracySecondCall } from '../../types/kusama/calls';
 import { DemocracySecondCall as PolkadotDemocracySecondCall } from '../../types/polkadot/calls';
-import { DemocracySecondCall as KhalaDemocracySecondCall } from '../../types/polkadot/calls';
+import { DemocracySecondCall as KhalaDemocracySecondCall } from '../../types/khala/calls';
 
 export function getDemocracySecondCall(
   ctx: ExtrinsicHandlerContext,
@@ -13,35 +13,37 @@ export function getDemocracySecondCall(
 } {
   switch (network) {
     case SubstrateNetwork.kusama: {
-      const event = new KusamaDemocracySecondCall(ctx);
+      const call = new KusamaDemocracySecondCall(ctx);
 
-      if (event.isV1020) {
-        return event.asV1020;
-      } else if (event.isV2005) {
-        return event.asV2005;
-      } else {
-        return event.asLatest;
+      if (call.isV1020) {
+        return call.asV1020;
+      } 
+      
+      if (call.isV2005) {
+        return call.asV2005;
       }
+      
+      return call.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
-      const event = new PolkadotDemocracySecondCall(ctx);
+      const call = new PolkadotDemocracySecondCall(ctx);
 
-      if (event.isV0) {
-        return event.asV0;
-      } else {
-        return event.asLatest;
-      }
+      if (call.isV0) {
+        return call.asV0;
+      } 
+      
+      return call.asLatest;
     }
 
     case SubstrateNetwork.phala: {
-      const event = new KhalaDemocracySecondCall(ctx);
+      const call = new KhalaDemocracySecondCall(ctx);
 
-      if (event.isV0) {
-        return event.asV0;
-      } else {
-        return event.asLatest;
+      if (call.isV1) {
+        return call.asV1;
       }
+      
+      return call.asLatest;
     }
 
     default: {

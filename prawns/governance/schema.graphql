@@ -53,7 +53,23 @@ type SubstrateDemocracyProposal @entity {
   date: DateTime!
   proposalIndex: Int! @index
   amount: BigInt!
+  status: String!
+  updatedAt: DateTime!
+  tabledAtBlock: BigInt @index
+  referendaId: String @index
   seconds: [SubstrateDemocracyProposalSecond]! @derivedFrom(field: "proposal")
+}
+
+type SubstrateDemocracyReferenda @entity {
+  "network:referendaIndex"
+  id: ID!
+  network: SubstrateNetwork!
+  democracyProposalId: String @index
+  blockNumber: BigInt!
+  date: DateTime!
+  status: String!
+  updatedAt: DateTime!
+  voteThreshold: String!
 }
 
 type SubstrateCouncilProposal @entity {

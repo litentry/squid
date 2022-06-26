@@ -6,9 +6,11 @@ import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEve
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
+
     if (!ctx.event || !ctx.event.extrinsic) {
       return;
     }
+
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
@@ -29,8 +31,10 @@ export default (network: SubstrateNetwork) =>
       rootAccount,
       blockNumber,
       date,
+      updatedAt: date,
       proposalIndex: event.proposalIndex,
-      amount: event.deposit
+      amount: event.deposit,
+      status: 'proposed'
     });
 
     await ctx.store.save(proposal);
