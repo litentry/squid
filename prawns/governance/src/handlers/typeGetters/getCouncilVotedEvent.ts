@@ -2,8 +2,7 @@ import {EventHandlerContext, ExtrinsicHandlerContext} from '@subsquid/substrate-
 import { SubstrateNetwork } from '../../model';
 import { CouncilVotedEvent as KusamaCouncilVotedEvent } from '../../types/kusama/events';
 import { CouncilVotedEvent as PolkadotCouncilVotedEvent } from '../../types/polkadot/events';
-import { CouncilVotedEvent as KhalaCouncilVotedEvent } from '../../types/polkadot/events';
-import * as v9130 from "../../types/kusama/v9130";
+import { CouncilVotedEvent as KhalaCouncilVotedEvent } from '../../types/khala/events';
 
 export function getCouncilVotedEvent(
   ctx: EventHandlerContext,
@@ -20,6 +19,7 @@ export function getCouncilVotedEvent(
         return event.asV9130;
       }
 
+      return event.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -33,18 +33,22 @@ export function getCouncilVotedEvent(
         return event.asV9140;
       }
 
+      return event.asLatest;
+
     }
 
     case SubstrateNetwork.phala: {
       const event = new KhalaCouncilVotedEvent(ctx);
 
-      if (event.isV0) {
-        const [account, proposalHash, voted, yes, no] = event.asV0;
+      if (event.isV1) {
+        const [account, proposalHash, voted, yes, no] = event.asV1;
         return {account, proposalHash, voted, yes, no};
       }
-      if (event.isV9140) {
-        return event.asV9140;
+      if (event.isV1090) {
+        return event.asV1090;
       }
+
+      return event.asLatest;
     }
 
     default: {

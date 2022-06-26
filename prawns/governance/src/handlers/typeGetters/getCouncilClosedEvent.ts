@@ -2,8 +2,7 @@ import {EventHandlerContext, ExtrinsicHandlerContext} from '@subsquid/substrate-
 import { SubstrateNetwork } from '../../model';
 import { CouncilClosedEvent as KusamaCouncilClosedEvent } from '../../types/kusama/events';
 import { CouncilClosedEvent as PolkadotCouncilClosedEvent } from '../../types/polkadot/events';
-import { CouncilClosedEvent as KhalaCouncilClosedEvent } from '../../types/polkadot/events';
-import * as v9130 from "../../types/kusama/v9130";
+import { CouncilClosedEvent as KhalaCouncilClosedEvent } from '../../types/khala/events';
 
 export function getCouncilClosedEvent(
   ctx: EventHandlerContext,
@@ -40,12 +39,13 @@ export function getCouncilClosedEvent(
     case SubstrateNetwork.phala: {
       const event = new KhalaCouncilClosedEvent(ctx);
 
-      if (event.isV0) {
-        const [proposalHash, yes, no] = event.asV0;
+      if (event.isV1) {
+        const [proposalHash, yes, no] = event.asV1;
         return {proposalHash, yes, no};
       }
-      if (event.isV9140) {
-        return event.asV9140;
+
+      if (event.isV1090) {
+        return event.asV1090;
       }
 
       return event.asLatest;

@@ -1,7 +1,7 @@
 import { SubstrateNetwork } from '../../model';
 import { TreasuryProposedEvent as KusamaTreasuryProposedEvent } from '../../types/kusama/events';
 import { TreasuryProposedEvent as PolkadotTreasuryProposedEvent } from '../../types/polkadot/events';
-import { TreasuryProposedEvent as KhalaTreasuryProposedEvent } from '../../types/polkadot/events';
+import { TreasuryProposedEvent as KhalaTreasuryProposedEvent } from '../../types/khala/events';
 import { EventHandlerContext } from "@subsquid/substrate-processor/lib";
 
 export function getTreasuryProposedEvent(
@@ -16,11 +16,13 @@ export function getTreasuryProposedEvent(
 
       if (event.isV1020) {
         return { proposalIndex: event.asV1020 };
-      } else if (event.isV9160) {
-        return event.asV9160;
-      } else {
-        return event.asLatest;
       }
+
+      if (event.isV9160) {
+        return event.asV9160;
+      }
+
+      return event.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -28,23 +30,29 @@ export function getTreasuryProposedEvent(
 
       if (event.isV0) {
         return { proposalIndex: event.asV0 };
-      } else if (event.asV9170) {
-        return event.asV9170;
-      } else {
-        return event.asLatest;
       }
+
+      if (event.isV9170) {
+        return event.asV9170;
+      }
+
+      return event.asLatest;
+
     }
 
     case SubstrateNetwork.phala: {
       const event = new KhalaTreasuryProposedEvent(ctx);
 
-      if (event.isV0) {
-        return { proposalIndex: event.asV0 };
-      } else if (event.asV9170) {
-        return event.asV9170;
-      } else {
-        return event.asLatest;
+      if (event.isV1) {
+        return { proposalIndex: event.asV1 };
       }
+
+      if (event.isV1110) {
+        return event.asV1110;
+      }
+
+      return event.asLatest;
+
     }
 
     default: {

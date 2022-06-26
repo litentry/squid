@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { CouncilVoteCall as KusamaCouncilVoteCall } from '../../types/kusama/calls';
 import { CouncilVoteCall as PolkadotCouncilVoteCall } from '../../types/polkadot/calls';
-import { CouncilVoteCall as KhalaCouncilVoteCall } from '../../types/polkadot/calls';
+import { CouncilVoteCall as KhalaCouncilVoteCall } from '../../types/khala/calls';
 
 export function getCouncilVoteCall(
   ctx: ExtrinsicHandlerContext,
@@ -18,9 +18,9 @@ export function getCouncilVoteCall(
 
       if (event.isV1020) {
         return event.asV1020;
-      } else {
-        return event.asLatest;
       }
+
+      return event.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -28,19 +28,19 @@ export function getCouncilVoteCall(
 
       if (event.isV0) {
         return event.asV0;
-      } else {
-        return event.asLatest;
       }
+
+      return event.asLatest;
     }
 
     case SubstrateNetwork.phala: {
       const event = new KhalaCouncilVoteCall(ctx);
 
-      if (event.isV0) {
-        return event.asV0;
-      } else {
-        return event.asLatest;
+      if (event.isV1) {
+        return event.asV1;
       }
+
+      return event.asLatest;
     }
 
     default: {

@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { DemocracyVoteCall as KusamaDemocracyVoteCall } from '../../types/kusama/calls';
 import { DemocracyVoteCall as PolkadotDemocracyVoteCall } from '../../types/polkadot/calls';
-import { DemocracyVoteCall as KhalaDemocracyVoteCall } from '../../types/polkadot/calls';
+import { DemocracyVoteCall as KhalaDemocracyVoteCall } from '../../types/khala/calls';
 
 /*
 TODO: figure out how to interpret votes. Original Kusama votes are just numbers (they appear to always be 0 or 128).
@@ -47,17 +47,21 @@ export function getDemocracyVoteCall(
 
       if (event.isV1020) {
         return event.asV1020;
-      } else if (event.isV1055) {
+      }
+
+      if (event.isV1055) {
         const { refIndex, vote } = event.asV1055;
         return {
           refIndex,
           vote: convertLegacyAccountVote(vote),
         };
-      } else if (event.isV9111) {
-        return event.asV9111;
-      } else {
-        return event.asLatest;
       }
+
+      if (event.isV9111) {
+        return event.asV9111;
+      }
+
+      return event.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -69,27 +73,33 @@ export function getDemocracyVoteCall(
           refIndex,
           vote: convertLegacyAccountVote(vote),
         };
-      } else if (event.asV9110) {
-        return event.asV9110;
-      } else {
-        return event.asLatest;
       }
+
+      if (event.asV9110) {
+        return event.asV9110;
+      }
+
+      return event.asLatest;
+
     }
 
     case SubstrateNetwork.phala: {
       const event = new KhalaDemocracyVoteCall(ctx);
 
-      if (event.isV0) {
-        const { refIndex, vote } = event.asV0;
+      if (event.isV1) {
+        const { refIndex, vote } = event.asV1;
         return {
           refIndex,
           vote: convertLegacyAccountVote(vote),
         };
-      } else if (event.asV9110) {
-        return event.asV9110;
-      } else {
-        return event.asLatest;
       }
+
+      if (event.isV1090) {
+        return event.asV1090;
+      }
+
+      return event.asLatest;
+
     }
 
     default: {

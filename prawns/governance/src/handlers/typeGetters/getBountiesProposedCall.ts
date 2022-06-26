@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { BountiesProposeBountyCall as KusamaBountiesProposeCall } from '../../types/kusama/calls';
 import { BountiesProposeBountyCall as PolkadotBountiesProposeCall } from '../../types/polkadot/calls';
-import { BountiesProposeBountyCall as KhalaBountiesProposeCall } from '../../types/polkadot/calls';
+import { BountiesProposeBountyCall as KhalaBountiesProposeCall } from '../../types/khala/calls';
 
 export function getBountiesProposedCall(
   ctx: ExtrinsicHandlerContext,
@@ -17,9 +17,9 @@ export function getBountiesProposedCall(
 
       if (call.isV2028) {
         return call.asV2028;
-      } else {
-        return call.asLatest;
       }
+
+      return call.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -27,19 +27,21 @@ export function getBountiesProposedCall(
 
       if (call.isV28) {
         return call.asV28;
-      } else {
-        return call.asLatest;
       }
+
+        return call.asLatest;
+
     }
 
     case SubstrateNetwork.phala: {
       const call = new KhalaBountiesProposeCall(ctx);
 
-      if (call.isV28) {
-        return call.asV28;
-      } else {
-        return call.asLatest;
+      if (call.isV1) {
+        return call.asV1;
       }
+
+      return call.asLatest;
+
     }
 
     default: {
