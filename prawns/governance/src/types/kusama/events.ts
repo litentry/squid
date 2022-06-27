@@ -449,6 +449,46 @@ export class DemocracyStartedEvent {
   }
 }
 
+export class DemocracyTabledEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Tabled')
+  }
+
+  get isV1020(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Tabled') === '21f3d10122d183ae1df61d3456ae07c362a2e0cdffab1829f4febb4f7b53f6bd'
+  }
+
+  get asV1020(): [number, bigint, Uint8Array[]] {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A public proposal has been tabled for referendum vote.
+   */
+  get isV9130(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Tabled') === 'a13f0b4abdda616a48f0910930f31ca5c2a2a8068c5289a35d395475289bd1e0'
+  }
+
+  /**
+   * A public proposal has been tabled for referendum vote.
+   */
+  get asV9130(): {proposalIndex: number, deposit: bigint, depositors: v9130.AccountId32[]} {
+    assert(this.isV9130)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9130
+  }
+
+  get asLatest(): {proposalIndex: number, deposit: bigint, depositors: v9130.AccountId32[]} {
+    deprecateLatest()
+    return this.asV9130
+  }
+}
+
 export class TechnicalCommitteeProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'technicalCommittee.Proposed')

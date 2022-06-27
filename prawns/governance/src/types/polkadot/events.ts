@@ -429,6 +429,52 @@ export class DemocracyStartedEvent {
   }
 }
 
+export class DemocracyTabledEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Tabled')
+  }
+
+  /**
+   *  A public proposal has been tabled for referendum vote.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Tabled') === '21f3d10122d183ae1df61d3456ae07c362a2e0cdffab1829f4febb4f7b53f6bd'
+  }
+
+  /**
+   *  A public proposal has been tabled for referendum vote.
+   */
+  get asV0(): [number, bigint, Uint8Array[]] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A public proposal has been tabled for referendum vote.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Tabled') === 'a13f0b4abdda616a48f0910930f31ca5c2a2a8068c5289a35d395475289bd1e0'
+  }
+
+  /**
+   * A public proposal has been tabled for referendum vote.
+   */
+  get asV9140(): {proposalIndex: number, deposit: bigint, depositors: v9140.AccountId32[]} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {proposalIndex: number, deposit: bigint, depositors: v9140.AccountId32[]} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
 export class TechnicalCommitteeProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'technicalCommittee.Proposed')

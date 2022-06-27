@@ -6,6 +6,7 @@ import * as v9170 from './v9170'
 import * as v9180 from './v9180'
 import * as v9190 from './v9190'
 import * as v9220 from './v9220'
+import * as v9230 from './v9230'
 
 export class CouncilMembersStorage {
   constructor(private ctx: StorageContext) {}
@@ -123,6 +124,21 @@ export class CouncilProposalOfStorage {
    */
   async getAsV9220(key: v9220.H256): Promise<v9220.Call | undefined> {
     assert(this.isV9220)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Council', 'ProposalOf', key)
+  }
+
+  /**
+   *  Actual proposal for a given hash, if it's current.
+   */
+  get isV9230() {
+    return this.ctx._chain.getStorageItemTypeHash('Council', 'ProposalOf') === '22422b0582b7112b4065b3d6dddf5afe1e4852ca1809e8bd77a9344947c2d3e9'
+  }
+
+  /**
+   *  Actual proposal for a given hash, if it's current.
+   */
+  async getAsV9230(key: v9230.H256): Promise<v9230.Call | undefined> {
+    assert(this.isV9230)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Council', 'ProposalOf', key)
   }
 
