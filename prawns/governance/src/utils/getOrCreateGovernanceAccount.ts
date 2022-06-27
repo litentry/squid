@@ -15,6 +15,7 @@ export async function getOrCreateGovernanceAccount(
     totalElectionVotes: 0,
     totalProposalVotes: 0,
     totalDemocracyProposalSeconds: 0,
+    totalProposals: 0, // Deprecated
     totalDemocracyProposals: 0,
     totalCouncilProposals: 0,
     totalTechnicalCommitteeProposals: 0,

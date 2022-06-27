@@ -15,6 +15,8 @@ type SubstrateGovernanceAccount @entity {
   "includes both normal proposal votes and votes as a council member from council.vote()"
   totalProposalVotes: Int!
   totalElectionVotes: Int!
+  "Deprecated in favour of totalDemocracyProposals"
+  totalProposals: Int!
   totalDemocracyProposals: Int!
   totalCouncilProposals: Int!
   totalTechnicalCommitteeProposals: Int!
@@ -51,12 +53,13 @@ type SubstrateDemocracyProposal @entity {
   rootAccount: String! @index
   blockNumber: BigInt!
   date: DateTime!
+  proposalHash: String! @index
   proposalIndex: Int! @index
-  amount: BigInt!
+  depositAmount: BigInt!
   status: String!
   updatedAt: DateTime!
   tabledAtBlock: BigInt @index
-  referendaId: String @index
+  democracyReferenda: SubstrateDemocracyReferenda
   seconds: [SubstrateDemocracyProposalSecond]! @derivedFrom(field: "proposal")
 }
 
@@ -64,7 +67,7 @@ type SubstrateDemocracyReferenda @entity {
   "network:referendaIndex"
   id: ID!
   network: SubstrateNetwork!
-  democracyProposalId: String @index
+  democracyProposal: SubstrateDemocracyProposal
   blockNumber: BigInt!
   date: DateTime!
   status: String!

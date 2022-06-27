@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateDemocracyReferenda} from "./substrateDemocracyReferenda.model"
 import {SubstrateDemocracyProposalSecond} from "./substrateDemocracyProposalSecond.model"
 
 @Entity_()
@@ -34,11 +35,15 @@ export class SubstrateDemocracyProposal {
   date!: Date
 
   @Index_()
+  @Column_("text", {nullable: false})
+  proposalHash!: string
+
+  @Index_()
   @Column_("int4", {nullable: false})
   proposalIndex!: number
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  amount!: bigint
+  depositAmount!: bigint
 
   @Column_("text", {nullable: false})
   status!: string
@@ -51,8 +56,8 @@ export class SubstrateDemocracyProposal {
   tabledAtBlock!: bigint | undefined | null
 
   @Index_()
-  @Column_("text", {nullable: true})
-  referendaId!: string | undefined | null
+  @ManyToOne_(() => SubstrateDemocracyReferenda, {nullable: true})
+  democracyReferenda!: SubstrateDemocracyReferenda | undefined | null
 
   @OneToMany_(() => SubstrateDemocracyProposalSecond, e => e.proposal)
   seconds!: SubstrateDemocracyProposalSecond[]

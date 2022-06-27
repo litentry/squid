@@ -1,6 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork, SubstrateDemocracyProposal } from '../model';
-import { getOrCreateGovernanceAccount } from '../utils';
+import { SubstrateNetwork } from '../model';
 import { getDemocracyTabledEvent } from './typeGetters/getDemocracyTabledEvent';
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 

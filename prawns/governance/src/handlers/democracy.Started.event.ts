@@ -24,13 +24,13 @@ export default (network: SubstrateNetwork) =>
       updatedAt: date,
       voteThreshold: event.thresholdKind,
       status: 'started',
-      democracyProposalId: democracyProposal?.id
+      democracyProposal: democracyProposal
     });
 
     await ctx.store.save(referenda);
 
     if (democracyProposal) {
-      democracyProposal.referendaId = referenda.id;
+      democracyProposal.democracyReferenda = referenda;
       await ctx.store.save(democracyProposal);
     }
   };

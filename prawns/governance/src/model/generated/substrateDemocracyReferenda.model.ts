@@ -1,6 +1,7 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
+import {SubstrateDemocracyProposal} from "./substrateDemocracyProposal.model"
 
 @Entity_()
 export class SubstrateDemocracyReferenda {
@@ -18,8 +19,8 @@ export class SubstrateDemocracyReferenda {
   network!: SubstrateNetwork
 
   @Index_()
-  @Column_("text", {nullable: true})
-  democracyProposalId!: string | undefined | null
+  @ManyToOne_(() => SubstrateDemocracyProposal, {nullable: true})
+  democracyProposal!: SubstrateDemocracyProposal | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint

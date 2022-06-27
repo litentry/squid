@@ -27,12 +27,12 @@ export function getDemocracyStartedEvent(
 
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotDemocracyStartedEvent(ctx);
-      console.log(ctx.block.height);
 
       if (event.isV0) {
         const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [{value: number}, {value: string}];
         return {refIndex: refIndexParam.value, thresholdKind: thresholdParam.value};
 
+        // Subsquid is  choking on a type - workaround above
         // const [refIndex, threshold] = event.asV0;
         // return { refIndex, thresholdKind: threshold.__kind };
       }

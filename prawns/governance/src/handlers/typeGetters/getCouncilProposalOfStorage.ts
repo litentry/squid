@@ -86,6 +86,10 @@ export async function getCouncilProposalOfStorage(
         return await call.getAsV9110(proposalHash);
       }
 
+      if (call.isV9230) {
+        return await call.getAsV9230(proposalHash);
+      }
+
       throw new Error("Unexpected version");
     }
 

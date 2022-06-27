@@ -44,6 +44,12 @@ export class SubstrateGovernanceAccount {
   @Column_("int4", {nullable: false})
   totalElectionVotes!: number
 
+  /**
+   * Deprecated in favour of totalDemocracyProposals
+   */
+  @Column_("int4", {nullable: false})
+  totalProposals!: number
+
   @Column_("int4", {nullable: false})
   totalDemocracyProposals!: number
 
