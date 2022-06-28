@@ -52,7 +52,6 @@ export default (network: SubstrateNetwork) =>
       network
     });
     account.totalDemocracyProposals = account.totalDemocracyProposals + 1;
-    account.totalProposals = account.totalDemocracyProposals; // Deprecated
     await ctx.store.save(account);
 
     const proposal = new SubstrateDemocracyProposal({

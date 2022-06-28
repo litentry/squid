@@ -11,12 +11,12 @@ type SubstrateGovernanceAccount @entity {
   "hex address"
   rootAccount: String! @index
   network: SubstrateNetwork!
+  "Deprecated in favour of totalDemocracyProposalSeconds"
+  totalProposalSeconds: Int!
   totalDemocracyProposalSeconds: Int!
   "includes both normal proposal votes and votes as a council member from council.vote()"
   totalProposalVotes: Int!
   totalElectionVotes: Int!
-  "Deprecated in favour of totalDemocracyProposals"
-  totalProposals: Int!
   totalDemocracyProposals: Int!
   totalCouncilProposals: Int!
   totalTechnicalCommitteeProposals: Int!

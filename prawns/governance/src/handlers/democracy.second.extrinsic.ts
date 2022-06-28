@@ -18,6 +18,7 @@ export default (network: SubstrateNetwork) =>
       network,
     });
     account.totalDemocracyProposalSeconds = account.totalDemocracyProposalSeconds + 1;
+    account.totalProposalSeconds = account.totalDemocracyProposalSeconds; // Deprecated
     await ctx.store.save(account);
 
     const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, call.proposal);

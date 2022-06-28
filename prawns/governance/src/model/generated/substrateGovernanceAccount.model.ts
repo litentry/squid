@@ -32,6 +32,12 @@ export class SubstrateGovernanceAccount {
   @Column_("varchar", {length: 8, nullable: false})
   network!: SubstrateNetwork
 
+  /**
+   * Deprecated in favour of totalDemocracyProposalSeconds
+   */
+  @Column_("int4", {nullable: false})
+  totalProposalSeconds!: number
+
   @Column_("int4", {nullable: false})
   totalDemocracyProposalSeconds!: number
 
@@ -43,12 +49,6 @@ export class SubstrateGovernanceAccount {
 
   @Column_("int4", {nullable: false})
   totalElectionVotes!: number
-
-  /**
-   * Deprecated in favour of totalDemocracyProposals
-   */
-  @Column_("int4", {nullable: false})
-  totalProposals!: number
 
   @Column_("int4", {nullable: false})
   totalDemocracyProposals!: number
