@@ -20,6 +20,7 @@
     "council.vote",
     "democracy.second",
     "democracy.vote",
+    "democracy.clear_public_proposals",
     "phragmenElection.vote",
     "bounties.propose_bounty",
     "treasury.propose_spend"

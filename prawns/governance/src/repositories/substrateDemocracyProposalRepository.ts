@@ -1,4 +1,4 @@
-import {SubstrateDemocracyProposal } from '../model';
+import { SubstrateDemocracyProposal, SubstrateNetwork } from '../model';
 import {EventHandlerContext} from "@subsquid/substrate-processor";
 
 const getByProposalIndex = async (ctx: EventHandlerContext, proposalIndex: number) => {
@@ -13,7 +13,14 @@ const getByTabledAtBlock = async (ctx: EventHandlerContext, tabledAtBlock: bigin
   }) as unknown as (SubstrateDemocracyProposal | undefined);
 }
 
+const findByStatus = async (ctx: EventHandlerContext, network: SubstrateNetwork, status: string) => {
+  return ctx.store.find(SubstrateDemocracyProposal, {
+    where: { network, status },
+  }) as unknown as SubstrateDemocracyProposal[];
+}
+
 export default {
   getByProposalIndex,
-  getByTabledAtBlock
+  getByTabledAtBlock,
+  findByStatus
 }

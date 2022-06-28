@@ -110,6 +110,53 @@ export class CouncilVoteCall {
   }
 }
 
+export class DemocracyClearPublicProposalsCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'democracy.clearPublicProposals' || this.ctx.extrinsic.name === 'democracy.clear_public_proposals')
+  }
+
+  /**
+   *  Clears all public proposals.
+   * 
+   *  The dispatch origin of this call must be _Root_.
+   * 
+   *  # <weight>
+   *  - `O(1)`.
+   *  - Db writes: `PublicProps`
+   *  - Base Weight: 2.505 µs
+   *  # </weight>
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getCallHash('democracy.clear_public_proposals') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+  }
+
+  /**
+   *  Clears all public proposals.
+   * 
+   *  The dispatch origin of this call must be _Root_.
+   * 
+   *  # <weight>
+   *  - `O(1)`.
+   *  - Db writes: `PublicProps`
+   *  - Base Weight: 2.505 µs
+   *  # </weight>
+   */
+  get asV0(): null {
+    assert(this.isV0)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): null {
+    deprecateLatest()
+    return this.asV0
+  }
+}
+
 export class DemocracySecondCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'democracy.second')

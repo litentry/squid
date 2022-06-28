@@ -13,8 +13,12 @@ export function getDemocracyStartedEvent(
       const event = new KusamaDemocracyStartedEvent(ctx);
 
       if (event.isV1020) {
-        const [refIndex, threshold] = event.asV1020;
-        return { refIndex, thresholdKind: threshold.__kind };
+        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [{value: number}, {value: string}];
+        return {refIndex: refIndexParam.value, thresholdKind: thresholdParam.value};
+
+        // Subsquid is  choking on a type - workaround above
+        // const [refIndex, threshold] = event.asV1020;
+        // return { refIndex, thresholdKind: threshold.__kind };
       }
 
       if (event.isV9130) {
