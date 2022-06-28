@@ -11,7 +11,9 @@ type SubstrateGovernanceAccount @entity {
   "hex address"
   rootAccount: String! @index
   network: SubstrateNetwork!
+  "Deprecated in favour of totalDemocracyProposalSeconds"
   totalProposalSeconds: Int!
+  totalDemocracyProposalSeconds: Int!
   "includes both normal proposal votes and votes as a council member from council.vote()"
   totalProposalVotes: Int!
   totalElectionVotes: Int!
@@ -22,7 +24,7 @@ type SubstrateGovernanceAccount @entity {
   totalTreasurySpendProposals: Int!
   councilVotes: [SubstrateCouncilVote]! @derivedFrom(field: "account")
   proposalVotes: [SubstrateProposalVote]! @derivedFrom(field: "account")
-  proposalSeconds: [SubstrateProposalSecond]! @derivedFrom(field: "account")
+  democracyProposalSeconds: [SubstrateDemocracyProposalSecond]! @derivedFrom(field: "account")
   democracyProposals: [SubstrateDemocracyProposal]! @derivedFrom(field: "account")
   councilProposals: [SubstrateCouncilProposal]! @derivedFrom(field: "account")
   technicalCommitteeProposals: [SubstrateTechnicalCommitteeProposal]! @derivedFrom(field: "account")
@@ -51,8 +53,26 @@ type SubstrateDemocracyProposal @entity {
   rootAccount: String! @index
   blockNumber: BigInt!
   date: DateTime!
+  proposalHash: String! @index
   proposalIndex: Int! @index
-  amount: BigInt!
+  depositAmount: BigInt!
+  status: String!
+  updatedAt: DateTime!
+  tabledAtBlock: BigInt @index
+  democracyReferenda: SubstrateDemocracyReferenda
+  seconds: [SubstrateDemocracyProposalSecond]! @derivedFrom(field: "proposal")
+}
+
+type SubstrateDemocracyReferenda @entity {
+  "network:referendaIndex"
+  id: ID!
+  network: SubstrateNetwork!
+  democracyProposal: SubstrateDemocracyProposal
+  blockNumber: BigInt!
+  date: DateTime!
+  status: String!
+  updatedAt: DateTime!
+  voteThreshold: String!
 }
 
 type SubstrateCouncilProposal @entity {
@@ -115,7 +135,7 @@ type SubstrateProposalVote @entity {
   vote: String!
 }
 
-type SubstrateProposalSecond @entity {
+type SubstrateDemocracyProposalSecond @entity {
   "network:block:index"
   id: ID!
   network: SubstrateNetwork!
@@ -123,7 +143,7 @@ type SubstrateProposalSecond @entity {
   rootAccount: String! @index
   blockNumber: BigInt!
   date: DateTime!
-  proposalIndex: Int! @index
+  proposal: SubstrateDemocracyProposal!
   upperBound: Int
 }
 

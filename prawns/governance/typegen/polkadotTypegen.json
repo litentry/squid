@@ -4,6 +4,8 @@
   "typesBundle": "polkadot",
   "events": [
     "democracy.Proposed",
+    "democracy.Tabled",
+    "democracy.Started",
     "council.Proposed",
     "council.Voted",
     "council.Closed",
@@ -19,6 +21,7 @@
     "democracy.second",
     "democracy.vote",
     "phragmenElection.vote",
+    "democracy.clear_public_proposals",
     "bounties.propose_bounty",
     "treasury.propose_spend"
   ],

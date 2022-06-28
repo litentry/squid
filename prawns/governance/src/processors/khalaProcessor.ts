@@ -12,6 +12,9 @@ import { SubstrateNetwork } from '../model';
 import councilApprovedEventHandler from "../handlers/council.Approved.event";
 import councilClosedEventHandler from "../handlers/council.Closed.event";
 import councilExecutedEventHandler from "../handlers/council.Executed.event";
+import democracyTabledEventHandler from '../handlers/democracy.Tabled.event';
+import democracyStartedEventHandler from '../handlers/democracy.Started.event';
+import democracyClearPublicProposalsExtrinsicHandler from '../handlers/democracy.ClearPublicProposals.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
 
@@ -22,54 +25,71 @@ processor.setDataSource({
   archive: 'https://khala-squid-archive.litentry.io/graphql/v1/graphql',
   chain: 'wss://khala.api.onfinality.io/public-ws',
 });
+
+const network = SubstrateNetwork.phala;
+
 processor.addExtrinsicHandler(
   'phragmenElection.vote',
-  electionVoteHandler(SubstrateNetwork.phala)
+  electionVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'council.vote',
-  councilVoteHandler(SubstrateNetwork.phala)
+  councilVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.vote',
-  democracyVoteHandler(SubstrateNetwork.phala)
+  democracyVoteHandler(network)
 );
 processor.addEventHandler(
   'democracy.Proposed',
-  democracyProposedHandler(SubstrateNetwork.phala)
+  democracyProposedHandler(network)
 );
 processor.addEventHandler(
   'technicalCommittee.Proposed',
-  technicalCommitteeProposedHandler(SubstrateNetwork.phala)
+  technicalCommitteeProposedHandler(network)
 );
 processor.addEventHandler(
   'council.Proposed',
-  councilProposedHandler(SubstrateNetwork.phala)
+  councilProposedHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.second',
-  democracySecondHandler(SubstrateNetwork.phala)
+  democracySecondHandler(network)
 );
 processor.addEventHandler(
   'bounties.BountyProposed',
-  bountiesBountyProposedHandler(SubstrateNetwork.phala)
+  bountiesBountyProposedHandler(network)
 );
 processor.addEventHandler(
   'treasury.Proposed',
-  treasuryProposedHandler(SubstrateNetwork.phala)
+  treasuryProposedHandler(network)
 );
 processor.addEventHandler(
   'council.Approved',
-  councilApprovedEventHandler(SubstrateNetwork.phala)
+  councilApprovedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Closed',
-  councilClosedEventHandler(SubstrateNetwork.phala)
+  councilClosedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Executed',
-  councilExecutedEventHandler(SubstrateNetwork.phala)
+  councilExecutedEventHandler(network)
 );
-
+processor.addEventHandler(
+  'democracy.Tabled',
+  democracyTabledEventHandler(network)
+);
+processor.addEventHandler(
+  'democracy.Started',
+  democracyStartedEventHandler(network)
+);
+processor.addExtrinsicHandler(
+  'democracy.clear_public_proposals',
+  {
+    triggerEvents: ['treasury.Deposit'] // For some reason this extrinsic does not have a 'system.ExtrinsicSuccess' event that Subsquid looks for to trigger the handler
+  },
+  democracyClearPublicProposalsExtrinsicHandler(network)
+);
 
 processor.run();

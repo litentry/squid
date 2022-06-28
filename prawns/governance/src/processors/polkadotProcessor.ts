@@ -2,6 +2,8 @@ import {SubstrateProcessor} from '@subsquid/substrate-processor';
 import councilVoteHandler from '../handlers/council.vote.extrinsic';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
+import democracyTabledEventHandler from '../handlers/democracy.Tabled.event';
+import democracyStartedEventHandler from '../handlers/democracy.Started.event';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import {SubstrateNetwork} from '../model';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
@@ -12,6 +14,7 @@ import councilExecutedEventHandler from '../handlers/council.Executed.event';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
 import bountiesBountyProposedHandler from "../handlers/bounties.bountyProposed.event";
 import treasuryProposedHandler from "../handlers/treasury.proposed.event";
+import democracyClearPublicProposalsExtrinsicHandler from "../handlers/democracy.ClearPublicProposals.extrinsic";
 
 const processor = new SubstrateProcessor('litentry_squid_governance_polkadot');
 
@@ -23,55 +26,72 @@ processor.setDataSource({
   chain: 'wss://polkadot.api.onfinality.io/public-ws',
 });
 
+const network = SubstrateNetwork.polkadot
+
 processor.addExtrinsicHandler(
   'phragmenElection.vote',
-  electionVoteHandler(SubstrateNetwork.polkadot)
+  electionVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'council.vote',
-  councilVoteHandler(SubstrateNetwork.polkadot)
+  councilVoteHandler(network)
 );
 processor.addEventHandler(
   'democracy.Proposed',
-  democracyProposedHandler(SubstrateNetwork.polkadot)
+  democracyProposedHandler(network)
 );
 processor.addEventHandler(
   'technicalCommittee.Proposed',
-  technicalCommitteeProposedHandler(SubstrateNetwork.polkadot)
+  technicalCommitteeProposedHandler(network)
 );
 processor.addEventHandler(
   'council.Proposed',
-  councilProposedHandler(SubstrateNetwork.polkadot)
+  councilProposedHandler(network)
 );
 
 processor.addEventHandler(
   'council.Approved',
-  councilApprovedEventHandler(SubstrateNetwork.polkadot)
+  councilApprovedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Closed',
-  councilClosedEventHandler(SubstrateNetwork.polkadot)
+  councilClosedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Executed',
-  councilExecutedEventHandler(SubstrateNetwork.polkadot)
+  councilExecutedEventHandler(network)
 );
 
 processor.addExtrinsicHandler(
   'democracy.vote',
-  democracyVoteHandler(SubstrateNetwork.polkadot)
+  democracyVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.second',
-  democracySecondHandler(SubstrateNetwork.polkadot)
+  democracySecondHandler(network)
 );
 processor.addEventHandler(
   'bounties.BountyProposed',
-  bountiesBountyProposedHandler(SubstrateNetwork.polkadot)
+  bountiesBountyProposedHandler(network)
 );
 processor.addEventHandler(
   'treasury.Proposed',
-  treasuryProposedHandler(SubstrateNetwork.polkadot)
+  treasuryProposedHandler(network)
+);
+processor.addEventHandler(
+  'democracy.Tabled',
+  democracyTabledEventHandler(network)
+);
+processor.addEventHandler(
+  'democracy.Started',
+  democracyStartedEventHandler(network)
+);
+processor.addExtrinsicHandler(
+  'democracy.clear_public_proposals',
+  {
+    triggerEvents: ['treasury.Deposit'] // For some reason this extrinsic does not have a 'system.ExtrinsicSuccess' event that Subsquid looks for to trigger the handler
+  },
+  democracyClearPublicProposalsExtrinsicHandler(network)
 );
 
 processor.run();

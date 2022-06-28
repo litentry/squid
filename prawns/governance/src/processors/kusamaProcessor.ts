@@ -12,6 +12,9 @@ import treasuryProposedHandler from "../handlers/treasury.proposed.event";
 import councilApprovedEventHandler from "../handlers/council.Approved.event";
 import councilClosedEventHandler from "../handlers/council.Closed.event";
 import councilExecutedEventHandler from "../handlers/council.Executed.event";
+import democracyTabledEventHandler from '../handlers/democracy.Tabled.event';
+import democracyStartedEventHandler from '../handlers/democracy.Started.event';
+import democracyClearPublicProposalsExtrinsicHandler from '../handlers/democracy.ClearPublicProposals.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_kusama');
 
@@ -22,53 +25,72 @@ processor.setDataSource({
   archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
   chain: 'wss://kusama.api.onfinality.io/public-ws',
 });
+
+const network = SubstrateNetwork.kusama;
+
 processor.addExtrinsicHandler(
   'phragmenElection.vote',
-  electionVoteHandler(SubstrateNetwork.kusama)
+  electionVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'council.vote',
-  councilVoteHandler(SubstrateNetwork.kusama)
+  councilVoteHandler(network)
 );
 processor.addEventHandler(
   'democracy.Proposed',
-  democracyProposedHandler(SubstrateNetwork.kusama)
+  democracyProposedHandler(network)
 );
 processor.addEventHandler(
   'technicalCommittee.Proposed',
-  technicalCommitteeProposedHandler(SubstrateNetwork.kusama)
+  technicalCommitteeProposedHandler(network)
 );
 processor.addEventHandler(
   'council.Proposed',
-  councilProposedHandler(SubstrateNetwork.kusama)
+  councilProposedHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.vote',
-  democracyVoteHandler(SubstrateNetwork.kusama)
+  democracyVoteHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.second',
-  democracySecondHandler(SubstrateNetwork.kusama)
+  democracySecondHandler(network)
 );
 processor.addEventHandler(
   'bounties.BountyProposed',
-  bountiesBountyProposedHandler(SubstrateNetwork.kusama)
+  bountiesBountyProposedHandler(network)
 );
 processor.addEventHandler(
   'treasury.Proposed',
-  treasuryProposedHandler(SubstrateNetwork.kusama)
+  treasuryProposedHandler(network)
 );
 processor.addEventHandler(
   'council.Approved',
-  councilApprovedEventHandler(SubstrateNetwork.kusama)
+  councilApprovedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Closed',
-  councilClosedEventHandler(SubstrateNetwork.kusama)
+  councilClosedEventHandler(network)
 );
 processor.addEventHandler(
   'council.Executed',
-  councilExecutedEventHandler(SubstrateNetwork.kusama)
+  councilExecutedEventHandler(network)
+);
+processor.addEventHandler(
+  'democracy.Tabled',
+  democracyTabledEventHandler(network)
+);
+processor.addEventHandler(
+  'democracy.Started',
+  democracyStartedEventHandler(network)
+);
+
+processor.addExtrinsicHandler(
+  'democracy.clear_public_proposals',
+  {
+    triggerEvents: ['treasury.Deposit'] // For some reason this extrinsic does not have a 'system.ExtrinsicSuccess' event that Subsquid looks for to trigger the handler
+  },
+  democracyClearPublicProposalsExtrinsicHandler(network)
 );
 
 processor.run();

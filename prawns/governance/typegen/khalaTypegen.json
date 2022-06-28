@@ -4,6 +4,8 @@
   "typesBundle": "khala",
   "events": [
     "democracy.Proposed",
+    "democracy.Tabled",
+    "democracy.Started",
     "council.Proposed",
     "council.Voted",
     "council.Closed",
@@ -18,6 +20,7 @@
     "council.vote",
     "democracy.second",
     "democracy.vote",
+    "democracy.clear_public_proposals",
     "phragmenElection.vote",
     "bounties.propose_bounty",
     "treasury.propose_spend"
