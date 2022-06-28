@@ -9,11 +9,14 @@ const getProposalHash = (ctx: EventHandlerContext, network: SubstrateNetwork) =>
 
   if (ctx.event.extrinsic?.method === 'batchAll') {
     const calls = args[0].value as { args: {[key: string]: any} }[];
-    const batchProposeArgs = calls.find(call => call.args && call.args.proposal_hash);
-    if (!batchProposeArgs) {
+    const batchProposeArgs = calls.filter(call => call.args && call.args.proposal_hash);
+    if (batchProposeArgs.length === 0) {
       throw new Error(`Unable to find propose args in batch in block ${ctx.block.height}`);
     }
-    return batchProposeArgs.args.proposal_hash;
+    if (batchProposeArgs.length > 1) {
+      throw new Error(`Found multiple proposal_hash args in batch in block ${ctx.block.height}`);
+    }
+    return batchProposeArgs[0].args.proposal_hash;
   } else {
 
     const proposalHashArg = args.find(arg => arg.name === 'proposal_hash' || arg.name === 'proposalHash');
