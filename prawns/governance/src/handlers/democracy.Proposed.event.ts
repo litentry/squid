@@ -55,7 +55,7 @@ export default (network: SubstrateNetwork) =>
     await ctx.store.save(account);
 
     const proposal = new SubstrateDemocracyProposal({
-      id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
+      id: `${network}:${event.proposalIndex}`,
       network,
       account,
       rootAccount,
