@@ -26,6 +26,7 @@
     "@subsquid/ss58": "^0.1.0",
     "@subsquid/substrate-processor": "^0.7.2",
     "dotenv": "^16.0.0",
+    "node-fetch": "2.6.6",
     "pg": "^8.7.3",
     "typeorm": "^0.2.41"
   },
@@ -33,6 +34,7 @@
     "@subsquid/substrate-metadata-explorer": "^0.0.8",
     "@subsquid/substrate-typegen": "^0.4.3",
     "@types/node": "^16.11.27",
+    "@types/node-fetch": "2.x",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
