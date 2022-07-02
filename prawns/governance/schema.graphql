@@ -72,6 +72,8 @@ type SubstrateDemocracyReferenda @entity {
   democracyProposal: SubstrateDemocracyProposal
   blockNumber: BigInt!
   date: DateTime!
+  title: String,
+  description: String,
   status: String!
   updatedAt: DateTime!
   voteThreshold: String!
