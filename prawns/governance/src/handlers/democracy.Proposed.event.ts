@@ -1,7 +1,8 @@
-import { EventHandlerContext, ExtrinsicArg } from '@subsquid/substrate-processor';
+import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { SubstrateDemocracyProposal, SubstrateNetwork } from '../model';
 import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
+import subsquare from '../clients/subsquare';
 
 const getProposalHash = (ctx: EventHandlerContext, network: SubstrateNetwork) => {
 
@@ -45,6 +46,7 @@ export default (network: SubstrateNetwork) =>
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
     const event = getDemocracyProposedEvent(ctx, network);
     const proposalHash = getProposalHash(ctx, network);
+    const subsquareProposal = await subsquare.getDemocracyProposal(network, event.proposalIndex);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
@@ -64,6 +66,8 @@ export default (network: SubstrateNetwork) =>
       updatedAt: date,
       proposalHash,
       proposalIndex: event.proposalIndex,
+      title: subsquareProposal.title,
+      description: subsquareProposal.content,
       depositAmount: event.deposit,
       status: 'proposed'
     });

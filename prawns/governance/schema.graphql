@@ -55,6 +55,8 @@ type SubstrateDemocracyProposal @entity {
   date: DateTime!
   proposalHash: String! @index
   proposalIndex: Int! @index
+  title: String
+  description: String
   depositAmount: BigInt!
   status: String!
   updatedAt: DateTime!

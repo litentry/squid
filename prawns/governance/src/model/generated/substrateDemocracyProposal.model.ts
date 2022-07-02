@@ -42,6 +42,12 @@ export class SubstrateDemocracyProposal {
   @Column_("int4", {nullable: false})
   proposalIndex!: number
 
+  @Column_("text", {nullable: true})
+  title!: string | undefined | null
+
+  @Column_("text", {nullable: true})
+  description!: string | undefined | null
+
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   depositAmount!: bigint
 
