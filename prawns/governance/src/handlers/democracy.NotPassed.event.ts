@@ -1,5 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork } from '../model';
+import { SubstrateDemocracyReferendaStatus, SubstrateNetwork } from '../model';
 import { getDemocracyNotPassedEvent } from './typeGetters/getDemocracyNotPassedEvent';
 import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
 
@@ -19,7 +19,7 @@ export default (network: SubstrateNetwork) =>
       throw new Error(`Referenda not found`);
     }
 
-    referenda.status = 'not_passed';
+    referenda.status = SubstrateDemocracyReferendaStatus.notPassed;
     referenda.updatedAt = date;
 
     await ctx.store.save(referenda);
