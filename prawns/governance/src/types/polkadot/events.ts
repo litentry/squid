@@ -337,6 +337,98 @@ export class CouncilVotedEvent {
   }
 }
 
+export class DemocracyNotPassedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.NotPassed')
+  }
+
+  /**
+   *  A proposal has been rejected by referendum.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('democracy.NotPassed') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+  }
+
+  /**
+   *  A proposal has been rejected by referendum.
+   */
+  get asV0(): number {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal has been rejected by referendum.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('democracy.NotPassed') === '8a84371403a09e2f8fc2aac80f5a8a53229b346c4b3859069867b8e656b13450'
+  }
+
+  /**
+   * A proposal has been rejected by referendum.
+   */
+  get asV9140(): {refIndex: number} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {refIndex: number} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
+export class DemocracyPassedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Passed')
+  }
+
+  /**
+   *  A proposal has been approved by referendum.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Passed') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+  }
+
+  /**
+   *  A proposal has been approved by referendum.
+   */
+  get asV0(): number {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal has been approved by referendum.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Passed') === '8a84371403a09e2f8fc2aac80f5a8a53229b346c4b3859069867b8e656b13450'
+  }
+
+  /**
+   * A proposal has been approved by referendum.
+   */
+  get asV9140(): {refIndex: number} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {refIndex: number} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
 export class DemocracyProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'democracy.Proposed')

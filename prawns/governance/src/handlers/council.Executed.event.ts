@@ -27,7 +27,7 @@ export default (network: SubstrateNetwork) =>
     account.totalCouncilProposals = account.totalCouncilProposals + 1;
     await ctx.store.save(account);
 
-    let councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, event.proposalHash);
+    let councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, network, event.proposalHash);
 
     if (!councilProposal) {
 
