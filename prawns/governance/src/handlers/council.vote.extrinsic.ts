@@ -20,7 +20,7 @@ export default (network: SubstrateNetwork) =>
     account.totalProposalVotes = account.totalProposalVotes + 1;
     await ctx.store.save(account);
 
-    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, call.proposal);
+    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, network, call.proposal);
 
     if (!councilProposal) {
       throw new Error(`Proposal not found`);

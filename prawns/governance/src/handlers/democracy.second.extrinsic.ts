@@ -21,7 +21,7 @@ export default (network: SubstrateNetwork) =>
     account.totalProposalSeconds = account.totalDemocracyProposalSeconds; // Deprecated
     await ctx.store.save(account);
 
-    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, call.proposal);
+    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, network, call.proposal);
 
     if (!proposal) {
       throw new Error(`Proposal not found`);

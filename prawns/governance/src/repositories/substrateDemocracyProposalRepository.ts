@@ -1,15 +1,15 @@
 import { SubstrateDemocracyProposal, SubstrateNetwork } from '../model';
 import {EventHandlerContext} from "@subsquid/substrate-processor";
 
-const getByProposalIndex = async (ctx: EventHandlerContext, proposalIndex: number) => {
+const getByProposalIndex = async (ctx: EventHandlerContext, network: SubstrateNetwork, proposalIndex: number) => {
   return ctx.store.get(SubstrateDemocracyProposal, {
-    where: { proposalIndex },
+    where: { id: `${network}:${proposalIndex}` },
   }) as unknown as (SubstrateDemocracyProposal | undefined);
 }
 
-const getByTabledAtBlock = async (ctx: EventHandlerContext, tabledAtBlock: bigint) => {
+const getByTabledAtBlock = async (ctx: EventHandlerContext, network: SubstrateNetwork, tabledAtBlock: bigint) => {
   return ctx.store.get(SubstrateDemocracyProposal, {
-    where: { tabledAtBlock },
+    where: { tabledAtBlock, network },
   }) as unknown as (SubstrateDemocracyProposal | undefined);
 }
 
