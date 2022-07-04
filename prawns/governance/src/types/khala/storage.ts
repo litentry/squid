@@ -8,6 +8,7 @@ import * as v1120 from './v1120'
 import * as v1130 from './v1130'
 import * as v1140 from './v1140'
 import * as v1150 from './v1150'
+import * as v1160 from './v1160'
 
 export class CouncilMembersStorage {
   constructor(private ctx: StorageContext) {}
@@ -155,6 +156,21 @@ export class CouncilProposalOfStorage {
    */
   async getAsV1150(key: v1150.H256): Promise<v1150.Call | undefined> {
     assert(this.isV1150)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Council', 'ProposalOf', key)
+  }
+
+  /**
+   *  Actual proposal for a given hash, if it's current.
+   */
+  get isV1160() {
+    return this.ctx._chain.getStorageItemTypeHash('Council', 'ProposalOf') === '2a3dc418bc01a1dedbe5b5f8f1745e5c03ee6d01902d04f3b208495de3496bbf'
+  }
+
+  /**
+   *  Actual proposal for a given hash, if it's current.
+   */
+  async getAsV1160(key: v1160.H256): Promise<v1160.Call | undefined> {
+    assert(this.isV1160)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Council', 'ProposalOf', key)
   }
 
