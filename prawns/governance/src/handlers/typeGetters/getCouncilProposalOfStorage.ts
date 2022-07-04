@@ -124,6 +124,9 @@ export async function getCouncilProposalOfStorage(
       if (call.isV1091) {
         return call.getAsV1091(proposalHash);
       }
+      if (call.isV1160) {
+        return call.getAsV1160(proposalHash);
+      }
 
       throw new Error("Unexpected version");
     }
