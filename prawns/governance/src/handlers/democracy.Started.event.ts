@@ -1,5 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork, SubstrateDemocracyReferenda } from '../model';
+import { SubstrateDemocracyReferenda, SubstrateDemocracyReferendaStatus, SubstrateNetwork } from '../model';
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 import { getDemocracyStartedEvent } from './typeGetters/getDemocracyStartedEvent';
 import subsquare from '../clients/subsquare';
@@ -15,7 +15,7 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const event = getDemocracyStartedEvent(ctx, network);
 
-    const democracyProposal = await substrateDemocracyProposalRepository.getByTabledAtBlock(ctx, blockNumber);
+    const democracyProposal = await substrateDemocracyProposalRepository.getByTabledAtBlock(ctx, network, blockNumber);
 
     const subsquareReferenda = await subsquare.getDemocracyReferenda(network, event.refIndex);
 
@@ -28,7 +28,7 @@ export default (network: SubstrateNetwork) =>
       description: subsquareReferenda.content,
       updatedAt: date,
       voteThreshold: event.thresholdKind,
-      status: 'started',
+      status: SubstrateDemocracyReferendaStatus.started,
       democracyProposal: democracyProposal
     });
 

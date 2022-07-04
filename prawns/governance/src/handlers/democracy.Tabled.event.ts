@@ -14,7 +14,7 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const event = getDemocracyTabledEvent(ctx, network);
 
-    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, event.proposalIndex);
+    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, network, event.proposalIndex);
 
     if (!proposal) {
       throw new Error(`Proposal not found`);

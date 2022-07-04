@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateDemocracyProposal} from "./substrateDemocracyProposal.model"
+import {SubstrateDemocracyReferendaStatus} from "./_substrateDemocracyReferendaStatus"
 
 @Entity_()
 export class SubstrateDemocracyReferenda {
@@ -34,8 +35,8 @@ export class SubstrateDemocracyReferenda {
   @Column_("text", {nullable: true})
   description!: string | undefined | null
 
-  @Column_("text", {nullable: false})
-  status!: string
+  @Column_("varchar", {length: 9, nullable: false})
+  status!: SubstrateDemocracyReferendaStatus
 
   @Column_("timestamp with time zone", {nullable: false})
   updatedAt!: Date

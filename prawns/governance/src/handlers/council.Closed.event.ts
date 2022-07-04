@@ -7,7 +7,7 @@ export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     const event = getCouncilClosedEvent(ctx, network);
     const date = new Date(ctx.block.timestamp);
-    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, event.proposalHash);
+    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, network, event.proposalHash);
     if (!councilProposal) {
       throw new Error(`Proposal not found`);
     }
