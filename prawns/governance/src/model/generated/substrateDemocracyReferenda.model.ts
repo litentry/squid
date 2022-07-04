@@ -29,6 +29,12 @@ export class SubstrateDemocracyReferenda {
   @Column_("timestamp with time zone", {nullable: false})
   date!: Date
 
+  @Column_("text", {nullable: true})
+  title!: string | undefined | null
+
+  @Column_("text", {nullable: true})
+  description!: string | undefined | null
+
   @Column_("varchar", {length: 9, nullable: false})
   status!: SubstrateDemocracyReferendaStatus
 
