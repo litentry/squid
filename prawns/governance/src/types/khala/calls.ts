@@ -113,6 +113,49 @@ export class CouncilVoteCall {
   }
 }
 
+export class DemocracyCancelProposalCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'democracy.cancelProposal' || this.ctx.extrinsic.name === 'democracy.cancel_proposal')
+  }
+
+  /**
+   *  Remove a proposal.
+   * 
+   *  The dispatch origin of this call must be `CancelProposalOrigin`.
+   * 
+   *  - `prop_index`: The index of the proposal to cancel.
+   * 
+   *  Weight: `O(p)` where `p = PublicProps::<T>::decode_len()`
+   */
+  get isV1(): boolean {
+    return this.ctx._chain.getCallHash('democracy.cancel_proposal') === '0e50c7564a4a7f4e6a09a0abcc8022f4445c064144d2318ed086e6080bee800d'
+  }
+
+  /**
+   *  Remove a proposal.
+   * 
+   *  The dispatch origin of this call must be `CancelProposalOrigin`.
+   * 
+   *  - `prop_index`: The index of the proposal to cancel.
+   * 
+   *  Weight: `O(p)` where `p = PublicProps::<T>::decode_len()`
+   */
+  get asV1(): {propIndex: number} {
+    assert(this.isV1)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1
+  }
+
+  get asLatest(): {propIndex: number} {
+    deprecateLatest()
+    return this.asV1
+  }
+}
+
 export class DemocracyClearPublicProposalsCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'democracy.clearPublicProposals' || this.ctx.extrinsic.name === 'democracy.clear_public_proposals')

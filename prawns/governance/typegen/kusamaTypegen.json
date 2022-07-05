@@ -21,6 +21,7 @@
     "democracy.second",
     "democracy.vote",
     "phragmenElection.vote",
+    "democracy.cancel_proposal",
     "democracy.clear_public_proposals",
     "bounties.propose_bounty",
     "treasury.propose_spend"

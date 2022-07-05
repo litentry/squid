@@ -4,6 +4,7 @@ import councilProposedHandler from '../handlers/council.Proposed.event';
 import councilVoteHandler from '../handlers/council.vote.extrinsic';
 import democracyProposedHandler from '../handlers/democracy.Proposed.event';
 import democracySecondHandler from '../handlers/democracy.second.extrinsic';
+import democracyCancelProposalExtrinsicHandler from '../handlers/democracy.CancelProposal.extrinsic';
 import democracyVoteHandler from '../handlers/democracy.vote.extrinsic';
 import electionVoteHandler from '../handlers/phragmenElection.vote.extrinsic';
 import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Proposed.event';
@@ -83,6 +84,10 @@ processor.addEventHandler(
 processor.addEventHandler(
   'democracy.Started',
   democracyStartedEventHandler(network)
+);
+processor.addExtrinsicHandler(
+  'democracy.cancel_proposal',
+  democracyCancelProposalExtrinsicHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.clear_public_proposals',

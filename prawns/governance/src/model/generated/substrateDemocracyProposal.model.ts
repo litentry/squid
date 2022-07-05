@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateDemocracyProposalStatus} from "./_substrateDemocracyProposalStatus"
 import {SubstrateDemocracyReferenda} from "./substrateDemocracyReferenda.model"
 import {SubstrateDemocracyProposalSecond} from "./substrateDemocracyProposalSecond.model"
 
@@ -51,8 +52,8 @@ export class SubstrateDemocracyProposal {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   depositAmount!: bigint
 
-  @Column_("text", {nullable: false})
-  status!: string
+  @Column_("varchar", {length: 9, nullable: false})
+  status!: SubstrateDemocracyProposalStatus
 
   @Column_("timestamp with time zone", {nullable: false})
   updatedAt!: Date

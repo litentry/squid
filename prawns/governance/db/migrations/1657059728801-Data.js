@@ -1,5 +1,5 @@
-module.exports = class Data1656756200008 {
-  name = 'Data1656756200008'
+module.exports = class Data1657059728801 {
+  name = 'Data1657059728801'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_council_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "last_update" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_id" integer, "proposal_index" integer, "proposal_hash" text NOT NULL, "pallet" text, "method" text, "status" text NOT NULL, "aye_count" integer NOT NULL, "nay_count" integer NOT NULL, "threshold" integer NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_de7e32a4bd91872e2de07fc2626" PRIMARY KEY ("id"))`)
@@ -19,7 +19,7 @@ module.exports = class Data1656756200008 {
     await db.query(`CREATE INDEX "IDX_7773c2d4378b43742527e9a7c1" ON "substrate_proposal_vote" ("ref_index") `)
     await db.query(`CREATE TABLE "substrate_democracy_referenda" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "status" text NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL, "vote_threshold" text NOT NULL, "democracy_proposal_id" character varying, CONSTRAINT "PK_53c35807a0fb4f7afd2053b002e" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_8197a7fbe7e3251f0ae228099f" ON "substrate_democracy_referenda" ("democracy_proposal_id") `)
-    await db.query(`CREATE TABLE "substrate_democracy_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_hash" text NOT NULL, "proposal_index" integer NOT NULL, "title" text, "description" text, "deposit_amount" numeric NOT NULL, "status" text NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL, "tabled_at_block" numeric, "account_id" character varying NOT NULL, "democracy_referenda_id" character varying, CONSTRAINT "PK_1ace727c2511fe1ea57ec7db260" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_democracy_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_hash" text NOT NULL, "proposal_index" integer NOT NULL, "title" text, "description" text, "deposit_amount" numeric NOT NULL, "status" character varying(9) NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL, "tabled_at_block" numeric, "account_id" character varying NOT NULL, "democracy_referenda_id" character varying, CONSTRAINT "PK_1ace727c2511fe1ea57ec7db260" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_388f3fd3b03fa4f0b699b77916" ON "substrate_democracy_proposal" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_71842dc673f50311421b7f1a96" ON "substrate_democracy_proposal" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_18dce55da139e25d6af12fd915" ON "substrate_democracy_proposal" ("proposal_hash") `)

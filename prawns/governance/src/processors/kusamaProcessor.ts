@@ -15,6 +15,7 @@ import councilExecutedEventHandler from "../handlers/council.Executed.event";
 import democracyTabledEventHandler from '../handlers/democracy.Tabled.event';
 import democracyStartedEventHandler from '../handlers/democracy.Started.event';
 import democracyClearPublicProposalsExtrinsicHandler from '../handlers/democracy.ClearPublicProposals.extrinsic';
+import democracyCancelProposalExtrinsicHandler from '../handlers/democracy.CancelProposal.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_kusama');
 
@@ -84,7 +85,10 @@ processor.addEventHandler(
   'democracy.Started',
   democracyStartedEventHandler(network)
 );
-
+processor.addExtrinsicHandler(
+  'democracy.cancel_proposal',
+  democracyCancelProposalExtrinsicHandler(network)
+);
 processor.addExtrinsicHandler(
   'democracy.clear_public_proposals',
   {
