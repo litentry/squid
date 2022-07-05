@@ -15,6 +15,7 @@
     "democracy.Started",
     "democracy.Passed",
     "democracy.NotPassed",
+    "democracy.Voted",
     "bounties.BountyProposed",
     "treasury.Proposed"
   ],

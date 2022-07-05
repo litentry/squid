@@ -1,12 +1,13 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateNetwork, SubstrateProposalVote } from '../model';
+import { SubstrateDemocracyReferendaVote, SubstrateNetwork, SubstrateProposalVote } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import {
   AccountVote,
   getDemocracyVoteCall,
 } from './typeGetters/getDemocracyVoteCall';
 import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
+import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
@@ -21,9 +22,16 @@ export default (network: SubstrateNetwork) =>
       network,
     });
     account.totalProposalVotes = account.totalProposalVotes + 1;
+    account.totalDemocracyReferendaVotes = account.totalDemocracyReferendaVotes + 1;
     await ctx.store.save(account);
 
-    const vote = new SubstrateProposalVote({
+    const referenda = await substrateDemocracyReferendaRepository.getByReferendaIndex(ctx, network, call.refIndex);
+
+    if (!referenda) {
+      throw new Error(`Referenda not found`);
+    }
+
+    const deprecatedVote = new SubstrateProposalVote({
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
@@ -35,7 +43,35 @@ export default (network: SubstrateNetwork) =>
       vote: JSON.stringify(cleanBigInts(call.vote)),
     });
 
-    await ctx.store.save(vote);
+    const voteWeight = {
+      ayeWeight: BigInt(0),
+      nayWeight: BigInt(0)
+    };
+
+    if (call.vote.__kind === 'Standard') {
+      const multiple = (call.vote.vote % 128) * 10 || 1;
+      voteWeight[call.vote.vote >= 128 ? 'ayeWeight' : 'nayWeight'] = call.vote.balance / 10n * BigInt(multiple);
+      console.log(`${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}, ${multiple / 10}, ${call.vote.balance}, aye: ${call.vote.vote >= 128}, weight: ${call.vote.balance / 10n * BigInt(multiple)}`)
+    } else {
+      voteWeight.ayeWeight = call.vote.aye;
+      voteWeight.nayWeight = call.vote.nay;
+    }
+
+    const vote = new SubstrateDemocracyReferendaVote({
+      id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
+      network,
+      account,
+      rootAccount,
+      blockNumber,
+      date,
+      democracyReferenda: referenda,
+      ...voteWeight
+    });
+
+    referenda.aye += voteWeight.ayeWeight;
+    referenda.nay += voteWeight.nayWeight;
+
+    await Promise.all([ctx.store.save(deprecatedVote), ctx.store.save(vote), ctx.store.save(referenda)])
   };
 
 function cleanBigInts(vote: number | AccountVote) {

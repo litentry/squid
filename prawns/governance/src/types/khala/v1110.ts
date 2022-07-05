@@ -44,6 +44,22 @@ export interface DispatchError_Arithmetic {
   value: ArithmeticError
 }
 
+export type AccountId32 = Uint8Array
+
+export type AccountVote = AccountVote_Standard | AccountVote_Split
+
+export interface AccountVote_Standard {
+  __kind: 'Standard'
+  vote: Vote
+  balance: bigint
+}
+
+export interface AccountVote_Split {
+  __kind: 'Split'
+  aye: bigint
+  nay: bigint
+}
+
 export type Call = Call_System | Call_Timestamp | Call_Utility | Call_Multisig | Call_Proxy | Call_Vesting | Call_Scheduler | Call_Preimage | Call_ParachainSystem | Call_XcmpQueue | Call_DmpQueue | Call_PolkadotXcm | Call_Balances | Call_Authorship | Call_CollatorSelection | Call_Session | Call_Identity | Call_Democracy | Call_Council | Call_Treasury | Call_Bounties | Call_Lottery | Call_TechnicalCommittee | Call_TechnicalMembership | Call_PhragmenElection | Call_Tips | Call_ChildBounties | Call_ChainBridge | Call_BridgeTransfer | Call_XcmTransfer | Call_PhalaMq | Call_PhalaRegistry | Call_PhalaMining | Call_PhalaStakePool | Call_Assets | Call_AssetsWrapper
 
 export interface Call_System {
@@ -269,6 +285,8 @@ export interface ArithmeticError_Overflow {
 export interface ArithmeticError_DivisionByZero {
   __kind: 'DivisionByZero'
 }
+
+export type Vote = number
 
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
@@ -4872,8 +4890,6 @@ export interface OriginCaller_Void {
   value: Void
 }
 
-export type AccountId32 = Uint8Array
-
 export interface Timepoint {
   height: number
   index: number
@@ -5279,20 +5295,6 @@ export interface Judgement_LowQuality {
 
 export interface Judgement_Erroneous {
   __kind: 'Erroneous'
-}
-
-export type AccountVote = AccountVote_Standard | AccountVote_Split
-
-export interface AccountVote_Standard {
-  __kind: 'Standard'
-  vote: Vote
-  balance: bigint
-}
-
-export interface AccountVote_Split {
-  __kind: 'Split'
-  aye: bigint
-  nay: bigint
 }
 
 export type Conviction = Conviction_None | Conviction_Locked1x | Conviction_Locked2x | Conviction_Locked3x | Conviction_Locked4x | Conviction_Locked5x | Conviction_Locked6x
@@ -6284,8 +6286,6 @@ export interface V1Junctions_X8 {
 export interface Digest {
   logs: DigestItem[]
 }
-
-export type Vote = number
 
 export interface Message {
   sender: MessageOrigin
