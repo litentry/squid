@@ -15,6 +15,7 @@ import technicalCommitteeProposedHandler from '../handlers/technicalCommittee.Pr
 import bountiesBountyProposedHandler from "../handlers/bounties.bountyProposed.event";
 import treasuryProposedHandler from "../handlers/treasury.proposed.event";
 import democracyClearPublicProposalsExtrinsicHandler from "../handlers/democracy.ClearPublicProposals.extrinsic";
+import democracyCancelProposalExtrinsicHandler from '../handlers/democracy.CancelProposal.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_polkadot');
 
@@ -85,6 +86,10 @@ processor.addEventHandler(
 processor.addEventHandler(
   'democracy.Started',
   democracyStartedEventHandler(network)
+);
+processor.addExtrinsicHandler(
+  'democracy.cancel_proposal',
+  democracyCancelProposalExtrinsicHandler(network)
 );
 processor.addExtrinsicHandler(
   'democracy.clear_public_proposals',

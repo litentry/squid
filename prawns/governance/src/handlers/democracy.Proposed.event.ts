@@ -1,6 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
-import { SubstrateDemocracyProposal, SubstrateNetwork } from '../model';
+import { SubstrateDemocracyProposal, SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
 import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
 import subsquare from '../clients/subsquare';
 
@@ -69,7 +69,7 @@ export default (network: SubstrateNetwork) =>
       title: subsquareProposal.title,
       description: subsquareProposal.content,
       depositAmount: event.deposit,
-      status: 'proposed'
+      status: SubstrateDemocracyProposalStatus.proposed
     });
 
     await ctx.store.save(proposal);

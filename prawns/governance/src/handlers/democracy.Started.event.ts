@@ -14,7 +14,7 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const event = getDemocracyStartedEvent(ctx, network);
 
-    const democracyProposal = await substrateDemocracyProposalRepository.getByTabledAtBlock(ctx, blockNumber);
+    const democracyProposal = await substrateDemocracyProposalRepository.getByTabledAtBlock(ctx, network, blockNumber);
 
     const referenda = new SubstrateDemocracyReferenda({
       id: `${network}:${event.refIndex}`,

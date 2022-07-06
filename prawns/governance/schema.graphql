@@ -5,6 +5,12 @@ enum SubstrateNetwork {
   moonbeam
 }
 
+enum SubstrateDemocracyProposalStatus {
+    proposed,
+    cancelled,
+    tabled
+}
+
 type SubstrateGovernanceAccount @entity {
   "address"
   id: ID!
@@ -58,7 +64,7 @@ type SubstrateDemocracyProposal @entity {
   title: String
   description: String
   depositAmount: BigInt!
-  status: String!
+  status: SubstrateDemocracyProposalStatus!
   updatedAt: DateTime!
   tabledAtBlock: BigInt @index
   democracyReferenda: SubstrateDemocracyReferenda
