@@ -159,8 +159,8 @@ type SubstrateDemocracyReferendaVote @entity {
   blockNumber: BigInt!
   date: DateTime!
   democracyReferenda: SubstrateDemocracyReferenda!
-  ayeWeight: BigInt!
-  nayWeight: BigInt!
+  aye: BigInt!
+  nay: BigInt!
 }
 
 type SubstrateDemocracyProposalSecond @entity {

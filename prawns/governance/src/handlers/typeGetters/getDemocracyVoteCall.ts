@@ -51,6 +51,7 @@ export function getDemocracyVoteCall(
           vote: {
             __kind: 'Standard',
             vote,
+            // This is not correct.. there is a balance but it is not in the extrinsic
             balance: BigInt(1)
           }
         };

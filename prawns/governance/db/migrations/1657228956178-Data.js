@@ -1,5 +1,5 @@
-module.exports = class Data1656975139993 {
-  name = 'Data1656975139993'
+module.exports = class Data1657228956178 {
+  name = 'Data1657228956178'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_council_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "last_update" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_id" integer, "proposal_index" integer, "proposal_hash" text NOT NULL, "pallet" text, "method" text, "status" text NOT NULL, "aye_count" integer NOT NULL, "nay_count" integer NOT NULL, "threshold" integer NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_de7e32a4bd91872e2de07fc2626" PRIMARY KEY ("id"))`)
@@ -30,7 +30,7 @@ module.exports = class Data1656975139993 {
     await db.query(`CREATE INDEX "IDX_f6246d1983484e6db9f8b5cedd" ON "substrate_democracy_proposal" ("democracy_referenda_id") `)
     await db.query(`CREATE TABLE "substrate_democracy_referenda" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "title" text, "description" text, "status" character varying(9) NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL, "vote_threshold" text NOT NULL, "aye" numeric NOT NULL, "nay" numeric NOT NULL, "democracy_proposal_id" character varying, CONSTRAINT "PK_53c35807a0fb4f7afd2053b002e" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_8197a7fbe7e3251f0ae228099f" ON "substrate_democracy_referenda" ("democracy_proposal_id") `)
-    await db.query(`CREATE TABLE "substrate_democracy_referenda_vote" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "aye_weight" numeric NOT NULL, "nay_weight" numeric NOT NULL, "account_id" character varying NOT NULL, "democracy_referenda_id" character varying NOT NULL, CONSTRAINT "PK_eeb367ade1bf48c659f03ac9213" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_democracy_referenda_vote" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "aye" numeric NOT NULL, "nay" numeric NOT NULL, "account_id" character varying NOT NULL, "democracy_referenda_id" character varying NOT NULL, CONSTRAINT "PK_eeb367ade1bf48c659f03ac9213" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_357dd82aa1eae21f256a49e511" ON "substrate_democracy_referenda_vote" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_004c4739f52b87f4a44ab80f63" ON "substrate_democracy_referenda_vote" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_4f21c172412765f4236b9328dc" ON "substrate_democracy_referenda_vote" ("democracy_referenda_id") `)

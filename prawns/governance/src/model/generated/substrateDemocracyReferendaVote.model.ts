@@ -38,8 +38,8 @@ export class SubstrateDemocracyReferendaVote {
   democracyReferenda!: SubstrateDemocracyReferenda
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  ayeWeight!: bigint
+  aye!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  nayWeight!: bigint
+  nay!: bigint
 }

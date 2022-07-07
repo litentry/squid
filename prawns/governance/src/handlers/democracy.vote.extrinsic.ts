@@ -6,8 +6,8 @@ import {
   AccountVote,
   getDemocracyVoteCall,
 } from './typeGetters/getDemocracyVoteCall';
-import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
 import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
+import substrateDemocracyReferendaVoteRepository from '../repositories/substrateDemocracyReferendaVoteRepository';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
@@ -43,18 +43,17 @@ export default (network: SubstrateNetwork) =>
       vote: JSON.stringify(cleanBigInts(call.vote)),
     });
 
-    const voteWeight = {
-      ayeWeight: BigInt(0),
-      nayWeight: BigInt(0)
+    const voteBalance = {
+      aye: BigInt(0),
+      nay: BigInt(0)
     };
 
     if (call.vote.__kind === 'Standard') {
       const multiple = (call.vote.vote % 128) * 10 || 1;
-      voteWeight[call.vote.vote >= 128 ? 'ayeWeight' : 'nayWeight'] = call.vote.balance / 10n * BigInt(multiple);
-      console.log(`${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}, ${multiple / 10}, ${call.vote.balance}, aye: ${call.vote.vote >= 128}, weight: ${call.vote.balance / 10n * BigInt(multiple)}`)
+      voteBalance[call.vote.vote >= 128 ? 'aye' : 'nay'] = call.vote.balance / 10n * BigInt(multiple);
     } else {
-      voteWeight.ayeWeight = call.vote.aye;
-      voteWeight.nayWeight = call.vote.nay;
+      voteBalance.aye = call.vote.aye;
+      voteBalance.nay = call.vote.nay;
     }
 
     const vote = new SubstrateDemocracyReferendaVote({
@@ -65,11 +64,19 @@ export default (network: SubstrateNetwork) =>
       blockNumber,
       date,
       democracyReferenda: referenda,
-      ...voteWeight
+      ...voteBalance
     });
 
-    referenda.aye += voteWeight.ayeWeight;
-    referenda.nay += voteWeight.nayWeight;
+    // If the same user voted previously then their previous vote is discounted
+    const lastVote = await substrateDemocracyReferendaVoteRepository.getLastVoteByReferendaAndAccount(ctx, network, referenda, account);
+
+    if (lastVote) {
+      referenda.aye -= lastVote.aye;
+      referenda.nay -= lastVote.nay;
+    }
+
+    referenda.aye += voteBalance.aye;
+    referenda.nay += voteBalance.nay;
 
     await Promise.all([ctx.store.save(deprecatedVote), ctx.store.save(vote), ctx.store.save(referenda)])
   };
