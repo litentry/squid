@@ -15,6 +15,8 @@ import councilClosedEventHandler from "../handlers/council.Closed.event";
 import councilExecutedEventHandler from "../handlers/council.Executed.event";
 import democracyTabledEventHandler from '../handlers/democracy.Tabled.event';
 import democracyStartedEventHandler from '../handlers/democracy.Started.event';
+import democracyPassedEventHandler from '../handlers/democracy.Passed.event';
+import democracyNotPassedEventHandler from '../handlers/democracy.NotPassed.event';
 import democracyClearPublicProposalsExtrinsicHandler from '../handlers/democracy.ClearPublicProposals.extrinsic';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
@@ -95,6 +97,14 @@ processor.addExtrinsicHandler(
     triggerEvents: ['treasury.Deposit'] // For some reason this extrinsic does not have a 'system.ExtrinsicSuccess' event that Subsquid looks for to trigger the handler
   },
   democracyClearPublicProposalsExtrinsicHandler(network)
+);
+processor.addEventHandler(
+  'democracy.Passed',
+  democracyPassedEventHandler(network)
+);
+processor.addEventHandler(
+  'democracy.NotPassed',
+  democracyNotPassedEventHandler(network)
 );
 
 processor.run();

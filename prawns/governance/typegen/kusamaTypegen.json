@@ -13,6 +13,8 @@
     "council.Executed",
     "technicalCommittee.Proposed",
     "democracy.Started",
+    "democracy.Passed",
+    "democracy.NotPassed",
     "bounties.BountyProposed",
     "treasury.Proposed"
   ],
