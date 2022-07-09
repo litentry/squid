@@ -29,7 +29,9 @@ export default (network: SubstrateNetwork) =>
       updatedAt: date,
       voteThreshold: event.thresholdKind,
       status: SubstrateDemocracyReferendaStatus.started,
-      democracyProposal: democracyProposal
+      democracyProposal: democracyProposal,
+      aye: BigInt(0),
+      nay: BigInt(0),
     });
 
     await ctx.store.save(referenda);

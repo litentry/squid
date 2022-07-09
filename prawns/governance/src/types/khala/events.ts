@@ -575,6 +575,37 @@ export class DemocracyTabledEvent {
   }
 }
 
+export class DemocracyVotedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Voted')
+  }
+
+  /**
+   * An account has voted in a referendum
+   */
+  get isV1110(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Voted') === '1f7c6893e642faadc0fb2681a07f3aa74579a935cb93e932ab8fd8a9e9fe739c'
+  }
+
+  /**
+   * An account has voted in a referendum
+   */
+  get asV1110(): {voter: v1110.AccountId32, refIndex: number, vote: v1110.AccountVote} {
+    assert(this.isV1110)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1110
+  }
+
+  get asLatest(): {voter: v1110.AccountId32, refIndex: number, vote: v1110.AccountVote} {
+    deprecateLatest()
+    return this.asV1110
+  }
+}
+
 export class TechnicalCommitteeProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'technicalCommittee.Proposed')

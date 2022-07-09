@@ -43,6 +43,22 @@ export interface DispatchError_Arithmetic {
   value: ArithmeticError
 }
 
+export type AccountId32 = Uint8Array
+
+export type AccountVote = AccountVote_Standard | AccountVote_Split
+
+export interface AccountVote_Standard {
+  __kind: 'Standard'
+  vote: Vote
+  balance: bigint
+}
+
+export interface AccountVote_Split {
+  __kind: 'Split'
+  aye: bigint
+  nay: bigint
+}
+
 export type Call = Call_System | Call_Scheduler | Call_Preimage | Call_Babe | Call_Timestamp | Call_Indices | Call_Balances | Call_Authorship | Call_Staking | Call_Session | Call_Grandpa | Call_ImOnline | Call_Democracy | Call_Council | Call_TechnicalCommittee | Call_PhragmenElection | Call_TechnicalMembership | Call_Treasury | Call_Claims | Call_Vesting | Call_Utility | Call_Identity | Call_Proxy | Call_Multisig | Call_Bounties | Call_Tips | Call_ElectionProviderMultiPhase | Call_BagsList | Call_Configuration | Call_ParasShared | Call_ParaInclusion | Call_ParaInherent | Call_Paras | Call_Initializer | Call_Dmp | Call_Ump | Call_Hrmp | Call_Registrar | Call_Slots | Call_Auctions | Call_Crowdloan | Call_XcmPallet
 
 export interface Call_System {
@@ -303,6 +319,8 @@ export interface ArithmeticError_Overflow {
 export interface ArithmeticError_DivisionByZero {
   __kind: 'DivisionByZero'
 }
+
+export type Vote = number
 
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
@@ -5325,8 +5343,6 @@ export interface NextConfigDescriptor_V1 {
   allowedSlots: AllowedSlots
 }
 
-export type AccountId32 = Uint8Array
-
 export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
 
 export interface MultiAddress_Id {
@@ -5412,20 +5428,6 @@ export interface Heartbeat {
   sessionIndex: number
   authorityIndex: number
   validatorsLen: number
-}
-
-export type AccountVote = AccountVote_Standard | AccountVote_Split
-
-export interface AccountVote_Standard {
-  __kind: 'Standard'
-  vote: Vote
-  balance: bigint
-}
-
-export interface AccountVote_Split {
-  __kind: 'Split'
-  aye: bigint
-  nay: bigint
 }
 
 export type Conviction = Conviction_None | Conviction_Locked1x | Conviction_Locked2x | Conviction_Locked3x | Conviction_Locked4x | Conviction_Locked5x | Conviction_Locked6x
@@ -5991,8 +5993,6 @@ export interface OpaqueNetworkState {
   peerId: OpaquePeerId
   externalAddresses: OpaqueMultiaddr[]
 }
-
-export type Vote = number
 
 export type RawOrigin_241 = RawOrigin_241_Root | RawOrigin_241_Signed | RawOrigin_241_None
 
