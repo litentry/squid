@@ -1,8 +1,9 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateDemocracyProposal} from "./substrateDemocracyProposal.model"
 import {SubstrateDemocracyReferendaStatus} from "./_substrateDemocracyReferendaStatus"
+import {SubstrateDemocracyReferendaVote} from "./substrateDemocracyReferendaVote.model"
 
 @Entity_()
 export class SubstrateDemocracyReferenda {
@@ -43,4 +44,13 @@ export class SubstrateDemocracyReferenda {
 
   @Column_("text", {nullable: false})
   voteThreshold!: string
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  aye!: bigint
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  nay!: bigint
+
+  @OneToMany_(() => SubstrateDemocracyReferendaVote, e => e.democracyReferenda)
+  votes!: SubstrateDemocracyReferendaVote[]
 }

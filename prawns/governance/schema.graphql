@@ -14,7 +14,9 @@ enum SubstrateDemocracyProposalStatus {
 enum SubstrateDemocracyReferendaStatus {
   started,
   passed,
-  notPassed
+  notPassed,
+  cancelled,
+  executed
 }
 
 type SubstrateGovernanceAccount @entity {
@@ -26,8 +28,9 @@ type SubstrateGovernanceAccount @entity {
   "Deprecated in favour of totalDemocracyProposalSeconds"
   totalProposalSeconds: Int!
   totalDemocracyProposalSeconds: Int!
-  "includes both normal proposal votes and votes as a council member from council.vote()"
+  "Deprecated in favour of totalDemocracyReferendaVotes - includes both normal proposal votes and votes as a council member from council.vote()"
   totalProposalVotes: Int!
+  totalDemocracyReferendaVotes: Int!
   totalElectionVotes: Int!
   totalDemocracyProposals: Int!
   totalCouncilProposals: Int!
@@ -36,6 +39,7 @@ type SubstrateGovernanceAccount @entity {
   totalTreasurySpendProposals: Int!
   councilVotes: [SubstrateCouncilVote]! @derivedFrom(field: "account")
   proposalVotes: [SubstrateProposalVote]! @derivedFrom(field: "account")
+  democracyReferendaVotes: [SubstrateDemocracyReferendaVote]! @derivedFrom(field: "account")
   democracyProposalSeconds: [SubstrateDemocracyProposalSecond]! @derivedFrom(field: "account")
   democracyProposals: [SubstrateDemocracyProposal]! @derivedFrom(field: "account")
   councilProposals: [SubstrateCouncilProposal]! @derivedFrom(field: "account")
@@ -89,6 +93,9 @@ type SubstrateDemocracyReferenda @entity {
   status: SubstrateDemocracyReferendaStatus!
   updatedAt: DateTime!
   voteThreshold: String!
+  aye: BigInt!
+  nay: BigInt!
+  votes: [SubstrateDemocracyReferendaVote]! @derivedFrom(field: "democracyReferenda")
 }
 
 type SubstrateCouncilProposal @entity {
@@ -149,6 +156,19 @@ type SubstrateProposalVote @entity {
   refIndex: Int! @index
   "not sure how to interpret this properly yet so using JSON.stringify() and saving raw"
   vote: String!
+}
+
+type SubstrateDemocracyReferendaVote @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  blockNumber: BigInt!
+  date: DateTime!
+  democracyReferenda: SubstrateDemocracyReferenda!
+  aye: BigInt!
+  nay: BigInt!
 }
 
 type SubstrateDemocracyProposalSecond @entity {

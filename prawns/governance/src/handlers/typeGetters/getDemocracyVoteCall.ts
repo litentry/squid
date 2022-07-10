@@ -38,22 +38,30 @@ export function getDemocracyVoteCall(
   network: SubstrateNetwork
 ): {
   refIndex: number;
-  // number is 0 (0x00) or 128 (0x80)
-  vote: number | AccountVote;
+  vote: AccountVote;
 } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaDemocracyVoteCall(ctx);
 
       if (event.isV1020) {
-        return event.asV1020;
+        const { refIndex, vote } = event.asV1020;
+        return {
+          refIndex,
+          vote: {
+            __kind: 'Standard',
+            vote,
+            // This is not correct.. there is a balance but it is not in the extrinsic
+            balance: BigInt(1)
+          }
+        };
       }
 
       if (event.isV1055) {
         const { refIndex, vote } = event.asV1055;
         return {
           refIndex,
-          vote: convertLegacyAccountVote(vote),
+          vote: convertLegacyAccountVote(vote)
         };
       }
 
@@ -71,7 +79,7 @@ export function getDemocracyVoteCall(
         const { refIndex, vote } = event.asV0;
         return {
           refIndex,
-          vote: convertLegacyAccountVote(vote),
+          vote: convertLegacyAccountVote(vote)
         };
       }
 
@@ -90,7 +98,7 @@ export function getDemocracyVoteCall(
         const { refIndex, vote } = event.asV1;
         return {
           refIndex,
-          vote: convertLegacyAccountVote(vote),
+          vote: convertLegacyAccountVote(vote)
         };
       }
 
@@ -111,29 +119,29 @@ export function getDemocracyVoteCall(
 function convertLegacyAccountVote(
   data:
     | {
-        __kind: 'Standard';
-        value: {
-          vote: number;
-          balance: bigint;
-        };
-      }
+    __kind: 'Standard';
+    value: {
+      vote: number;
+      balance: bigint;
+    };
+  }
     | {
-        __kind: 'Split';
-        value: {
-          aye: bigint;
-          nay: bigint;
-        };
-      }
+    __kind: 'Split';
+    value: {
+      aye: bigint;
+      nay: bigint;
+    };
+  }
 ): AccountVote {
   if (data.__kind === 'Standard') {
     return {
       __kind: 'Standard',
-      ...data.value,
+      ...data.value
     };
   }
 
   return {
     __kind: 'Split',
-    ...data.value,
+    ...data.value
   };
 }

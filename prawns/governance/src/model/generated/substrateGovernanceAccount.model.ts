@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateCouncilVote} from "./substrateCouncilVote.model"
 import {SubstrateProposalVote} from "./substrateProposalVote.model"
+import {SubstrateDemocracyReferendaVote} from "./substrateDemocracyReferendaVote.model"
 import {SubstrateDemocracyProposalSecond} from "./substrateDemocracyProposalSecond.model"
 import {SubstrateDemocracyProposal} from "./substrateDemocracyProposal.model"
 import {SubstrateCouncilProposal} from "./substrateCouncilProposal.model"
@@ -42,10 +43,13 @@ export class SubstrateGovernanceAccount {
   totalDemocracyProposalSeconds!: number
 
   /**
-   * includes both normal proposal votes and votes as a council member from council.vote()
+   * Deprecated in favour of totalDemocracyReferendaVotes - includes both normal proposal votes and votes as a council member from council.vote()
    */
   @Column_("int4", {nullable: false})
   totalProposalVotes!: number
+
+  @Column_("int4", {nullable: false})
+  totalDemocracyReferendaVotes!: number
 
   @Column_("int4", {nullable: false})
   totalElectionVotes!: number
@@ -70,6 +74,9 @@ export class SubstrateGovernanceAccount {
 
   @OneToMany_(() => SubstrateProposalVote, e => e.account)
   proposalVotes!: SubstrateProposalVote[]
+
+  @OneToMany_(() => SubstrateDemocracyReferendaVote, e => e.account)
+  democracyReferendaVotes!: SubstrateDemocracyReferendaVote[]
 
   @OneToMany_(() => SubstrateDemocracyProposalSecond, e => e.account)
   democracyProposalSeconds!: SubstrateDemocracyProposalSecond[]

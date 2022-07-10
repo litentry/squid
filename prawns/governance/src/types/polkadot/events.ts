@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {EventContext, Result, deprecateLatest} from './support'
 import * as v0 from './v0'
+import * as v9090 from './v9090'
 import * as v9110 from './v9110'
 import * as v9140 from './v9140'
 import * as v9170 from './v9170'
@@ -337,6 +338,158 @@ export class CouncilVotedEvent {
   }
 }
 
+export class DemocracyCancelledEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Cancelled')
+  }
+
+  /**
+   *  A referendum has been cancelled.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Cancelled') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+  }
+
+  /**
+   *  A referendum has been cancelled.
+   */
+  get asV0(): number {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A referendum has been cancelled.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Cancelled') === '8a84371403a09e2f8fc2aac80f5a8a53229b346c4b3859069867b8e656b13450'
+  }
+
+  /**
+   * A referendum has been cancelled.
+   */
+  get asV9140(): {refIndex: number} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {refIndex: number} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
+export class DemocracyExecutedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Executed')
+  }
+
+  /**
+   *  A proposal has been enacted.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Executed') === 'f267e1fa04f32dd15473e3a6d2514ae684bd7ba5516d192ba70e4d49211868aa'
+  }
+
+  /**
+   *  A proposal has been enacted.
+   */
+  get asV0(): [number, boolean] {
+    assert(this.isV0)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   *  A proposal has been enacted. \[ref_index, result\]
+   */
+  get isV9090(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Executed') === '8d7c54bbac5b548a558504b413146fe5bff0b9275a2e7f4c831a148273ee173a'
+  }
+
+  /**
+   *  A proposal has been enacted. \[ref_index, result\]
+   */
+  get asV9090(): [number, Result<null, v9090.DispatchError>] {
+    assert(this.isV9090)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal has been enacted. \[ref_index, result\]
+   */
+  get isV9110(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Executed') === '4569400573983e7dffe031a303e5028518f139390f47223a097cb35de3005258'
+  }
+
+  /**
+   * A proposal has been enacted. \[ref_index, result\]
+   */
+  get asV9110(): [number, Result<null, v9110.DispatchError>] {
+    assert(this.isV9110)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal has been enacted.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Executed') === '1f0fb32f2f0aaba231b69023c5858e85b8bfd660b5ce8c47d1b99b39602e4963'
+  }
+
+  /**
+   * A proposal has been enacted.
+   */
+  get asV9140(): {refIndex: number, result: Result<null, v9140.DispatchError>} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal has been enacted.
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Executed') === '98c3caaef1b84143deea16c761096200c5e0e631c6a3776ed012edc9788cf6e2'
+  }
+
+  /**
+   * A proposal has been enacted.
+   */
+  get asV9170(): {refIndex: number, result: Result<null, v9170.DispatchError>} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal has been enacted.
+   */
+  get isV9190(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Executed') === '2abe2e7ca2af8b119eb4f3a1f669843943049e3f4e2f613fc3b077115902ca2b'
+  }
+
+  /**
+   * A proposal has been enacted.
+   */
+  get asV9190(): {refIndex: number, result: Result<null, v9190.DispatchError>} {
+    assert(this.isV9190)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9190
+  }
+
+  get asLatest(): {refIndex: number, result: Result<null, v9190.DispatchError>} {
+    deprecateLatest()
+    return this.asV9190
+  }
+}
+
 export class DemocracyNotPassedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'democracy.NotPassed')
@@ -564,6 +717,37 @@ export class DemocracyTabledEvent {
   get asLatest(): {proposalIndex: number, deposit: bigint, depositors: v9140.AccountId32[]} {
     deprecateLatest()
     return this.asV9140
+  }
+}
+
+export class DemocracyVotedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.Voted')
+  }
+
+  /**
+   * An account has voted in a referendum
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getEventHash('democracy.Voted') === '1f7c6893e642faadc0fb2681a07f3aa74579a935cb93e932ab8fd8a9e9fe739c'
+  }
+
+  /**
+   * An account has voted in a referendum
+   */
+  get asV9170(): {voter: v9170.AccountId32, refIndex: number, vote: v9170.AccountVote} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9170
+  }
+
+  get asLatest(): {voter: v9170.AccountId32, refIndex: number, vote: v9170.AccountVote} {
+    deprecateLatest()
+    return this.asV9170
   }
 }
 

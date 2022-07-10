@@ -13,7 +13,8 @@ export async function getOrCreateGovernanceAccount(
   const account = await getOrCreate(store, SubstrateGovernanceAccount, {
     ...params,
     totalElectionVotes: 0,
-    totalProposalVotes: 0,
+    totalProposalVotes: 0, // Deprecated
+    totalDemocracyReferendaVotes: 0,
     totalDemocracyProposalSeconds: 0,
     totalProposalSeconds: 0, // Deprecated
     totalDemocracyProposals: 0,
@@ -23,6 +24,7 @@ export async function getOrCreateGovernanceAccount(
     totalTreasurySpendProposals: 0,
     electionVotes: [],
     proposalVotes: [],
+    democracyReferendaVotes: [],
     democracyProposalSeconds: [],
   });
 
