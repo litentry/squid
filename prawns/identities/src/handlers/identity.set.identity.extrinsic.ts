@@ -4,7 +4,7 @@ import { SubstrateIdentity, SubstrateNetwork, SubstrateIdentityAction } from '..
 import { getIdentitySetIdentityCall } from './typeGetters/getIndentitySetIdentityCall';
 import { getManager } from 'typeorm';
 
-export default (network: SubstrateNetwork) =>
+const getHandler = (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
 
     const blockNumber = BigInt(ctx.block.height);
@@ -31,3 +31,10 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(identityModel);
   };
+
+export const getExtrinsicNames = () => ['identity.set_identity'];
+
+export default {
+  getExtrinsicNames,
+  getHandler
+};

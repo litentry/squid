@@ -1,28 +1,15 @@
-import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import { SubstrateNetwork } from '../model';
-import identitySetHandler from '../handlers/identity.set.identity.extrinsic';
-import identityClearHandler from '../handlers/identity.clear.identity.extrinsic';
-import identityKillHandler from '../handlers/identity.kill.identity.extrinsic';
+import ProcessorFactory from 'prawn-utils/lib/processorFactory';
+import { SubstrateNetwork } from 'prawn-utils/lib/types';
+import identityClearIdentityExtrinsic from '../handlers/identity.clear.identity.extrinsic';
+import identityKillIdentityExtrinsic from '../handlers/identity.kill.identity.extrinsic';
+import identitySetIdentityExtrinsic from '../handlers/identity.set.identity.extrinsic';
 
-const processor = new SubstrateProcessor('litentry_squid_identities_khala');
+const prawnProcessor = ProcessorFactory('identity', SubstrateNetwork.phala);
 
-processor.setTypesBundle('khala');
-processor.setBatchSize(500);
-processor.setIsolationLevel('REPEATABLE READ');
-processor.setDataSource({
-  archive: 'https://khala-squid-archive.litentry.io/graphql/v1/graphql',
-  chain: 'wss://khala.api.onfinality.io/public-ws',
-});
-processor.addExtrinsicHandler(
-  'identity.set_identity',
-  identitySetHandler(SubstrateNetwork.phala)
-);
-processor.addExtrinsicHandler(
-  'identity.clear_identity',
-  identityClearHandler(SubstrateNetwork.phala)
-);
-processor.addExtrinsicHandler(
-  'identity.kill_identity',
-  identityKillHandler(SubstrateNetwork.phala)
-);
-processor.run();
+prawnProcessor.addExtrinsicHandlers([
+  identityClearIdentityExtrinsic,
+  identityKillIdentityExtrinsic,
+  identitySetIdentityExtrinsic
+]);
+
+prawnProcessor.run();
