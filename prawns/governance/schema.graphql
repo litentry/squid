@@ -49,6 +49,16 @@ type SubstrateGovernanceAccount @entity {
   treasurySpendProposals: [SubstrateTreasuryProposal]! @derivedFrom(field: "account")
 }
 
+type SubstrateDemocracyPreimage @entity {
+  "network:proposalHash"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  rootAccount: String! @index
+  pallet: String!
+  method: String!
+}
+
 type SubstrateElectionVote @entity {
   "network:block:index"
   id: ID!
@@ -71,6 +81,8 @@ type SubstrateDemocracyProposal @entity {
   date: DateTime!
   proposalHash: String! @index
   proposalIndex: Int! @index
+  pallet: String
+  method: String
   title: String
   description: String
   depositAmount: BigInt!

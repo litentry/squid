@@ -44,6 +44,12 @@ export class SubstrateDemocracyProposal {
   proposalIndex!: number
 
   @Column_("text", {nullable: true})
+  pallet!: string | undefined | null
+
+  @Column_("text", {nullable: true})
+  method!: string | undefined | null
+
+  @Column_("text", {nullable: true})
   title!: string | undefined | null
 
   @Column_("text", {nullable: true})
