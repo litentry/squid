@@ -3,7 +3,9 @@ import { decodeAddress as da } from '@polkadot/util-crypto';
 import { SubstrateNetwork } from '../model';
 
 export const getRegistry = (network: SubstrateNetwork) => {
-  return ss58.registry.get(network);
+  return ss58.registry.get(
+    network === SubstrateNetwork.litmus ? SubstrateNetwork.litentry : network
+  );
 };
 
 export const decodeAddress = (address: string | Uint8Array): string => {
@@ -14,7 +16,7 @@ export const encodeAddress = (
   network: SubstrateNetwork,
   address: Uint8Array
 ) => {
-  const registry = ss58.registry.get(network);
+  const registry = getRegistry(network);
   const addressCodec = ss58.codec(registry.prefix);
 
   return addressCodec.encode(address);

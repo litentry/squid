@@ -10,7 +10,7 @@ import {
   BalancesSlashedEvent as PolkadotBalancesSlashedEvent,
   BalancesTransferEvent as PolkadotBalancesTransferEvent,
   BalancesUnreservedEvent as PolkadotBalancesUnreservedEvent,
-  BalancesWithdrawEvent as PolkadotBalancesWithdrawEvent,
+  BalancesWithdrawEvent as PolkadotBalancesWithdrawEvent
 } from '../../types/polkadot/events';
 import {
   BalancesBalanceSetEvent as KhalaBalancesBalanceSetEvent,
@@ -22,7 +22,7 @@ import {
   BalancesSlashedEvent as KhalaBalancesSlashedEvent,
   BalancesTransferEvent as KhalaBalancesTransferEvent,
   BalancesUnreservedEvent as KhalaBalancesUnreservedEvent,
-  BalancesWithdrawEvent as KhalaBalancesWithdrawEvent,
+  BalancesWithdrawEvent as KhalaBalancesWithdrawEvent
 } from '../../types/khala/events';
 import {
   BalancesBalanceSetEvent as KusamaBalancesBalanceSetEvent,
@@ -34,8 +34,34 @@ import {
   BalancesSlashedEvent as KusamaBalancesSlashedEvent,
   BalancesTransferEvent as KusamaBalancesTransferEvent,
   BalancesUnreservedEvent as KusamaBalancesUnreservedEvent,
-  BalancesWithdrawEvent as KusamaBalancesWithdrawEvent,
+  BalancesWithdrawEvent as KusamaBalancesWithdrawEvent
 } from '../../types/kusama/events';
+
+import {
+  BalancesBalanceSetEvent as LitmusBalancesBalanceSetEvent,
+  BalancesDepositEvent as LitmusBalancesDepositEvent,
+  BalancesDustLostEvent as LitmusBalancesDustLostEvent,
+  BalancesEndowedEvent as LitmusBalancesEndowedEvent,
+  BalancesReservedEvent as LitmusBalancesReservedEvent,
+  BalancesReserveRepatriatedEvent as LitmusBalancesReserveRepatriatedEvent,
+  BalancesSlashedEvent as LitmusBalancesSlashedEvent,
+  BalancesTransferEvent as LitmusBalancesTransferEvent,
+  BalancesUnreservedEvent as LitmusBalancesUnreservedEvent,
+  BalancesWithdrawEvent as LitmusBalancesWithdrawEvent
+} from '../../types/litmus/events';
+
+import {
+  BalancesBalanceSetEvent as LitentryBalancesBalanceSetEvent,
+  BalancesDepositEvent as LitentryBalancesDepositEvent,
+  BalancesDustLostEvent as LitentryBalancesDustLostEvent,
+  BalancesEndowedEvent as LitentryBalancesEndowedEvent,
+  BalancesReservedEvent as LitentryBalancesReservedEvent,
+  BalancesReserveRepatriatedEvent as LitentryBalancesReserveRepatriatedEvent,
+  BalancesSlashedEvent as LitentryBalancesSlashedEvent,
+  BalancesTransferEvent as LitentryBalancesTransferEvent,
+  BalancesUnreservedEvent as LitentryBalancesUnreservedEvent,
+  BalancesWithdrawEvent as LitentryBalancesWithdrawEvent
+} from '../../types/litentry/events';
 
 export function getBalancesBalanceSetEvent(
   ctx: EventHandlerContext,
@@ -83,6 +109,29 @@ export function getBalancesBalanceSetEvent(
       } else {
         return event.asLatest;
       }
+    }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesBalanceSetEvent(ctx);
+      if (event.isV9000) {
+        const [who, free, reserved] = event.asV9000;
+        return { who, free, reserved };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesBalanceSetEvent(ctx);
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+
+      return event.asLatest;
     }
 
     default: {
@@ -138,6 +187,30 @@ export function getBalancesDepositEvent(
       }
     }
 
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesDepositEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesDepositEvent(ctx);
+      if (event.isV9000) {
+        const [who, amount] = event.asV9000;
+        return { who, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+
     default: {
       throw new Error('getBalancesDepositEvent::network not supported');
     }
@@ -190,6 +263,30 @@ export function getBalancesDustLostEvent(
         return event.asLatest;
       }
     }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesDustLostEvent(ctx);
+      if (event.isV9000) {
+        const [account, amount] = event.asV9000;
+        return { account, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesDustLostEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
 
     default: {
       throw new Error('getBalancesDustLostEvent::network not supported');
@@ -244,6 +341,31 @@ export function getBalancesEndowedEvent(
       }
     }
 
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesEndowedEvent(ctx);
+      if (event.isV9000) {
+        const [account, freeBalance] = event.asV9000;
+        return { account, freeBalance };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesEndowedEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
+
     default: {
       throw new Error('getBalancesEndowedEvent::network not supported');
     }
@@ -296,6 +418,30 @@ export function getBalancesReservedEvent(
         return event.asLatest;
       }
     }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesReservedEvent(ctx);
+      if (event.isV9000) {
+        const [who, amount] = event.asV9000;
+        return { who, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesReservedEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
 
     default: {
       throw new Error('getBalancesReservedEvent::network not supported');
@@ -352,6 +498,31 @@ export function getBalancesReserveRepatriatedEvent(
       }
     }
 
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesReserveRepatriatedEvent(ctx);
+      if (event.isV9000) {
+        const [from, to, amount, destinationStatus] = event.asV9000;
+        return { from, to, amount, destinationStatus };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesReserveRepatriatedEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
+
     default: {
       throw new Error(
         'getBalancesReserveRepatriatedEvent::network not supported'
@@ -402,6 +573,29 @@ export function getBalancesSlashedEvent(
       } else {
         return event.asLatest;
       }
+    }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesSlashedEvent(ctx);
+      if (event.isV9000) {
+        const [who, amount] = event.asV9000;
+        return { who, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesSlashedEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
     }
 
     default: {
@@ -461,6 +655,29 @@ export function getBalancesTransferEvent(
       }
     }
 
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesTransferEvent(ctx);
+      if (event.isV9000) {
+        const [from, to, amount] = event.asV9000;
+        return { from, to, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesTransferEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
     default: {
       throw new Error('getBalancesTransferEvent::network not supported');
     }
@@ -514,6 +731,29 @@ export function getBalancesUnreservedEvent(
       }
     }
 
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesUnreservedEvent(ctx);
+      if (event.isV9000) {
+        const [who, amount] = event.asV9000;
+        return { who, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesUnreservedEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
+    }
+
     default: {
       throw new Error('getBalancesUnreservedEvent::network not supported');
     }
@@ -562,6 +802,30 @@ export function getBalancesWithdrawEvent(
       } else {
         return event.asLatest;
       }
+    }
+
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryBalancesWithdrawEvent(ctx);
+      if (event.isV9000) {
+        const [who, amount] = event.asV9000;
+        return { who, amount };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusBalancesWithdrawEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+      return event.asLatest;
     }
 
     default: {

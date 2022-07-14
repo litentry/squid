@@ -7,38 +7,38 @@ import balanceSetHandler from '../handlers/balances.balanceset.event';
 import { SubstrateNetwork } from '../model';
 import balanceDepositHandler from "../handlers/balances.deposit.event";
 
-const processor = new SubstrateProcessor('litentry_squid_balances_khala');
+const processor = new SubstrateProcessor('litentry_squid_balances_litmus');
 
-processor.setTypesBundle('khala');
+// processor.setTypesBundle('../typegen/litmusTypesBundle.json');
 processor.setBatchSize(500);
 processor.setIsolationLevel('REPEATABLE READ');
 processor.setDataSource({
-  archive: 'https://khala-squid-archive.litentry.io/graphql/v1/graphql',
-  chain: 'wss://khala.api.onfinality.io/public-ws',
+  archive: 'https://litmus-squid-archive.litentry.io/graphql/v1/graphql',
+  chain: 'wss://rpc.litmus-parachain.litentry.io',
 });
 processor.addEventHandler(
   'balances.Transfer',
-  balanceTransferHandler(SubstrateNetwork.phala, 0)
+  balanceTransferHandler(SubstrateNetwork.litmus, 0)
 );
 processor.addEventHandler(
   'treasury.Deposit',
-  treasuryDepositHandler(SubstrateNetwork.phala, 0)
+  treasuryDepositHandler(SubstrateNetwork.litmus, 0)
 );
 processor.addEventHandler(
   'treasury.Awarded',
-  treasuryAwardedHandler(SubstrateNetwork.phala, 0)
+  treasuryAwardedHandler(SubstrateNetwork.litmus, 0)
 );
 processor.addEventHandler(
   'balances.BalanceSet',
-  balanceSetHandler(SubstrateNetwork.phala, 0)
+  balanceSetHandler(SubstrateNetwork.litmus, 0)
 );
 processor.addEventHandler(
   'balances.Endowed',
-  balanceEndowedHandler(SubstrateNetwork.phala, 0)
+  balanceEndowedHandler(SubstrateNetwork.litmus, 0)
 );
 processor.addEventHandler(
   'balances.Deposit',
-  balanceDepositHandler(SubstrateNetwork.phala, 0)
+  balanceDepositHandler(SubstrateNetwork.litmus, 0)
 );
 
 processor.run();

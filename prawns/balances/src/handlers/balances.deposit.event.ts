@@ -3,7 +3,6 @@ import {decodeAddress, getRegistry, getOrCreate, encodeAddress} from '../utils';
 import {
   SubstrateBalanceAccount, SubstrateBalanceDeposit,
   SubstrateNetwork,
-  SubstrateTreasuryDeposit,
 } from '../model';
 import { getBalancesDepositEvent } from './typeGetters/getBalancesEvents';
 
@@ -39,7 +38,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     );
     balanceAccountDepositor.balance -= amount;
 
-    const balanceAccountDepositee = await getOrCreate(
+    const balanceAccountDepositee = depositor === toAccount ? balanceAccountDepositor : await getOrCreate(
       ctx.store,
       SubstrateBalanceAccount,
       {
@@ -55,7 +54,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
     );
     balanceAccountDepositee.balance += amount;
 
-    await ctx.store.save([balanceAccountDepositor, balanceAccountDepositee]);
+    await ctx.store.save(depositor === toAccount ? [balanceAccountDepositor] : [balanceAccountDepositor, balanceAccountDepositee]);
 
     const depositModel = new SubstrateBalanceDeposit({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,

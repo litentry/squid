@@ -4,6 +4,8 @@ export enum ConfigChainsEnum {
   'kusama' = 'kusama',
   'moonbeam' = 'moonbeam',
   'clover' = 'clover',
+  'litentry' = 'litentry',
+  'litmus' = 'litmus'
 }
 
 export interface ConfigInterface {
@@ -48,6 +50,14 @@ export default {
     clover: {
       chain: 'wss://api-ivy-elastic.clover.finance',
       archive: 'https://clover-squid-archive.litentry.io/graphql/v1/graphql',
+    },
+    litentry: {
+      chain: 'wss://rpc.litentry-parachain.litentry.io',
+      archive: 'https://litentry-squid-archive.litentry.io/graphql/v1/graphql',
+    },
+    litmus: {
+      chain: 'wss://rpc.litmus-parachain.litentry.io',
+      archive: 'https://litmus-squid-archive.litentry.io/graphql/v1/graphql',
     },
   },
 } as ConfigInterface;
