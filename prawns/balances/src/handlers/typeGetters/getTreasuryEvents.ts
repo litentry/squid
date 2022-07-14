@@ -1,17 +1,26 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import {
-  TreasuryDepositEvent as PolkadotTreasuryDepositEvent,
   TreasuryAwardedEvent as PolkadotTreasuryAwardedEvent,
+  TreasuryDepositEvent as PolkadotTreasuryDepositEvent
 } from '../../types/polkadot/events';
 import {
-  TreasuryDepositEvent as KhalaTreasuryDepositEvent,
   TreasuryAwardedEvent as KhalaTreasuryAwardedEvent,
+  TreasuryDepositEvent as KhalaTreasuryDepositEvent
 } from '../../types/khala/events';
 import {
-  TreasuryDepositEvent as KusamaTreasuryDepositEvent,
-  TreasuryAwardedEvent as KudamaTreasuryAwardedEvent,
+  TreasuryAwardedEvent as KusamaTreasuryAwardedEvent,
+  TreasuryDepositEvent as KusamaTreasuryDepositEvent
 } from '../../types/kusama/events';
+import {
+  TreasuryAwardedEvent as LitentryTreasuryAwardedEvent,
+  TreasuryDepositEvent as LitentryTreasuryDepositEvent
+} from '../../types/litentry/events';
+
+import {
+  TreasuryAwardedEvent as LitmusTreasuryAwardedEvent,
+  TreasuryDepositEvent as LitmusTreasuryDepositEvent
+} from '../../types/litmus/events';
 
 export function getTreasuryDepositEvent(
   ctx: EventHandlerContext,
@@ -48,6 +57,34 @@ export function getTreasuryDepositEvent(
       } else {
         return event.asV9160.value;
       }
+    }
+    
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusTreasuryDepositEvent(ctx);
+
+      if (event.isV9020) {
+        return event.asV9020;
+      }
+
+      if (event.isV9031) {
+        return event.asV9031.value;
+      }
+
+      return event.asLatest.value;
+    }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryTreasuryDepositEvent(ctx);
+
+      if (event.isV9000) {
+        return event.asV9000;
+      }
+
+      if (event.isV9071) {
+        return event.asV9071.value;
+      }
+
+      return event.asLatest.value;
     }
 
     default: {
@@ -98,7 +135,7 @@ export function getTreasuryAwardedEvent(
     }
 
     case SubstrateNetwork.kusama: {
-      const event = new KudamaTreasuryAwardedEvent(ctx);
+      const event = new KusamaTreasuryAwardedEvent(ctx);
 
       if (event.isV1020) {
         const [, award, account] = event.asV1020;
@@ -113,6 +150,42 @@ export function getTreasuryAwardedEvent(
       }
     }
 
+
+    case SubstrateNetwork.litmus: {
+      const event = new LitmusTreasuryAwardedEvent(ctx);
+
+      if (event.isV9020) {
+        const [, award, account] = event.asV9020;
+        return {
+          award,
+          account
+        };
+      }
+
+      if (event.isV9031) {
+        return event.asV9031;
+      }
+
+      return event.asLatest;
+    }
+
+    case SubstrateNetwork.litentry: {
+      const event = new LitentryTreasuryAwardedEvent(ctx);
+
+      if (event.isV9000) {
+        const [, award, account] = event.asV9000;
+        return {
+          award,
+          account
+        };
+      }
+
+      if (event.isV9071) {
+        return event.asV9071;
+      }
+
+      return event.asLatest;
+    }
     default: {
       throw new Error('getTreasuryAwardedEvent::network not supported');
     }

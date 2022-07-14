@@ -3,7 +3,6 @@ import { decodeAddress, getRegistry, getOrCreate, encodeAddress } from '../utils
 import {
   SubstrateBalanceAccount, SubstrateBalanceSet,
   SubstrateNetwork,
-  SubstrateTreasuryAwarded,
 } from '../model';
 import { getBalancesBalanceSetEvent } from './typeGetters/getBalancesEvents';
 
