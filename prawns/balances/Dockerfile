@@ -42,6 +42,14 @@ FROM squid AS polkadotProcessor
 EXPOSE 3000
 CMD ["yarn", "process:polkadot"]
 
+FROM squid AS litmusProcessor
+EXPOSE 3000
+CMD ["yarn", "process:litmus"]
+
+FROM squid AS litentryProcessor
+EXPOSE 3000
+CMD ["yarn", "process:litentry"]
+
 FROM squid AS queryNode
 EXPOSE 4001
 CMD ["yarn", "query-node"]
