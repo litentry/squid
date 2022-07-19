@@ -1,6 +1,10 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateDemocracyReferendaVote, SubstrateNetwork, SubstrateProposalVote } from '../model';
+import {
+  SubstrateDemocracyReferendaVote,
+  SubstrateNetwork,
+  SubstrateProposalVote,
+} from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import {
   AccountVote,
@@ -22,10 +26,16 @@ export default (network: SubstrateNetwork) =>
       network,
     });
     account.totalProposalVotes = account.totalProposalVotes + 1;
-    account.totalDemocracyReferendaVotes = account.totalDemocracyReferendaVotes + 1;
+    account.totalDemocracyReferendaVotes =
+      account.totalDemocracyReferendaVotes + 1;
     await ctx.store.save(account);
 
-    const referenda = await substrateDemocracyReferendaRepository.getByReferendaIndex(ctx, network, call.refIndex);
+    const referenda =
+      await substrateDemocracyReferendaRepository.getByReferendaIndex(
+        ctx,
+        network,
+        call.refIndex
+      );
 
     if (!referenda) {
       throw new Error(`Referenda not found`);
@@ -45,12 +55,13 @@ export default (network: SubstrateNetwork) =>
 
     const voteBalance = {
       aye: BigInt(0),
-      nay: BigInt(0)
+      nay: BigInt(0),
     };
 
     if (call.vote.__kind === 'Standard') {
       const multiple = (call.vote.vote % 128) * 10 || 1;
-      voteBalance[call.vote.vote >= 128 ? 'aye' : 'nay'] = call.vote.balance / 10n * BigInt(multiple);
+      voteBalance[call.vote.vote >= 128 ? 'aye' : 'nay'] =
+        (call.vote.balance / 10n) * BigInt(multiple);
     } else {
       voteBalance.aye = call.vote.aye;
       voteBalance.nay = call.vote.nay;
@@ -64,11 +75,17 @@ export default (network: SubstrateNetwork) =>
       blockNumber,
       date,
       democracyReferenda: referenda,
-      ...voteBalance
+      ...voteBalance,
     });
 
     // If the same user voted previously then their previous vote is discounted
-    const lastVote = await substrateDemocracyReferendaVoteRepository.getLastVoteByReferendaAndAccount(ctx, network, referenda, account);
+    const lastVote =
+      await substrateDemocracyReferendaVoteRepository.getLastVoteByReferendaAndAccount(
+        ctx,
+        network,
+        referenda,
+        account
+      );
 
     if (lastVote) {
       referenda.aye -= lastVote.aye;
@@ -78,7 +95,11 @@ export default (network: SubstrateNetwork) =>
     referenda.aye += voteBalance.aye;
     referenda.nay += voteBalance.nay;
 
-    await Promise.all([ctx.store.save(deprecatedVote), ctx.store.save(vote), ctx.store.save(referenda)])
+    await Promise.all([
+      ctx.store.save(deprecatedVote),
+      ctx.store.save(vote),
+      ctx.store.save(referenda),
+    ]);
   };
 
 function cleanBigInts(vote: number | AccountVote) {

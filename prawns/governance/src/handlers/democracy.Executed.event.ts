@@ -3,7 +3,6 @@ import { SubstrateDemocracyReferendaStatus, SubstrateNetwork } from '../model';
 import { getDemocracyExecutedEvent } from './typeGetters/getDemocracyExecutedEvent';
 import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
 
-
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     if (!ctx.event) {
@@ -13,7 +12,12 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const event = getDemocracyExecutedEvent(ctx, network);
 
-    const referenda = await substrateDemocracyReferendaRepository.getByReferendaIndex(ctx, network, event.refIndex);
+    const referenda =
+      await substrateDemocracyReferendaRepository.getByReferendaIndex(
+        ctx,
+        network,
+        event.refIndex
+      );
 
     if (!referenda) {
       throw new Error(`Referenda not found`);
@@ -24,4 +28,3 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(referenda);
   };
-

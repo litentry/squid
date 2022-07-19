@@ -1,9 +1,9 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import {SubstrateCouncilProposal, SubstrateNetwork} from '../model';
-import substrateCouncilProposalRepository from "../repositories/substrateCouncilProposalRepository";
-import {getCouncilExecutedEvent} from "./typeGetters/getCouncilExecutedEvent";
-import {decodeAddress, getOrCreateGovernanceAccount} from "../utils";
-import {getCouncilProposalOfStorage} from "./typeGetters/getCouncilProposalOfStorage";
+import { SubstrateCouncilProposal, SubstrateNetwork } from '../model';
+import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
+import { getCouncilExecutedEvent } from './typeGetters/getCouncilExecutedEvent';
+import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
+import { getCouncilProposalOfStorage } from './typeGetters/getCouncilProposalOfStorage';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
@@ -17,7 +17,11 @@ export default (network: SubstrateNetwork) =>
     const blockNumber = BigInt(ctx.block.height);
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
 
-    const storage = await getCouncilProposalOfStorage(ctx, network, event.proposalHash);
+    const storage = await getCouncilProposalOfStorage(
+      ctx,
+      network,
+      event.proposalHash
+    );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
@@ -27,15 +31,23 @@ export default (network: SubstrateNetwork) =>
     account.totalCouncilProposals = account.totalCouncilProposals + 1;
     await ctx.store.save(account);
 
-    let councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, network, event.proposalHash);
+    let councilProposal =
+      await substrateCouncilProposalRepository.getByProposalHash(
+        ctx,
+        network,
+        event.proposalHash
+      );
 
     if (!councilProposal) {
-
-      if (ctx.event.extrinsic.name !== "council.propose") {
-        throw new Error("Council proposal not found and the extrinsic is not a proposal");
+      if (ctx.event.extrinsic.name !== 'council.propose') {
+        throw new Error(
+          'Council proposal not found and the extrinsic is not a proposal'
+        );
       }
 
-      const proposalArgs = ctx.event.extrinsic.args as unknown as [{value: number}];
+      const proposalArgs = ctx.event.extrinsic.args as unknown as [
+        { value: number }
+      ];
 
       councilProposal = new SubstrateCouncilProposal({
         id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
@@ -52,11 +64,10 @@ export default (network: SubstrateNetwork) =>
         ayeCount: 0,
         nayCount: 0,
         pallet: storage?.__kind,
-        method: storage?.value?.__kind
+        method: storage?.value?.__kind,
       });
     }
     councilProposal.status = event.result ? 'executed' : 'execution_failed';
     councilProposal.lastUpdate = date;
     await ctx.store.save(councilProposal);
   };
-

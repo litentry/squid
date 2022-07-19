@@ -1,4 +1,7 @@
-import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import {
+  EventHandlerContext,
+  ExtrinsicHandlerContext,
+} from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
 import { SubstrateBountyProposal, SubstrateNetwork } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
@@ -28,11 +31,16 @@ export default (network: SubstrateNetwork) =>
 
     // bounty info
     try {
-      const call = getBountiesProposedCall(<ExtrinsicHandlerContext>ctx, network);
+      const call = getBountiesProposedCall(
+        <ExtrinsicHandlerContext>ctx,
+        network
+      );
       description = Buffer.from(call.description).toString();
       value = call.value;
     } catch (e) {
-      console.warn(`bounties.bountyProposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`);
+      console.warn(
+        `bounties.bountyProposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`
+      );
     }
 
     const proposal = new SubstrateBountyProposal({
@@ -49,4 +57,3 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(proposal);
   };
-

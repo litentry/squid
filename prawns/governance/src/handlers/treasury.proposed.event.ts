@@ -1,9 +1,12 @@
-import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import {
+  EventHandlerContext,
+  ExtrinsicHandlerContext,
+} from '@subsquid/substrate-processor';
 import { decodeAddress, encodeAddress } from '../utils';
 import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
-import { getTreasuryProposedEvent } from "./typeGetters/getTreasuryProposedEvent";
-import { getTreasuryProposedSpendCall } from "./typeGetters/getTreasuryProposeSpendCall";
+import { getTreasuryProposedEvent } from './typeGetters/getTreasuryProposedEvent';
+import { getTreasuryProposedSpendCall } from './typeGetters/getTreasuryProposeSpendCall';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
@@ -30,7 +33,10 @@ export default (network: SubstrateNetwork) =>
 
     // beneficiary and value
     try {
-      const call = getTreasuryProposedSpendCall(<ExtrinsicHandlerContext>ctx, network);
+      const call = getTreasuryProposedSpendCall(
+        <ExtrinsicHandlerContext>ctx,
+        network
+      );
       value = call.value;
       beneficiary = decodeAddress(call.beneficiary);
       beneficiaryAccount = await getOrCreateGovernanceAccount(ctx.store, {
@@ -40,7 +46,9 @@ export default (network: SubstrateNetwork) =>
       });
       await ctx.store.save(beneficiaryAccount);
     } catch (e) {
-      console.warn(`treasury.proposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`);
+      console.warn(
+        `treasury.proposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`
+      );
     }
 
     const proposal = new SubstrateTreasuryProposal({
@@ -53,7 +61,7 @@ export default (network: SubstrateNetwork) =>
       proposalIndex: event.proposalIndex,
       beneficiary,
       beneficiaryAccount,
-      value
+      value,
     });
 
     await ctx.store.save(proposal);

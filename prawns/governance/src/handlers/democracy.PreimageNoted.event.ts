@@ -3,7 +3,7 @@ import {
   SubstrateDemocracyPreimage,
   SubstrateDemocracyReferenda,
   SubstrateDemocracyReferendaStatus,
-  SubstrateNetwork
+  SubstrateNetwork,
 } from '../model';
 
 import { getDemocracyPreimageNotedEvent } from './typeGetters/getDemocracyPreimageNotedEvent';
@@ -28,14 +28,21 @@ export default (network: SubstrateNetwork) =>
     await ctx.store.save(account);
 
     const proposalHash = '0x' + Buffer.from(event.proposalHash).toString('hex');
-    const storagePreimage = await getDemocracyPreimagesStorage(ctx, network, event.proposalHash);
+    const storagePreimage = await getDemocracyPreimagesStorage(
+      ctx,
+      network,
+      event.proposalHash
+    );
 
     if (!storagePreimage) {
       console.error('Unable to find preimage');
       return;
     }
 
-    const decodedPreimage = (ctx._chain as any).scaleCodec.decodeBinary(ctx._chain.description.call, storagePreimage.data);
+    const decodedPreimage = (ctx._chain as any).scaleCodec.decodeBinary(
+      ctx._chain.description.call,
+      storagePreimage.data
+    );
     const section = decodedPreimage.__kind;
     const method = decodedPreimage.value.__kind;
 
@@ -47,9 +54,8 @@ export default (network: SubstrateNetwork) =>
       account,
       section,
       method,
-      balance: event.deposit
+      balance: event.deposit,
     });
 
     await ctx.store.save(preimage);
   };
-

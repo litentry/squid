@@ -1,6 +1,9 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateTechnicalCommitteeProposal, SubstrateNetwork } from '../model';
+import {
+  SubstrateTechnicalCommitteeProposal,
+  SubstrateNetwork,
+} from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getTechnicalCommitteeProposedEvent } from './typeGetters/getTechnicalCommitteeProposedEvent';
 
@@ -19,7 +22,8 @@ export default (network: SubstrateNetwork) =>
       rootAccount,
       network,
     });
-    account.totalTechnicalCommitteeProposals = account.totalTechnicalCommitteeProposals + 1;
+    account.totalTechnicalCommitteeProposals =
+      account.totalTechnicalCommitteeProposals + 1;
     await ctx.store.save(account);
 
     const proposal = new SubstrateTechnicalCommitteeProposal({
@@ -31,9 +35,8 @@ export default (network: SubstrateNetwork) =>
       date,
       proposalIndex: event.proposalIndex,
       proposalHash: '0x' + Buffer.from(event.proposalHash).toString('hex'),
-      threshold: event.threshold
+      threshold: event.threshold,
     });
 
     await ctx.store.save(proposal);
   };
-

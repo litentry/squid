@@ -17,11 +17,17 @@ export default (network: SubstrateNetwork) =>
       rootAccount,
       network,
     });
-    account.totalDemocracyProposalSeconds = account.totalDemocracyProposalSeconds + 1;
+    account.totalDemocracyProposalSeconds =
+      account.totalDemocracyProposalSeconds + 1;
     account.totalProposalSeconds = account.totalDemocracyProposalSeconds; // Deprecated
     await ctx.store.save(account);
 
-    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, network, call.proposal);
+    const proposal =
+      await substrateDemocracyProposalRepository.getByProposalIndex(
+        ctx,
+        network,
+        call.proposal
+      );
 
     if (!proposal) {
       throw new Error(`Proposal not found`);
