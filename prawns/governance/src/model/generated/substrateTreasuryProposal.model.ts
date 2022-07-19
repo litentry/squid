@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
+import {SubstrateTreasuryProposalStatus} from "./_substrateTreasuryProposalStatus"
 
 @Entity_()
 export class SubstrateTreasuryProposal {
@@ -32,9 +33,21 @@ export class SubstrateTreasuryProposal {
   @Column_("timestamp with time zone", {nullable: false})
   date!: Date
 
+  @Column_("text", {nullable: true})
+  title!: string | undefined | null
+
+  @Column_("text", {nullable: true})
+  description!: string | undefined | null
+
   @Index_()
   @Column_("int4", {nullable: false})
   proposalIndex!: number
+
+  @Column_("varchar", {length: 8, nullable: true})
+  status!: SubstrateTreasuryProposalStatus | undefined | null
+
+  @Column_("timestamp with time zone", {nullable: true})
+  councilMotionDate!: Date | undefined | null
 
   @Column_("text", {nullable: true})
   beneficiary!: string | undefined | null

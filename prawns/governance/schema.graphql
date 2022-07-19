@@ -11,6 +11,13 @@ enum SubstrateDemocracyProposalStatus {
     tabled
 }
 
+enum SubstrateTreasuryProposalStatus {
+    proposed,
+    approved,
+    awarded,
+    rejected
+}
+
 enum SubstrateDemocracyReferendaStatus {
   started,
   passed,
@@ -198,14 +205,18 @@ type SubstrateBountyProposal @entity {
 }
 
 type SubstrateTreasuryProposal @entity {
-  "network:block:index"
+  "network:proposalIndex"
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
   rootAccount: String! @index
   blockNumber: BigInt!
   date: DateTime!
+  title: String
+  description: String
   proposalIndex: Int! @index
+  status: SubstrateTreasuryProposalStatus
+  councilMotionDate: DateTime
   beneficiary: String
   beneficiaryAccount: SubstrateGovernanceAccount
   value: BigInt!

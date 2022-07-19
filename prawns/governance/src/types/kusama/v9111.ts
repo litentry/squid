@@ -40,49 +40,6 @@ export interface DispatchError_Arithmetic {
   value: ArithmeticError
 }
 
-export type AccountVote = AccountVote_Standard | AccountVote_Split
-
-export interface AccountVote_Standard {
-  __kind: 'Standard'
-  vote: number
-  balance: bigint
-}
-
-export interface AccountVote_Split {
-  __kind: 'Split'
-  aye: bigint
-  nay: bigint
-}
-
-export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
-
-export interface MultiAddress_Id {
-  __kind: 'Id'
-  value: AccountId32
-}
-
-export interface MultiAddress_Index {
-  __kind: 'Index'
-  value: null
-}
-
-export interface MultiAddress_Raw {
-  __kind: 'Raw'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address32 {
-  __kind: 'Address32'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address20 {
-  __kind: 'Address20'
-  value: Uint8Array
-}
-
-export type AccountId32 = Uint8Array
-
 export type Call = Call_System | Call_Babe | Call_Timestamp | Call_Indices | Call_Balances | Call_Authorship | Call_Staking | Call_Session | Call_Grandpa | Call_ImOnline | Call_Democracy | Call_Council | Call_TechnicalCommittee | Call_PhragmenElection | Call_TechnicalMembership | Call_Treasury | Call_Claims | Call_Utility | Call_Identity | Call_Society | Call_Recovery | Call_Vesting | Call_Scheduler | Call_Proxy | Call_Multisig | Call_Bounties | Call_Tips | Call_ElectionProviderMultiPhase | Call_Gilt | Call_BagsList | Call_Configuration | Call_ParasShared | Call_ParaInclusion | Call_ParaInherent | Call_Paras | Call_Initializer | Call_Dmp | Call_Ump | Call_Hrmp | Call_Registrar | Call_Slots | Call_Auctions | Call_Crowdloan | Call_XcmPallet
 
 export interface Call_System {
@@ -304,6 +261,49 @@ export interface Call_XcmPallet {
   __kind: 'XcmPallet'
   value: XcmPalletCall
 }
+
+export type AccountVote = AccountVote_Standard | AccountVote_Split
+
+export interface AccountVote_Standard {
+  __kind: 'Standard'
+  vote: number
+  balance: bigint
+}
+
+export interface AccountVote_Split {
+  __kind: 'Split'
+  aye: bigint
+  nay: bigint
+}
+
+export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
+
+export interface MultiAddress_Id {
+  __kind: 'Id'
+  value: AccountId32
+}
+
+export interface MultiAddress_Index {
+  __kind: 'Index'
+  value: null
+}
+
+export interface MultiAddress_Raw {
+  __kind: 'Raw'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address32 {
+  __kind: 'Address32'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address20 {
+  __kind: 'Address20'
+  value: Uint8Array
+}
+
+export type AccountId32 = Uint8Array
 
 export type PreimageStatus = PreimageStatus_Missing | PreimageStatus_Available
 

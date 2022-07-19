@@ -7,3 +7,8 @@ export interface SubsquareDemocracyReferenda {
   title: string,
   content: string
 }
+
+export interface SubsquareTreasuryProposal {
+  title: string,
+  content: string
+}

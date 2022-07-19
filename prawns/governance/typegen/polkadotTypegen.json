@@ -20,6 +20,8 @@
     "democracy.Voted",
     "bounties.BountyProposed",
     "treasury.Proposed",
+    "treasury.Awarded",
+    "treasury.Rejected",
     "democracy.PreimageNoted"
   ],
   "calls": [
@@ -29,6 +31,7 @@
     "phragmenElection.vote",
     "democracy.cancel_proposal",
     "democracy.clear_public_proposals",
+    "council.propose",
     "bounties.propose_bounty",
     "treasury.propose_spend"
   ],

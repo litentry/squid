@@ -1,5 +1,5 @@
-module.exports = class Data1658231426572 {
-  name = 'Data1658231426572'
+module.exports = class Data1658262585618 {
+  name = 'Data1658262585618'
 
   async up(db) {
     await db.query(`CREATE TABLE "substrate_council_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "last_update" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_id" integer, "proposal_index" integer, "proposal_hash" text NOT NULL, "pallet" text, "method" text, "status" text NOT NULL, "aye_count" integer NOT NULL, "nay_count" integer NOT NULL, "threshold" integer NOT NULL, "account_id" character varying NOT NULL, CONSTRAINT "PK_de7e32a4bd91872e2de07fc2626" PRIMARY KEY ("id"))`)
@@ -48,7 +48,7 @@ module.exports = class Data1658231426572 {
     await db.query(`CREATE INDEX "IDX_e543be8d9d4362e014e0fe6d1e" ON "substrate_bounty_proposal" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_57fed3496c1521a349189c9f3a" ON "substrate_bounty_proposal" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_0d20305509e3fd71d70a48e9ad" ON "substrate_bounty_proposal" ("proposal_index") `)
-    await db.query(`CREATE TABLE "substrate_treasury_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "proposal_index" integer NOT NULL, "beneficiary" text, "value" numeric NOT NULL, "account_id" character varying NOT NULL, "beneficiary_account_id" character varying, CONSTRAINT "PK_663a95e6e70180cc40ceb859711" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "substrate_treasury_proposal" ("id" character varying NOT NULL, "network" character varying(8) NOT NULL, "root_account" text NOT NULL, "block_number" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "title" text, "description" text, "proposal_index" integer NOT NULL, "status" character varying(8), "council_motion_date" TIMESTAMP WITH TIME ZONE, "beneficiary" text, "value" numeric NOT NULL, "account_id" character varying NOT NULL, "beneficiary_account_id" character varying, CONSTRAINT "PK_663a95e6e70180cc40ceb859711" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_b0f3c2115eea9355b7cae7ea15" ON "substrate_treasury_proposal" ("account_id") `)
     await db.query(`CREATE INDEX "IDX_c8bcd2435106486b0f92983f66" ON "substrate_treasury_proposal" ("root_account") `)
     await db.query(`CREATE INDEX "IDX_ed3e552ca9f85d13c65e29c26b" ON "substrate_treasury_proposal" ("proposal_index") `)

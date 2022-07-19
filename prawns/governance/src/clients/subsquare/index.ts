@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import { SubstrateNetwork } from '../../model';
-import { SubsquareDemocracyProposal, SubsquareDemocracyReferenda } from './types';
+import { SubsquareDemocracyProposal, SubsquareDemocracyReferenda, SubsquareTreasuryProposal } from './types';
 
 const getBaseUrl = (network: SubstrateNetwork) => {
   const subdomain = network === SubstrateNetwork.phala ? 'khala' : network;
@@ -17,8 +17,14 @@ const getDemocracyReferenda = async (network: SubstrateNetwork, referendaIndex: 
   return await response.json() as unknown as SubsquareDemocracyReferenda;
 }
 
+const getTreasuryProposal = async (network: SubstrateNetwork, proposalIndex: number): Promise<SubsquareDemocracyReferenda> => {
+  const response = await fetch(`https://${network}.subsquare.io/api/treasury/proposals/${proposalIndex}`);
+  return await response.json() as unknown as SubsquareTreasuryProposal;
+}
+
 export default {
   getDemocracyProposal,
-  getDemocracyReferenda
+  getDemocracyReferenda,
+  getTreasuryProposal
 }
 
