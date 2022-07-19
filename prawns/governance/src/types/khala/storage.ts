@@ -1,5 +1,6 @@
 import assert from 'assert'
 import {StorageContext, Result} from './support'
+import * as v1 from './v1'
 import * as v1090 from './v1090'
 import * as v1091 from './v1091'
 import * as v1100 from './v1100'
@@ -179,5 +180,50 @@ export class CouncilProposalOfStorage {
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('Council', 'ProposalOf') != null
+  }
+}
+
+export class DemocracyPreimagesStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  get isV1() {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') === '0e0e3c0f32264d14a97bb80cf16ecda808e2404f87100dc025cf84cfcc821fef'
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  async getAsV1(key: Uint8Array): Promise<v1.PreimageStatus | undefined> {
+    assert(this.isV1)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Democracy', 'Preimages', key)
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  get isV1090() {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') === '2762abd948712e87f9324ca0c5ad1523f92ac946c587c97414ce71252440341f'
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  async getAsV1090(key: v1090.H256): Promise<v1090.PreimageStatus | undefined> {
+    assert(this.isV1090)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Democracy', 'Preimages', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') != null
   }
 }

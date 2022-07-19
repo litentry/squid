@@ -590,6 +590,52 @@ export class DemocracyPassedEvent {
   }
 }
 
+export class DemocracyPreimageNotedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'democracy.PreimageNoted')
+  }
+
+  /**
+   *  A proposal's preimage was noted, and the deposit taken. \[proposal_hash, who, deposit\]
+   */
+  get isV1(): boolean {
+    return this.ctx._chain.getEventHash('democracy.PreimageNoted') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
+  }
+
+  /**
+   *  A proposal's preimage was noted, and the deposit taken. \[proposal_hash, who, deposit\]
+   */
+  get asV1(): [Uint8Array, Uint8Array, bigint] {
+    assert(this.isV1)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal's preimage was noted, and the deposit taken.
+   */
+  get isV1090(): boolean {
+    return this.ctx._chain.getEventHash('democracy.PreimageNoted') === 'd070eaca902e57d242e4f2fcf32e1044fe909d807ce0a0303e2bb45499fc9748'
+  }
+
+  /**
+   * A proposal's preimage was noted, and the deposit taken.
+   */
+  get asV1090(): {proposalHash: v1090.H256, who: v1090.AccountId32, deposit: bigint} {
+    assert(this.isV1090)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1090
+  }
+
+  get asLatest(): {proposalHash: v1090.H256, who: v1090.AccountId32, deposit: bigint} {
+    deprecateLatest()
+    return this.asV1090
+  }
+}
+
 export class DemocracyProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'democracy.Proposed')

@@ -7,6 +7,12 @@ const getByProposalIndex = async (ctx: EventHandlerContext, network: SubstrateNe
   }) as unknown as (SubstrateDemocracyProposal | undefined);
 }
 
+const getByProposalHash = async (ctx: EventHandlerContext, network: SubstrateNetwork, proposalHash: string) => {
+  return ctx.store.get(SubstrateDemocracyProposal, {
+    where: { id: `${network}:${proposalHash}` },
+  }) as unknown as (SubstrateDemocracyProposal | undefined);
+}
+
 const getByTabledAtBlock = async (ctx: EventHandlerContext, network: SubstrateNetwork, tabledAtBlock: bigint) => {
   return ctx.store.get(SubstrateDemocracyProposal, {
     where: { tabledAtBlock, network },
@@ -21,6 +27,7 @@ const findByStatus = async (ctx: EventHandlerContext, network: SubstrateNetwork,
 
 export default {
   getByProposalIndex,
+  getByProposalHash,
   getByTabledAtBlock,
   findByStatus
 }

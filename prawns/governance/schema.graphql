@@ -77,6 +77,7 @@ type SubstrateDemocracyProposal @entity {
   status: SubstrateDemocracyProposalStatus!
   updatedAt: DateTime!
   tabledAtBlock: BigInt @index
+  preimage: SubstrateDemocracyPreimage
   democracyReferenda: SubstrateDemocracyReferenda
   seconds: [SubstrateDemocracyProposalSecond]! @derivedFrom(field: "proposal")
 }
@@ -208,4 +209,16 @@ type SubstrateTreasuryProposal @entity {
   beneficiary: String
   beneficiaryAccount: SubstrateGovernanceAccount
   value: BigInt!
+}
+
+type SubstrateDemocracyPreimage @entity {
+  "network:preimageHash"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateGovernanceAccount!
+  blockNumber: BigInt!
+  section: String!
+  method: String!
+  date: DateTime!
+  balance: BigInt!
 }

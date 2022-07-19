@@ -3,6 +3,7 @@ import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { SubstrateDemocracyProposal, SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
 import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
 import subsquare from '../clients/subsquare';
+import substrateDemocracyPreimageRepository from '../repositories/substrateDemocracyPreimageRepository';
 
 const getProposalHash = (ctx: EventHandlerContext, network: SubstrateNetwork) => {
 
@@ -56,6 +57,8 @@ export default (network: SubstrateNetwork) =>
     account.totalDemocracyProposals = account.totalDemocracyProposals + 1;
     await ctx.store.save(account);
 
+    const preimage = await substrateDemocracyPreimageRepository.getByProposalHash(ctx, network, proposalHash)
+
     const proposal = new SubstrateDemocracyProposal({
       id: `${network}:${event.proposalIndex}`,
       network,
@@ -65,6 +68,7 @@ export default (network: SubstrateNetwork) =>
       date,
       updatedAt: date,
       proposalHash,
+      preimage,
       proposalIndex: event.proposalIndex,
       title: subsquareProposal.title,
       description: subsquareProposal.content,

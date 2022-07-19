@@ -1,5 +1,6 @@
 import assert from 'assert'
 import {StorageContext, Result} from './support'
+import * as v1058 from './v1058'
 import * as v9111 from './v9111'
 import * as v9122 from './v9122'
 import * as v9130 from './v9130'
@@ -179,5 +180,67 @@ export class CouncilProposalOfStorage {
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('Council', 'ProposalOf') != null
+  }
+}
+
+export class DemocracyPreimagesStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  get isV1022() {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') === '8d49bec84532cce5991ad4c420ddf4ab792644a27de5f8450488e36a6c1c40ef'
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  async getAsV1022(key: Uint8Array): Promise<[Uint8Array, Uint8Array, bigint, number] | undefined> {
+    assert(this.isV1022)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Democracy', 'Preimages', key)
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  get isV1058() {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') === '0e0e3c0f32264d14a97bb80cf16ecda808e2404f87100dc025cf84cfcc821fef'
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  async getAsV1058(key: Uint8Array): Promise<v1058.PreimageStatus | undefined> {
+    assert(this.isV1058)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Democracy', 'Preimages', key)
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  get isV9111() {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') === '2762abd948712e87f9324ca0c5ad1523f92ac946c587c97414ce71252440341f'
+  }
+
+  /**
+   *  Map of hashes to the proposal preimage, along with who registered it and their deposit.
+   *  The block number is the block at which it was deposited.
+   */
+  async getAsV9111(key: v9111.H256): Promise<v9111.PreimageStatus | undefined> {
+    assert(this.isV9111)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Democracy', 'Preimages', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') != null
   }
 }

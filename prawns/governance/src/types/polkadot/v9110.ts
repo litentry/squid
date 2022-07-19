@@ -280,6 +280,22 @@ export interface Call_Crowdloan {
   value: CrowdloanCall
 }
 
+export type PreimageStatus = PreimageStatus_Missing | PreimageStatus_Available
+
+export interface PreimageStatus_Missing {
+  __kind: 'Missing'
+  value: number
+}
+
+export interface PreimageStatus_Available {
+  __kind: 'Available'
+  data: Uint8Array
+  provider: AccountId32
+  deposit: bigint
+  since: number
+  expiry: (number | undefined)
+}
+
 export type TokenError = TokenError_NoFunds | TokenError_WouldDie | TokenError_BelowMinimum | TokenError_CannotCreate | TokenError_UnknownAsset | TokenError_Frozen | TokenError_Unsupported
 
 export interface TokenError_NoFunds {
