@@ -3,7 +3,7 @@ import { decodeAddress } from '../utils';
 import { SubstrateCouncilProposal, SubstrateNetwork } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilProposedEvent } from './typeGetters/getCouncilProposedEvent';
-import {getCouncilProposalOfStorage} from "./typeGetters/getCouncilProposalOfStorage";
+import { getCouncilProposalOfStorage } from './typeGetters/getCouncilProposalOfStorage';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
@@ -15,7 +15,11 @@ export default (network: SubstrateNetwork) =>
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
     const event = getCouncilProposedEvent(ctx, network);
 
-    const storage = await getCouncilProposalOfStorage(ctx, network, event.proposalHash);
+    const storage = await getCouncilProposalOfStorage(
+      ctx,
+      network,
+      event.proposalHash
+    );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.event.extrinsic.signer,
@@ -41,9 +45,8 @@ export default (network: SubstrateNetwork) =>
       ayeCount: 0,
       nayCount: 0,
       pallet: storage?.__kind,
-      method: storage?.value?.__kind
+      method: storage?.value?.__kind,
     });
 
     await ctx.store.save(proposal);
   };
-

@@ -19,7 +19,8 @@
     "democracy.NotPassed",
     "democracy.Voted",
     "bounties.BountyProposed",
-    "treasury.Proposed"
+    "treasury.Proposed",
+    "democracy.PreimageNoted"
   ],
   "calls": [
     "council.vote",
@@ -33,6 +34,7 @@
   ],
   "storage":  [
     "Council.ProposalOf",
-    "Council.Members"
+    "Council.Members",
+    "Democracy.Preimages"
   ]
 }

@@ -1,13 +1,18 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../model';
-import substrateCouncilProposalRepository from "../repositories/substrateCouncilProposalRepository";
-import {getCouncilClosedEvent} from "./typeGetters/getCouncilClosedEvent";
+import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
+import { getCouncilClosedEvent } from './typeGetters/getCouncilClosedEvent';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     const event = getCouncilClosedEvent(ctx, network);
     const date = new Date(ctx.block.timestamp);
-    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, network, event.proposalHash);
+    const councilProposal =
+      await substrateCouncilProposalRepository.getByProposalHash(
+        ctx,
+        network,
+        event.proposalHash
+      );
     if (!councilProposal) {
       throw new Error(`Proposal not found`);
     }
@@ -15,4 +20,3 @@ export default (network: SubstrateNetwork) =>
     councilProposal.lastUpdate = date;
     await ctx.store.save(councilProposal);
   };
-

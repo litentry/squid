@@ -3,7 +3,7 @@ import { decodeAddress } from '../utils';
 import { SubstrateNetwork, SubstrateCouncilVote } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilVoteCall } from './typeGetters/getCouncilVoteCall';
-import substrateCouncilProposalRepository from "../repositories/substrateCouncilProposalRepository";
+import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
@@ -20,7 +20,12 @@ export default (network: SubstrateNetwork) =>
     account.totalProposalVotes = account.totalProposalVotes + 1;
     await ctx.store.save(account);
 
-    const councilProposal = await substrateCouncilProposalRepository.getByProposalHash(ctx, network, call.proposal);
+    const councilProposal =
+      await substrateCouncilProposalRepository.getByProposalHash(
+        ctx,
+        network,
+        call.proposal
+      );
 
     if (!councilProposal) {
       throw new Error(`Proposal not found`);

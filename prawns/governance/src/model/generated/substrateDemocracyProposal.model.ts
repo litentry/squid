@@ -3,6 +3,7 @@ import * as marshal from "./marshal"
 import {SubstrateNetwork} from "./_substrateNetwork"
 import {SubstrateGovernanceAccount} from "./substrateGovernanceAccount.model"
 import {SubstrateDemocracyProposalStatus} from "./_substrateDemocracyProposalStatus"
+import {SubstrateDemocracyPreimage} from "./substrateDemocracyPreimage.model"
 import {SubstrateDemocracyReferenda} from "./substrateDemocracyReferenda.model"
 import {SubstrateDemocracyProposalSecond} from "./substrateDemocracyProposalSecond.model"
 
@@ -61,6 +62,10 @@ export class SubstrateDemocracyProposal {
   @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   tabledAtBlock!: bigint | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => SubstrateDemocracyPreimage, {nullable: true})
+  preimage!: SubstrateDemocracyPreimage | undefined | null
 
   @Index_()
   @ManyToOne_(() => SubstrateDemocracyReferenda, {nullable: true})

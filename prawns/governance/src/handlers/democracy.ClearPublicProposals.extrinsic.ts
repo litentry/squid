@@ -4,9 +4,16 @@ import substrateDemocracyProposalRepository from '../repositories/substrateDemoc
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
-    const proposedProposals = await substrateDemocracyProposalRepository.findByStatus(ctx, network, 'proposed');
-    await Promise.all(proposedProposals.map(proposal => {
-      proposal.status = SubstrateDemocracyProposalStatus.cancelled;
-      return ctx.store.save(proposal);
-    }));
+    const proposedProposals =
+      await substrateDemocracyProposalRepository.findByStatus(
+        ctx,
+        network,
+        'proposed'
+      );
+    await Promise.all(
+      proposedProposals.map((proposal) => {
+        proposal.status = SubstrateDemocracyProposalStatus.cancelled;
+        return ctx.store.save(proposal);
+      })
+    );
   };

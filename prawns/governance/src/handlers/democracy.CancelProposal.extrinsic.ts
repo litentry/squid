@@ -5,9 +5,13 @@ import { getDemocracyCancelProposalCall } from './typeGetters/getDemocracyCancel
 
 export default (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
-
     const call = getDemocracyCancelProposalCall(ctx, network);
-    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, network, call.propIndex);
+    const proposal =
+      await substrateDemocracyProposalRepository.getByProposalIndex(
+        ctx,
+        network,
+        call.propIndex
+      );
 
     if (!proposal) {
       throw new Error(`Proposal not found`);

@@ -3,7 +3,6 @@ import { SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
 import { getDemocracyTabledEvent } from './typeGetters/getDemocracyTabledEvent';
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 
-
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
     if (!ctx.event) {
@@ -14,7 +13,12 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const event = getDemocracyTabledEvent(ctx, network);
 
-    const proposal = await substrateDemocracyProposalRepository.getByProposalIndex(ctx, network, event.proposalIndex);
+    const proposal =
+      await substrateDemocracyProposalRepository.getByProposalIndex(
+        ctx,
+        network,
+        event.proposalIndex
+      );
 
     if (!proposal) {
       throw new Error(`Proposal not found`);
@@ -26,4 +30,3 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(proposal);
   };
-
