@@ -21,6 +21,8 @@ import democracyNotPassedEventHandler from '../handlers/democracy.NotPassed.even
 import democracyCancelledEventHandler from '../handlers/democracy.Cancelled.event';
 import democracyExecutedEventHandler from '../handlers/democracy.Executed.event';
 import democracyPreimageNotedEvent from '../handlers/democracy.PreimageNoted.event';
+import treasuryAwardedEvent from '../handlers/treasury.awarded.event';
+import treasuryRejectedEvent from '../handlers/treasury.rejected.event';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_polkadot');
 
@@ -111,5 +113,14 @@ processor.addEventHandler(
   'democracy.PreimageNoted',
   democracyPreimageNotedEvent(network)
 );
+processor.addEventHandler(
+  'treasury.Awarded',
+  treasuryAwardedEvent(network)
+);
+processor.addEventHandler(
+  'treasury.Rejected',
+  treasuryRejectedEvent(network)
+);
+
 
 processor.run();

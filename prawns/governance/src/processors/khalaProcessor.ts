@@ -21,6 +21,8 @@ import democracyCancelledEventHandler from '../handlers/democracy.Cancelled.even
 import democracyExecutedEventHandler from '../handlers/democracy.Executed.event';
 import democracyClearPublicProposalsExtrinsicHandler from '../handlers/democracy.ClearPublicProposals.extrinsic';
 import democracyPreimageNotedEvent from '../handlers/democracy.PreimageNoted.event';
+import treasuryAwardedEvent from '../handlers/treasury.awarded.event';
+import treasuryRejectedEvent from '../handlers/treasury.rejected.event';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_khala');
 
@@ -108,6 +110,14 @@ processor.addEventHandler(
 processor.addEventHandler(
   'democracy.PreimageNoted',
   democracyPreimageNotedEvent(network)
+);
+processor.addEventHandler(
+  'treasury.Awarded',
+  treasuryAwardedEvent(network)
+);
+processor.addEventHandler(
+  'treasury.Rejected',
+  treasuryRejectedEvent(network)
 );
 
 processor.run();

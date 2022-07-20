@@ -1,7 +1,5 @@
 import type {Result} from './support'
 
-export type H256 = Uint8Array
-
 export type Call = Call_System | Call_Timestamp | Call_Utility | Call_Multisig | Call_Proxy | Call_Vesting | Call_Scheduler | Call_ParachainSystem | Call_Balances | Call_Authorship | Call_CollatorSelection | Call_Session | Call_Identity | Call_Democracy | Call_Council | Call_Treasury | Call_Bounties | Call_Lottery | Call_TechnicalCommittee | Call_TechnicalMembership | Call_PhragmenElection | Call_Tips | Call_ChainBridge | Call_BridgeTransfer | Call_PhalaMq | Call_PhalaRegistry | Call_PhalaMining | Call_PhalaStakePool | Call_Assets | Call_AssetsWrapper
 
 export interface Call_System {
@@ -153,6 +151,8 @@ export interface Call_AssetsWrapper {
   __kind: 'AssetsWrapper'
   value: AssetsWrapperCall
 }
+
+export type H256 = Uint8Array
 
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.

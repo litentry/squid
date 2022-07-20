@@ -1,7 +1,21 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
 import * as v1 from './v1'
+import * as v10 from './v10'
+import * as v1040 from './v1040'
+import * as v1060 from './v1060'
+import * as v1070 from './v1070'
 import * as v1090 from './v1090'
+import * as v1091 from './v1091'
+import * as v1100 from './v1100'
+import * as v1110 from './v1110'
+import * as v1120 from './v1120'
+import * as v1130 from './v1130'
+import * as v1140 from './v1140'
+import * as v1150 from './v1150'
+import * as v1160 from './v1160'
+import * as v14 from './v14'
+import * as v5 from './v5'
 
 export class BountiesProposeBountyCall {
   constructor(private ctx: CallContext) {
@@ -53,6 +67,1094 @@ export class BountiesProposeBountyCall {
   get asLatest(): {value: bigint, description: Uint8Array} {
     deprecateLatest()
     return this.asV1
+  }
+}
+
+export class CouncilProposeCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'council.propose')
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV1(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'c45fd06f56032bc14bda45990020299a613f6ce379180dda6f0812b88c9ffe2f'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV1(): {threshold: number, proposal: v1.Type_166, lengthBound: number} {
+    assert(this.isV1)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV5(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '96a94236cb24ff9ea1a643b9df87d9eab7bb2390c1705381d339980abb24fbeb'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV5(): {threshold: number, proposal: v5.Type_165, lengthBound: number} {
+    assert(this.isV5)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV10(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'ed6de270ba21c267d2e1a6a8c9d445e1bffafc1470520d3795f68ade4522f9ae'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV10(): {threshold: number, proposal: v10.Type_165, lengthBound: number} {
+    assert(this.isV10)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV14(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'de135afb389e724c53f7a1d7258dc56a1b04aebd1250dcefe31c0eb344a0dd19'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV14(): {threshold: number, proposal: v14.Type_165, lengthBound: number} {
+    assert(this.isV14)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV1040(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '3d0030bc4984355b946026fcec0bbd950fa93b1a50166487f5602d528f8d1bd3'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV1040(): {threshold: number, proposal: v1040.Type_165, lengthBound: number} {
+    assert(this.isV1040)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV1060(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '0862ec20cc0528d3b8f7ad1eb5800b5d3ff16d56721e7a5a331a1c3afc443324'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV1060(): {threshold: number, proposal: v1060.Type_165, lengthBound: number} {
+    assert(this.isV1060)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get isV1070(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '81fb05a39c23f52040bac7f2a7519f921f83f380cf0a06c0397f616a050fec40'
+  }
+
+  /**
+   *  Add a new proposal to either be voted on or executed directly.
+   * 
+   *  Requires the sender to be member.
+   * 
+   *  `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   *  or put up for voting.
+   * 
+   *  # <weight>
+   *  ## Weight
+   *  - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *    - `B` is `proposal` size in bytes (length-fee-bounded)
+   *    - `M` is members-count (code- and governance-bounded)
+   *    - branching is influenced by `threshold` where:
+   *      - `P1` is proposal execution complexity (`threshold < 2`)
+   *      - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   *  - DB:
+   *    - 1 storage read `is_member` (codec `O(M)`)
+   *    - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *    - DB accesses influenced by `threshold`:
+   *      - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *      - OR proposal insertion (`threshold <= 2`)
+   *        - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *        - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *        - 1 storage write `ProposalOf` (codec `O(B)`)
+   *        - 1 storage write `Voting` (codec `O(M)`)
+   *    - 1 event
+   *  # </weight>
+   */
+  get asV1070(): {threshold: number, proposal: v1070.Type_165, lengthBound: number} {
+    assert(this.isV1070)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1090(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '97293d912a4650a82efac453b169c3ccb4104400288d3b323ccb67f43b22bc84'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1090(): {threshold: number, proposal: v1090.Call, lengthBound: number} {
+    assert(this.isV1090)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1091(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'ac32cc95f84d8bbcfe65569ba54a0558690bc4d8125fa19ce744a2af03cddd51'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1091(): {threshold: number, proposal: v1091.Call, lengthBound: number} {
+    assert(this.isV1091)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1100(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '59bb74d8532f08899b35e8161ebe3286b3ae3b7d801b284f380502d2ab01483d'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1100(): {threshold: number, proposal: v1100.Call, lengthBound: number} {
+    assert(this.isV1100)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1110(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'ca14c4ea0ea1f76d2cd832a6afffaac29ff1eac767e930444854bfb6d98bce9e'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1110(): {threshold: number, proposal: v1110.Call, lengthBound: number} {
+    assert(this.isV1110)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1120(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'e435b6805158179cdce6f18aa5fb429c6d6d8ea42e98215d112dd4a19ae0f7b7'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1120(): {threshold: number, proposal: v1120.Call, lengthBound: number} {
+    assert(this.isV1120)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1130(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '4f0c789e368dce9a121b1ee70530785d00f44dcc4966f09c0889fa3797839bf5'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1130(): {threshold: number, proposal: v1130.Call, lengthBound: number} {
+    assert(this.isV1130)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1140(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === 'eaa581eef6c74a801fb4a909d243ce9b668414e1380c890d66acfaaf8a86ea51'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1140(): {threshold: number, proposal: v1140.Call, lengthBound: number} {
+    assert(this.isV1140)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1150(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '15a6b31b5e9e9fa410cecaca43a03123d444aaa4937319125418156762244266'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1150(): {threshold: number, proposal: v1150.Call, lengthBound: number} {
+    assert(this.isV1150)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get isV1160(): boolean {
+    return this.ctx._chain.getCallHash('council.propose') === '2594727b55b923126d4c10e87055e78733b40b3e45e7fc656dec2543b31314df'
+  }
+
+  /**
+   * Add a new proposal to either be voted on or executed directly.
+   * 
+   * Requires the sender to be member.
+   * 
+   * `threshold` determines whether `proposal` is executed directly (`threshold < 2`)
+   * or put up for voting.
+   * 
+   * # <weight>
+   * ## Weight
+   * - `O(B + M + P1)` or `O(B + M + P2)` where:
+   *   - `B` is `proposal` size in bytes (length-fee-bounded)
+   *   - `M` is members-count (code- and governance-bounded)
+   *   - branching is influenced by `threshold` where:
+   *     - `P1` is proposal execution complexity (`threshold < 2`)
+   *     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)
+   * - DB:
+   *   - 1 storage read `is_member` (codec `O(M)`)
+   *   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)
+   *   - DB accesses influenced by `threshold`:
+   *     - EITHER storage accesses done by `proposal` (`threshold < 2`)
+   *     - OR proposal insertion (`threshold <= 2`)
+   *       - 1 storage mutation `Proposals` (codec `O(P2)`)
+   *       - 1 storage mutation `ProposalCount` (codec `O(1)`)
+   *       - 1 storage write `ProposalOf` (codec `O(B)`)
+   *       - 1 storage write `Voting` (codec `O(M)`)
+   *   - 1 event
+   * # </weight>
+   */
+  get asV1160(): {threshold: number, proposal: v1160.Call, lengthBound: number} {
+    assert(this.isV1160)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1160
+  }
+
+  get asLatest(): {threshold: number, proposal: v1160.Call, lengthBound: number} {
+    deprecateLatest()
+    return this.asV1160
   }
 }
 

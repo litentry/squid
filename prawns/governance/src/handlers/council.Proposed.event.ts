@@ -1,7 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress } from '../utils';
+import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { SubstrateCouncilProposal, SubstrateNetwork } from '../model';
-import { getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilProposedEvent } from './typeGetters/getCouncilProposedEvent';
 import { getCouncilProposalOfStorage } from './typeGetters/getCouncilProposalOfStorage';
 

@@ -852,6 +852,52 @@ export class TechnicalCommitteeProposedEvent {
   }
 }
 
+export class TreasuryAwardedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'treasury.Awarded')
+  }
+
+  /**
+   *  Some funds have been allocated.
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Awarded') === '86708250ac506876b8d63d9c97b4ca0fa73f0199c633da6fb2a8956aaab8c743'
+  }
+
+  /**
+   *  Some funds have been allocated.
+   */
+  get asV1020(): [number, bigint, Uint8Array] {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * Some funds have been allocated.
+   */
+  get isV9160(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Awarded') === '998b846fdf605dfbbe27d46b36b246537b990ed6d4deb2f0177d539b9dab3878'
+  }
+
+  /**
+   * Some funds have been allocated.
+   */
+  get asV9160(): {proposalIndex: number, award: bigint, account: v9160.AccountId32} {
+    assert(this.isV9160)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9160
+  }
+
+  get asLatest(): {proposalIndex: number, award: bigint, account: v9160.AccountId32} {
+    deprecateLatest()
+    return this.asV9160
+  }
+}
+
 export class TreasuryProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'treasury.Proposed')
@@ -893,6 +939,52 @@ export class TreasuryProposedEvent {
   }
 
   get asLatest(): {proposalIndex: number} {
+    deprecateLatest()
+    return this.asV9160
+  }
+}
+
+export class TreasuryRejectedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'treasury.Rejected')
+  }
+
+  /**
+   *  A proposal was rejected; funds were slashed.
+   */
+  get isV1032(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Rejected') === 'a0e51e81445baa317309351746e010ed2435e30ff7e53fbb2cf59283f3b9c536'
+  }
+
+  /**
+   *  A proposal was rejected; funds were slashed.
+   */
+  get asV1032(): [number, bigint] {
+    assert(this.isV1032)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A proposal was rejected; funds were slashed.
+   */
+  get isV9160(): boolean {
+    return this.ctx._chain.getEventHash('treasury.Rejected') === 'f9b7fb646bc37c38ad87edfaa08a0ca293b38294934c1114934c7a8fe00b6b79'
+  }
+
+  /**
+   * A proposal was rejected; funds were slashed.
+   */
+  get asV9160(): {proposalIndex: number, slashed: bigint} {
+    assert(this.isV9160)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9160
+  }
+
+  get asLatest(): {proposalIndex: number, slashed: bigint} {
     deprecateLatest()
     return this.asV9160
   }
