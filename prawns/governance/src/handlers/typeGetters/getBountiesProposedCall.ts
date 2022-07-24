@@ -29,8 +29,7 @@ export function getBountiesProposedCall(
         return call.asV28;
       }
 
-        return call.asLatest;
-
+      return call.asLatest;
     }
 
     case SubstrateNetwork.phala: {
@@ -41,7 +40,6 @@ export function getBountiesProposedCall(
       }
 
       return call.asLatest;
-
     }
 
     default: {

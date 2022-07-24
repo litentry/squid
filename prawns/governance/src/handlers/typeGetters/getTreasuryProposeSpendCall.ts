@@ -18,7 +18,10 @@ export function getTreasuryProposedSpendCall(
 
       if (call.isV1020) {
         const ret = call.asV1020;
-        return { value: ret.value, beneficiary: (ret.beneficiary as Type_17_AccountId).value };
+        return {
+          value: ret.value,
+          beneficiary: (ret.beneficiary as Type_17_AccountId).value,
+        };
       }
 
       if (call.isV1050) {
@@ -28,20 +31,20 @@ export function getTreasuryProposedSpendCall(
       if (call.isV2028) {
         return {
           ...call.asV2028,
-          beneficiary: <Uint8Array>(call.asV2028.beneficiary.value)
+          beneficiary: <Uint8Array>call.asV2028.beneficiary.value,
         };
       }
 
       if (call.isV9111) {
         return {
           ...call.asV9111,
-          beneficiary: <Uint8Array>(call.asV9111.beneficiary.value)
+          beneficiary: <Uint8Array>call.asV9111.beneficiary.value,
         };
       }
 
       return {
         ...call.asLatest,
-        beneficiary: <Uint8Array>(call.asLatest.beneficiary.value)
+        beneficiary: <Uint8Array>call.asLatest.beneficiary.value,
       };
     }
 
@@ -55,22 +58,21 @@ export function getTreasuryProposedSpendCall(
       if (call.isV28) {
         return {
           ...call.asV28,
-          beneficiary: <Uint8Array>(call.asV28.beneficiary.value)
+          beneficiary: <Uint8Array>call.asV28.beneficiary.value,
         };
       }
 
       if (call.isV9110) {
         return {
           ...call.asV9110,
-          beneficiary: <Uint8Array>(call.asV9110.beneficiary.value)
+          beneficiary: <Uint8Array>call.asV9110.beneficiary.value,
         };
       }
 
       return {
         ...call.asLatest,
-        beneficiary: <Uint8Array>(call.asLatest.beneficiary.value)
+        beneficiary: <Uint8Array>call.asLatest.beneficiary.value,
       };
-
     }
 
     case SubstrateNetwork.phala: {
@@ -79,22 +81,21 @@ export function getTreasuryProposedSpendCall(
       if (call.isV1) {
         return {
           ...call.asV1,
-          beneficiary: <Uint8Array>(call.asV1.beneficiary.value)
+          beneficiary: <Uint8Array>call.asV1.beneficiary.value,
         };
       }
 
       if (call.isV1090) {
         return {
           ...call.asV1090,
-          beneficiary: <Uint8Array>(call.asV1090.beneficiary.value)
+          beneficiary: <Uint8Array>call.asV1090.beneficiary.value,
         };
       }
 
       return {
         ...call.asLatest,
-        beneficiary: <Uint8Array>(call.asLatest.beneficiary.value)
+        beneficiary: <Uint8Array>call.asLatest.beneficiary.value,
       };
-
     }
 
     default: {

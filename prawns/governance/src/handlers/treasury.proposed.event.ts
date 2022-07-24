@@ -1,6 +1,17 @@
-import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress, encodeAddress, getOrCreateGovernanceAccount } from '../utils';
-import { SubstrateNetwork, SubstrateTreasuryProposal, SubstrateTreasuryProposalStatus } from '../model';
+import {
+  EventHandlerContext,
+  ExtrinsicHandlerContext,
+} from '@subsquid/substrate-processor';
+import {
+  decodeAddress,
+  encodeAddress,
+  getOrCreateGovernanceAccount,
+} from '../utils';
+import {
+  SubstrateNetwork,
+  SubstrateTreasuryProposal,
+  SubstrateTreasuryProposalStatus,
+} from '../model';
 import { getTreasuryProposedEvent } from './typeGetters/getTreasuryProposedEvent';
 import { getTreasuryProposedSpendCall } from './typeGetters/getTreasuryProposeSpendCall';
 import subsquare from '../clients/subsquare';
@@ -14,7 +25,10 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
     const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
     const event = getTreasuryProposedEvent(ctx, network);
-    const subsquareProposal = await subsquare.getTreasuryProposal(network, event.proposalIndex);
+    const subsquareProposal = await subsquare.getTreasuryProposal(
+      network,
+      event.proposalIndex
+    );
 
     // proposer
     const account = await getOrCreateGovernanceAccount(ctx.store, {

@@ -5,7 +5,6 @@ import substrateTreasuryProposalRepository from '../repositories/substrateTreasu
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext) => {
-
     const event = getTreasuryAwardedEvent(ctx, network);
 
     const proposal =

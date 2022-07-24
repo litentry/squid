@@ -1,6 +1,4 @@
-import {
-  SubstrateNetwork, SubstrateTreasuryProposal
-} from '../model';
+import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 
 const getByProposalIndex = async (

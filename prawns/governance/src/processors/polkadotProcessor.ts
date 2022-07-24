@@ -114,14 +114,8 @@ processor.addEventHandler(
   'democracy.PreimageNoted',
   democracyPreimageNotedEvent(network)
 );
-processor.addEventHandler(
-  'treasury.Awarded',
-  treasuryAwardedEvent(network)
-);
-processor.addEventHandler(
-  'treasury.Rejected',
-  treasuryRejectedEvent(network)
-);
+processor.addEventHandler('treasury.Awarded', treasuryAwardedEvent(network));
+processor.addEventHandler('treasury.Rejected', treasuryRejectedEvent(network));
 processor.addEventHandler(
   'phragmenElection.NewTerm',
   phragmenElectionNewTermEvent(network)

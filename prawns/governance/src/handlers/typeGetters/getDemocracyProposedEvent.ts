@@ -11,15 +11,14 @@ export function getDemocracyProposedEvent(
   proposalIndex: number;
   deposit: bigint;
 } {
-
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaDemocracyProposedEvent(ctx);
       if (event.isV1020) {
-        const [proposalIndex, deposit] = event.asV1020
-        return {proposalIndex, deposit};
+        const [proposalIndex, deposit] = event.asV1020;
+        return { proposalIndex, deposit };
       } else if (event.isV9130) {
-        return event.asV9130
+        return event.asV9130;
       } else {
         return event.asLatest;
       }
@@ -29,9 +28,9 @@ export function getDemocracyProposedEvent(
       const event = new PolkadotDemocracyProposedEvent(ctx);
       if (event.isV0) {
         const [proposalIndex, deposit] = event.asV0;
-        return {proposalIndex, deposit};
+        return { proposalIndex, deposit };
       } else if (event.isV9140) {
-        return event.asV9140
+        return event.asV9140;
       } else {
         return event.asLatest;
       }
@@ -41,7 +40,7 @@ export function getDemocracyProposedEvent(
       const event = new KhalaDemocracyProposedEvent(ctx);
       if (event.isV1) {
         const [proposalIndex, deposit] = event.asV1;
-        return {proposalIndex, deposit};
+        return { proposalIndex, deposit };
       }
 
       if (event.isV1090) {

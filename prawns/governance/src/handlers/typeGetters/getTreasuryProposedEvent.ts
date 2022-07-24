@@ -2,7 +2,7 @@ import { SubstrateNetwork } from '../../model';
 import { TreasuryProposedEvent as KusamaTreasuryProposedEvent } from '../../types/kusama/events';
 import { TreasuryProposedEvent as PolkadotTreasuryProposedEvent } from '../../types/polkadot/events';
 import { TreasuryProposedEvent as KhalaTreasuryProposedEvent } from '../../types/khala/events';
-import { EventHandlerContext } from "@subsquid/substrate-processor/lib";
+import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
 
 export function getTreasuryProposedEvent(
   ctx: EventHandlerContext,
@@ -37,7 +37,6 @@ export function getTreasuryProposedEvent(
       }
 
       return event.asLatest;
-
     }
 
     case SubstrateNetwork.phala: {
@@ -52,7 +51,6 @@ export function getTreasuryProposedEvent(
       }
 
       return event.asLatest;
-
     }
 
     default: {

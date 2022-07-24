@@ -8,13 +8,13 @@ export function getPhragmenElectionNewTermEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
 ): {
-  newMembers: [Uint8Array, bigint][]
+  newMembers: [Uint8Array, bigint][];
 } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaPhragmenElectionNewTermEvent(ctx);
       if (event.isV9010) {
-        return {newMembers: event.asV9010};
+        return { newMembers: event.asV9010 };
       }
 
       if (event.isV9130) {
@@ -28,7 +28,7 @@ export function getPhragmenElectionNewTermEvent(
       const event = new PolkadotPhragmenElectionNewTermEvent(ctx);
 
       if (event.isV9050) {
-        return {newMembers: event.asV9050};
+        return { newMembers: event.asV9050 };
       }
 
       if (event.isV9140) {
@@ -42,7 +42,7 @@ export function getPhragmenElectionNewTermEvent(
       const event = new KhalaPhragmenElectionNewTermEvent(ctx);
 
       if (event.isV14) {
-        return {newMembers: event.asV14};
+        return { newMembers: event.asV14 };
       }
 
       if (event.isV1090) {

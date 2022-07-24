@@ -8,13 +8,11 @@ export function getDemocracyVotedEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
 ) {
-
-
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaDemocracyVotedEvent(ctx);
       if (event.isV9160) {
-        return event.asV9160
+        return event.asV9160;
       }
 
       return event.asLatest;
@@ -27,7 +25,6 @@ export function getDemocracyVotedEvent(
       }
 
       return event.asLatest;
-
     }
 
     case SubstrateNetwork.phala: {

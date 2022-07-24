@@ -1,5 +1,6 @@
 import {
-  SubstrateNetwork, SubstratePhragmenElectionMemberTerm
+  SubstrateNetwork,
+  SubstratePhragmenElectionMemberTerm,
 } from '../model';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 
@@ -8,7 +9,7 @@ const findActiveMembers = async (
   network: SubstrateNetwork
 ) => {
   return ctx.store.find(SubstratePhragmenElectionMemberTerm, {
-    where: { network, isCurrentTerm: true }
+    where: { network, isCurrentTerm: true },
   }) as unknown as SubstratePhragmenElectionMemberTerm[];
 };
 

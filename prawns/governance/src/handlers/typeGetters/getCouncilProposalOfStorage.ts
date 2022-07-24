@@ -2,13 +2,16 @@ import { SubstrateNetwork } from '../../model';
 import { CouncilProposalOfStorage as KusamaCouncilProposalOfStorage } from '../../types/kusama/storage';
 import { CouncilProposalOfStorage as PolkadotCouncilProposalOfStorage } from '../../types/polkadot/storage';
 import { CouncilProposalOfStorage as KhalaCouncilProposalOfStorage } from '../../types/khala/storage';
-import {StorageContext} from "@subsquid/substrate-typegen/lib/support";
+import { StorageContext } from '@subsquid/substrate-typegen/lib/support';
 
 export async function getCouncilProposalOfStorage(
   ctx: StorageContext,
   network: SubstrateNetwork,
   proposalHash: Uint8Array
-): Promise<{__kind?: string, value?: {__kind?: string, proposalId?: number}}| undefined> {
+): Promise<
+  | { __kind?: string; value?: { __kind?: string; proposalId?: number } }
+  | undefined
+> {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const call = new KusamaCouncilProposalOfStorage(ctx);
@@ -26,7 +29,7 @@ export async function getCouncilProposalOfStorage(
       }
 
       if (call.isV9111) {
-        return await  call.getAsV9111(proposalHash);
+        return await call.getAsV9111(proposalHash);
       }
 
       if (call.isV9160) {
@@ -53,7 +56,7 @@ export async function getCouncilProposalOfStorage(
         return await call.getAsV9230(proposalHash);
       }
 
-      throw new Error("Unexpected version");
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -90,7 +93,7 @@ export async function getCouncilProposalOfStorage(
         return await call.getAsV9230(proposalHash);
       }
 
-      throw new Error("Unexpected version");
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -101,8 +104,8 @@ export async function getCouncilProposalOfStorage(
       }
 
       if (call.isV1100) {
-       return call.getAsV1100(proposalHash);
-     }
+        return call.getAsV1100(proposalHash);
+      }
       if (call.isV1110) {
         return call.getAsV1110(proposalHash);
       }
@@ -128,7 +131,7 @@ export async function getCouncilProposalOfStorage(
         return call.getAsV1160(proposalHash);
       }
 
-      throw new Error("Unexpected version");
+      throw new Error('Unexpected version');
     }
 
     default: {
