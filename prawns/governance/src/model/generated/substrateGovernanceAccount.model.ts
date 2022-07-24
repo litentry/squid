@@ -10,6 +10,7 @@ import {SubstrateTechnicalCommitteeProposal} from "./substrateTechnicalCommittee
 import {SubstrateElectionVote} from "./substrateElectionVote.model"
 import {SubstrateBountyProposal} from "./substrateBountyProposal.model"
 import {SubstrateTreasuryProposal} from "./substrateTreasuryProposal.model"
+import {SubstratePhragmenElectionMemberTerm} from "./substratePhragmenElectionMemberTerm.model"
 
 @Entity_()
 export class SubstrateGovernanceAccount {
@@ -98,4 +99,7 @@ export class SubstrateGovernanceAccount {
 
   @OneToMany_(() => SubstrateTreasuryProposal, e => e.account)
   treasurySpendProposals!: SubstrateTreasuryProposal[]
+
+  @OneToMany_(() => SubstratePhragmenElectionMemberTerm, e => e.account)
+  phragmenElectionMemberTerms!: SubstratePhragmenElectionMemberTerm[]
 }

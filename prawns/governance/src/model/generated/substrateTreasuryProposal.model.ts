@@ -11,7 +11,7 @@ export class SubstrateTreasuryProposal {
   }
 
   /**
-   * network:block:index
+   * network:proposalIndex
    */
   @PrimaryColumn_()
   id!: string

@@ -22,7 +22,8 @@
     "treasury.Proposed",
     "treasury.Awarded",
     "treasury.Rejected",
-    "democracy.PreimageNoted"
+    "democracy.PreimageNoted",
+    "phragmenElection.NewTerm"
   ],
   "calls": [
     "council.vote",

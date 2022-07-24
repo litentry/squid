@@ -54,6 +54,7 @@ type SubstrateGovernanceAccount @entity {
   electionVotes: [SubstrateElectionVote]! @derivedFrom(field: "account")
   bountyProposals: [SubstrateBountyProposal]! @derivedFrom(field: "account")
   treasurySpendProposals: [SubstrateTreasuryProposal]! @derivedFrom(field: "account")
+  phragmenElectionMemberTerms: [SubstratePhragmenElectionMemberTerm]! @derivedFrom(field: "account")
 }
 
 type SubstrateElectionVote @entity {
@@ -232,4 +233,15 @@ type SubstrateDemocracyPreimage @entity {
   method: String!
   date: DateTime!
   balance: BigInt!
+}
+
+type SubstratePhragmenElectionMemberTerm  @entity {
+  "network:block:eventIndex:memberIndex"
+  id: ID!
+  network: SubstrateNetwork!
+  blockNumber: BigInt!
+  date: DateTime!
+  isCurrentTerm: Boolean! @index
+  account: SubstrateGovernanceAccount!
+  backing: BigInt!
 }
