@@ -13,7 +13,7 @@ export function getDemocracyCancelProposalCall(
       const call = new KusamaDemocracyCancelProposalCall(ctx);
 
       if (call.isV2025) {
-        return call.asV2025
+        return call.asV2025;
       }
 
       return call.asLatest;
@@ -23,7 +23,7 @@ export function getDemocracyCancelProposalCall(
       const call = new PolkadotDemocracyCancelProposalCall(ctx);
 
       if (call.isV25) {
-        return call.asV25
+        return call.asV25;
       }
 
       return call.asLatest;

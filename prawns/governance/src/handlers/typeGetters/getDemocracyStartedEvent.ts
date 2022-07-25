@@ -7,14 +7,20 @@ import { DemocracyStartedEvent as KhalaDemocracyStartedEvent } from '../../types
 export function getDemocracyStartedEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
-): { refIndex: number, thresholdKind: string } {
+): { refIndex: number; thresholdKind: string } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaDemocracyStartedEvent(ctx);
 
       if (event.isV1020) {
-        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [{value: number}, {value: string}];
-        return {refIndex: refIndexParam.value, thresholdKind: thresholdParam.value};
+        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [
+          { value: number },
+          { value: string }
+        ];
+        return {
+          refIndex: refIndexParam.value,
+          thresholdKind: thresholdParam.value,
+        };
 
         // Subsquid is  choking on a type - workaround above
         // const [refIndex, threshold] = event.asV1020;
@@ -22,19 +28,30 @@ export function getDemocracyStartedEvent(
       }
 
       if (event.isV9130) {
-        return { refIndex: event.asV9130.refIndex, thresholdKind: event.asV9130.threshold.__kind };
+        return {
+          refIndex: event.asV9130.refIndex,
+          thresholdKind: event.asV9130.threshold.__kind,
+        };
       }
 
-
-      return { refIndex: event.asLatest.refIndex, thresholdKind: event.asLatest.threshold.__kind };
+      return {
+        refIndex: event.asLatest.refIndex,
+        thresholdKind: event.asLatest.threshold.__kind,
+      };
     }
 
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotDemocracyStartedEvent(ctx);
 
       if (event.isV0) {
-        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [{value: number}, {value: string}];
-        return {refIndex: refIndexParam.value, thresholdKind: thresholdParam.value};
+        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [
+          { value: number },
+          { value: string }
+        ];
+        return {
+          refIndex: refIndexParam.value,
+          thresholdKind: thresholdParam.value,
+        };
 
         // Subsquid is  choking on a type - workaround above
         // const [refIndex, threshold] = event.asV0;
@@ -42,10 +59,16 @@ export function getDemocracyStartedEvent(
       }
 
       if (event.isV9140) {
-        return { refIndex: event.asV9140.refIndex, thresholdKind: event.asV9140.threshold.__kind };
+        return {
+          refIndex: event.asV9140.refIndex,
+          thresholdKind: event.asV9140.threshold.__kind,
+        };
       }
 
-      return { refIndex: event.asLatest.refIndex, thresholdKind: event.asLatest.threshold.__kind };
+      return {
+        refIndex: event.asLatest.refIndex,
+        thresholdKind: event.asLatest.threshold.__kind,
+      };
     }
 
     case SubstrateNetwork.phala: {
@@ -57,10 +80,16 @@ export function getDemocracyStartedEvent(
       }
 
       if (event.isV1090) {
-        return { refIndex: event.asV1090.refIndex, thresholdKind: event.asV1090.threshold.__kind };
+        return {
+          refIndex: event.asV1090.refIndex,
+          thresholdKind: event.asV1090.threshold.__kind,
+        };
       }
 
-      return { refIndex: event.asLatest.refIndex, thresholdKind: event.asLatest.threshold.__kind };
+      return {
+        refIndex: event.asLatest.refIndex,
+        thresholdKind: event.asLatest.threshold.__kind,
+      };
     }
 
     default: {

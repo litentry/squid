@@ -805,6 +805,68 @@ export class DemocracyVotedEvent {
   }
 }
 
+export class PhragmenElectionNewTermEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'phragmenElection.NewTerm')
+  }
+
+  /**
+   *  A new term with \[new_members\]. This indicates that enough candidates existed to run
+   *  the election, not that enough have has been elected. The inner value must be examined
+   *  for this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond
+   *  slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to
+   *  begin with.
+   */
+  get isV14(): boolean {
+    return this.ctx._chain.getEventHash('phragmenElection.NewTerm') === 'd7a45cf0fb3b6c39f6db66d04bddff68afaa850200debf915801414eda809fe1'
+  }
+
+  /**
+   *  A new term with \[new_members\]. This indicates that enough candidates existed to run
+   *  the election, not that enough have has been elected. The inner value must be examined
+   *  for this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond
+   *  slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to
+   *  begin with.
+   */
+  get asV14(): [Uint8Array, bigint][] {
+    assert(this.isV14)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * A new term with new_members. This indicates that enough candidates existed to run
+   * the election, not that enough have has been elected. The inner value must be examined
+   * for this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond
+   * slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to
+   * begin with.
+   */
+  get isV1090(): boolean {
+    return this.ctx._chain.getEventHash('phragmenElection.NewTerm') === 'c26c6ac673ee46db2001722c75880df159f382274469750dc468b868c6f738c8'
+  }
+
+  /**
+   * A new term with new_members. This indicates that enough candidates existed to run
+   * the election, not that enough have has been elected. The inner value must be examined
+   * for this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond
+   * slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to
+   * begin with.
+   */
+  get asV1090(): {newMembers: [v1090.AccountId32, bigint][]} {
+    assert(this.isV1090)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1090
+  }
+
+  get asLatest(): {newMembers: [v1090.AccountId32, bigint][]} {
+    deprecateLatest()
+    return this.asV1090
+  }
+}
+
 export class TechnicalCommitteeProposedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'technicalCommittee.Proposed')

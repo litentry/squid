@@ -52,8 +52,8 @@ export function getDemocracyVoteCall(
             __kind: 'Standard',
             vote,
             // This is not correct.. there is a balance but it is not in the extrinsic
-            balance: BigInt(1)
-          }
+            balance: BigInt(1),
+          },
         };
       }
 
@@ -61,7 +61,7 @@ export function getDemocracyVoteCall(
         const { refIndex, vote } = event.asV1055;
         return {
           refIndex,
-          vote: convertLegacyAccountVote(vote)
+          vote: convertLegacyAccountVote(vote),
         };
       }
 
@@ -79,7 +79,7 @@ export function getDemocracyVoteCall(
         const { refIndex, vote } = event.asV0;
         return {
           refIndex,
-          vote: convertLegacyAccountVote(vote)
+          vote: convertLegacyAccountVote(vote),
         };
       }
 
@@ -88,7 +88,6 @@ export function getDemocracyVoteCall(
       }
 
       return event.asLatest;
-
     }
 
     case SubstrateNetwork.phala: {
@@ -98,7 +97,7 @@ export function getDemocracyVoteCall(
         const { refIndex, vote } = event.asV1;
         return {
           refIndex,
-          vote: convertLegacyAccountVote(vote)
+          vote: convertLegacyAccountVote(vote),
         };
       }
 
@@ -107,7 +106,6 @@ export function getDemocracyVoteCall(
       }
 
       return event.asLatest;
-
     }
 
     default: {
@@ -119,29 +117,29 @@ export function getDemocracyVoteCall(
 function convertLegacyAccountVote(
   data:
     | {
-    __kind: 'Standard';
-    value: {
-      vote: number;
-      balance: bigint;
-    };
-  }
+        __kind: 'Standard';
+        value: {
+          vote: number;
+          balance: bigint;
+        };
+      }
     | {
-    __kind: 'Split';
-    value: {
-      aye: bigint;
-      nay: bigint;
-    };
-  }
+        __kind: 'Split';
+        value: {
+          aye: bigint;
+          nay: bigint;
+        };
+      }
 ): AccountVote {
   if (data.__kind === 'Standard') {
     return {
       __kind: 'Standard',
-      ...data.value
+      ...data.value,
     };
   }
 
   return {
     __kind: 'Split',
-    ...data.value
+    ...data.value,
   };
 }

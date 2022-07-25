@@ -17,12 +17,12 @@ export function getDemocracySecondCall(
 
       if (call.isV1020) {
         return call.asV1020;
-      } 
-      
+      }
+
       if (call.isV2005) {
         return call.asV2005;
       }
-      
+
       return call.asLatest;
     }
 
@@ -31,8 +31,8 @@ export function getDemocracySecondCall(
 
       if (call.isV0) {
         return call.asV0;
-      } 
-      
+      }
+
       return call.asLatest;
     }
 
@@ -42,7 +42,7 @@ export function getDemocracySecondCall(
       if (call.isV1) {
         return call.asV1;
       }
-      
+
       return call.asLatest;
     }
 

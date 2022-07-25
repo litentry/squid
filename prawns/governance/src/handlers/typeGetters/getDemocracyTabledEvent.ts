@@ -7,21 +7,21 @@ import { DemocracyTabledEvent as KhalaDemocracyTabledEvent } from '../../types/k
 export function getDemocracyTabledEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
-): {proposalIndex: number, deposit: bigint, depositors: Uint8Array[]} {
+): { proposalIndex: number; deposit: bigint; depositors: Uint8Array[] } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaDemocracyTabledEvent(ctx);
 
       if (event.isV1020) {
         const [proposalIndex, deposit, depositors] = event.asV1020;
-        return {proposalIndex, deposit, depositors};
+        return { proposalIndex, deposit, depositors };
       }
 
       if (event.isV9130) {
         return event.asV9130;
       }
-      
-      return event.asLatest
+
+      return event.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -29,13 +29,13 @@ export function getDemocracyTabledEvent(
 
       if (event.isV0) {
         const [proposalIndex, deposit, depositors] = event.asV0;
-        return {proposalIndex, deposit, depositors};
+        return { proposalIndex, deposit, depositors };
       }
 
       if (event.isV9140) {
         return event.asV9140;
       }
-      return event.asLatest
+      return event.asLatest;
     }
 
     case SubstrateNetwork.phala: {
@@ -43,14 +43,14 @@ export function getDemocracyTabledEvent(
 
       if (event.isV1) {
         const [proposalIndex, deposit, depositors] = event.asV1;
-        return {proposalIndex, deposit, depositors};
+        return { proposalIndex, deposit, depositors };
       }
 
       if (event.isV1090) {
         return event.asV1090;
       }
 
-      return event.asLatest
+      return event.asLatest;
     }
 
     default: {

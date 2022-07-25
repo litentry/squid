@@ -8,11 +8,11 @@ import { Result } from '../../types/khala/support';
 export function getDemocracyExecutedEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
-): {refIndex: number, result: Result<null, any>} {
+): { refIndex: number; result: Result<null, any> } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaDemocracyExecutedEvent(ctx);
-      
+
       if (event.isV1020) {
         return handleLegacyArrayBoolFormat(event.asV1020);
       }
@@ -21,11 +21,11 @@ export function getDemocracyExecutedEvent(
       }
       if (event.isV9111) {
         const [refIndex, result] = event.asV9111;
-        return {refIndex, result};
+        return { refIndex, result };
       }
       if (event.isV9090) {
         const [refIndex, result] = event.asV9090;
-        return {refIndex, result};
+        return { refIndex, result };
       }
       if (event.isV9170) {
         return event.asV9170;
@@ -36,7 +36,7 @@ export function getDemocracyExecutedEvent(
       if (event.isV9190) {
         return event.asV9190;
       }
-      
+
       return event.asLatest;
     }
 
@@ -54,18 +54,17 @@ export function getDemocracyExecutedEvent(
       }
       if (event.isV9090) {
         const [refIndex, result] = event.asV9090;
-        return {refIndex, result};
+        return { refIndex, result };
       }
       if (event.isV9140) {
         return event.asV9140;
       }
       if (event.isV9110) {
         const [refIndex, result] = event.asV9110;
-        return {refIndex, result};
+        return { refIndex, result };
       }
 
       return event.asLatest;
-
     }
 
     case SubstrateNetwork.phala: {
@@ -85,7 +84,7 @@ export function getDemocracyExecutedEvent(
       }
       if (event.isV14) {
         const [refIndex, result] = event.asV14;
-        return {refIndex, result};
+        return { refIndex, result };
       }
       if (event.isV1140) {
         return event.asV1140;
@@ -100,4 +99,12 @@ export function getDemocracyExecutedEvent(
   }
 }
 
-const handleLegacyArrayBoolFormat = ([refIndex, success]: [number, boolean]): {refIndex: number, result: Result<null, any>}  => ({ refIndex, result: success ? { __kind: 'Ok', value: null } : { __kind: 'Err', value: 'Failed' } });
+const handleLegacyArrayBoolFormat = ([refIndex, success]: [number, boolean]): {
+  refIndex: number;
+  result: Result<null, any>;
+} => ({
+  refIndex,
+  result: success
+    ? { __kind: 'Ok', value: null }
+    : { __kind: 'Err', value: 'Failed' },
+});

@@ -2,7 +2,7 @@ import { SubstrateNetwork } from '../../model';
 import { TreasuryRejectedEvent as KusamaTreasuryRejectedEvent } from '../../types/kusama/events';
 import { TreasuryRejectedEvent as PolkadotTreasuryRejectedEvent } from '../../types/polkadot/events';
 import { TreasuryRejectedEvent as KhalaTreasuryRejectedEvent } from '../../types/khala/events';
-import { EventHandlerContext } from "@subsquid/substrate-processor/lib";
+import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
 
 export function getTreasuryRejectedEvent(
   ctx: EventHandlerContext,
@@ -16,7 +16,7 @@ export function getTreasuryRejectedEvent(
       const event = new KusamaTreasuryRejectedEvent(ctx);
 
       if (event.isV1032) {
-        const [proposalIndex, slashed] = event.asV1032
+        const [proposalIndex, slashed] = event.asV1032;
         return { proposalIndex, slashed };
       }
 
@@ -31,7 +31,7 @@ export function getTreasuryRejectedEvent(
       const event = new PolkadotTreasuryRejectedEvent(ctx);
 
       if (event.isV0) {
-        const [proposalIndex, slashed] = event.asV0
+        const [proposalIndex, slashed] = event.asV0;
         return { proposalIndex, slashed };
       }
 
@@ -40,14 +40,13 @@ export function getTreasuryRejectedEvent(
       }
 
       return event.asLatest;
-
     }
 
     case SubstrateNetwork.phala: {
       const event = new KhalaTreasuryRejectedEvent(ctx);
 
       if (event.isV1) {
-        const [proposalIndex, slashed] = event.asV1
+        const [proposalIndex, slashed] = event.asV1;
         return { proposalIndex, slashed };
       }
 
@@ -56,7 +55,6 @@ export function getTreasuryRejectedEvent(
       }
 
       return event.asLatest;
-
     }
 
     default: {

@@ -1,4 +1,7 @@
-import {EventHandlerContext, ExtrinsicHandlerContext} from '@subsquid/substrate-processor';
+import {
+  EventHandlerContext,
+  ExtrinsicHandlerContext,
+} from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { CouncilApprovedEvent as KusamaCouncilApprovedEvent } from '../../types/kusama/events';
 import { CouncilApprovedEvent as PolkadotCouncilApprovedEvent } from '../../types/polkadot/events';
@@ -7,12 +10,12 @@ import { CouncilApprovedEvent as KhalaCouncilApprovedEvent } from '../../types/k
 export function getCouncilApprovedEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
-): {proposalHash: Uint8Array} {
+): { proposalHash: Uint8Array } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaCouncilApprovedEvent(ctx);
       if (event.isV1020) {
-        return {proposalHash: event.asV1020};
+        return { proposalHash: event.asV1020 };
       }
       if (event.isV9130) {
         return event.asV9130;
@@ -25,7 +28,7 @@ export function getCouncilApprovedEvent(
       const event = new PolkadotCouncilApprovedEvent(ctx);
 
       if (event.isV0) {
-        return {proposalHash: event.asV0};
+        return { proposalHash: event.asV0 };
       }
       if (event.isV9140) {
         return event.asV9140;
@@ -38,7 +41,7 @@ export function getCouncilApprovedEvent(
       const event = new KhalaCouncilApprovedEvent(ctx);
 
       if (event.isV1) {
-        return {proposalHash: event.asV1};
+        return { proposalHash: event.asV1 };
       }
 
       if (event.isV1090) {

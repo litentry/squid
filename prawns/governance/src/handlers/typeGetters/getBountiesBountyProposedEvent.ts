@@ -2,7 +2,7 @@ import { SubstrateNetwork } from '../../model';
 import { BountiesBountyProposedEvent as KusamaBountiesProposeEvent } from '../../types/kusama/events';
 import { BountiesBountyProposedEvent as PolkadotBountiesProposeEvent } from '../../types/polkadot/events';
 import { BountiesBountyProposedEvent as KhalaBountiesProposeEvent } from '../../types/khala/events';
-import { EventHandlerContext } from "@subsquid/substrate-processor/lib";
+import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
 
 export function getBountiesBountyProposedEvent(
   ctx: EventHandlerContext,
@@ -21,8 +21,7 @@ export function getBountiesBountyProposedEvent(
       if (event.isV9130) {
         return event.asV9130;
       }
-        return event.asLatest;
-
+      return event.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -36,8 +35,7 @@ export function getBountiesBountyProposedEvent(
         return event.asV9140;
       }
 
-        return event.asLatest;
-
+      return event.asLatest;
     }
 
     case SubstrateNetwork.phala: {

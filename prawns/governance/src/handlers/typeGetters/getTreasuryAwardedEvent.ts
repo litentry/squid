@@ -2,7 +2,7 @@ import { SubstrateNetwork } from '../../model';
 import { TreasuryAwardedEvent as KusamaTreasuryAwardedEvent } from '../../types/kusama/events';
 import { TreasuryAwardedEvent as PolkadotTreasuryAwardedEvent } from '../../types/polkadot/events';
 import { TreasuryAwardedEvent as KhalaTreasuryAwardedEvent } from '../../types/khala/events';
-import { EventHandlerContext } from "@subsquid/substrate-processor/lib";
+import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
 
 export function getTreasuryAwardedEvent(
   ctx: EventHandlerContext,
@@ -17,7 +17,7 @@ export function getTreasuryAwardedEvent(
       const event = new KusamaTreasuryAwardedEvent(ctx);
 
       if (event.isV1020) {
-        const [proposalIndex, award, account] = event.asV1020
+        const [proposalIndex, award, account] = event.asV1020;
         return { proposalIndex, award, account };
       }
 
@@ -32,7 +32,7 @@ export function getTreasuryAwardedEvent(
       const event = new PolkadotTreasuryAwardedEvent(ctx);
 
       if (event.isV0) {
-        const [proposalIndex, award, account] = event.asV0
+        const [proposalIndex, award, account] = event.asV0;
         return { proposalIndex, award, account };
       }
 
@@ -41,14 +41,13 @@ export function getTreasuryAwardedEvent(
       }
 
       return event.asLatest;
-
     }
 
     case SubstrateNetwork.phala: {
       const event = new KhalaTreasuryAwardedEvent(ctx);
 
       if (event.isV1) {
-        const [proposalIndex, award, account] = event.asV1
+        const [proposalIndex, award, account] = event.asV1;
         return { proposalIndex, award, account };
       }
 
@@ -57,7 +56,6 @@ export function getTreasuryAwardedEvent(
       }
 
       return event.asLatest;
-
     }
 
     default: {
