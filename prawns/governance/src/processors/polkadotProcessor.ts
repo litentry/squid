@@ -24,6 +24,7 @@ import democracyPreimageNotedEvent from '../handlers/democracy.PreimageNoted.eve
 import treasuryAwardedEvent from '../handlers/treasury.awarded.event';
 import treasuryRejectedEvent from '../handlers/treasury.rejected.event';
 import phragmenElectionNewTermEvent from '../handlers/phragmenElection.NewTerm.event';
+import genesisBlock from '../handlers/genesisBlock';
 
 const processor = new SubstrateProcessor('litentry_squid_governance_polkadot');
 
@@ -36,6 +37,13 @@ processor.setDataSource({
 });
 
 const network = SubstrateNetwork.polkadot;
+
+processor.addPreHook(async (ctx) => {
+  if (ctx.block.height % 1000 === 1) {
+    console.log('go');
+    await genesisBlock(network)(ctx);
+  }
+})
 
 processor.addExtrinsicHandler(
   'phragmenElection.vote',

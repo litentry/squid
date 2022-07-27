@@ -39,6 +39,8 @@
   "storage":  [
     "Council.ProposalOf",
     "Council.Members",
+    "TechnicalCommittee.Members",
+    "TechnicalMembership.Members",
     "Democracy.Preimages"
   ]
 }

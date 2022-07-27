@@ -245,3 +245,13 @@ type SubstratePhragmenElectionMemberTerm  @entity {
   account: SubstrateGovernanceAccount!
   backing: BigInt!
 }
+
+type SubstrateTechnicalCommitteeMembership  @entity {
+  "network:block:memberIndex"
+  id: ID!
+  network: SubstrateNetwork!
+  blockNumber: BigInt!
+  date: DateTime!
+  isCurrentMember: Boolean! @index
+  account: SubstrateGovernanceAccount!
+}

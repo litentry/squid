@@ -244,3 +244,55 @@ export class DemocracyPreimagesStorage {
     return this.ctx._chain.getStorageItemTypeHash('Democracy', 'Preimages') != null
   }
 }
+
+export class TechnicalCommitteeMembersStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The current members of the collective. This is stored sorted (just by value).
+   */
+  get isV9111() {
+    return this.ctx._chain.getStorageItemTypeHash('TechnicalCommittee', 'Members') === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
+  }
+
+  /**
+   *  The current members of the collective. This is stored sorted (just by value).
+   */
+  async getAsV9111(): Promise<v9111.AccountId32[]> {
+    assert(this.isV9111)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'TechnicalCommittee', 'Members')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('TechnicalCommittee', 'Members') != null
+  }
+}
+
+export class TechnicalMembershipMembersStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The current membership, stored as an ordered Vec.
+   */
+  get isV9111() {
+    return this.ctx._chain.getStorageItemTypeHash('TechnicalMembership', 'Members') === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
+  }
+
+  /**
+   *  The current membership, stored as an ordered Vec.
+   */
+  async getAsV9111(): Promise<v9111.AccountId32[]> {
+    assert(this.isV9111)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'TechnicalMembership', 'Members')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('TechnicalMembership', 'Members') != null
+  }
+}
