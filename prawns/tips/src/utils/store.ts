@@ -1,6 +1,5 @@
-
-import {In} from "typeorm"
 import { Store } from '@subsquid/typeorm-store';
+import { FindOptionsWhere } from 'typeorm';
 
 /**
  *
@@ -14,7 +13,9 @@ export async function getOrCreate<T extends { id: string }>(
   entityConstructor: EntityConstructor<T>,
   props: Partial<T> & { id: string }
 ): Promise<T> {
-  let e = await store.findBy(entityConstructor, {id: In([props.id])});
+  let e = await store.findOneBy(entityConstructor, {
+    id: props.id,
+  } as FindOptionsWhere<T>);
 
   if (e == null) {
     e = new entityConstructor(props);
