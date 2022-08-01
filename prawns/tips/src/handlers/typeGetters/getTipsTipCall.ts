@@ -1,4 +1,4 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import {
   TipsTipCall as KhalaTipsTipCall
@@ -11,7 +11,7 @@ import {
 } from '../../types/polkadot/calls';
 
 export function getTipsTipCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext,
   network: SubstrateNetwork
 ): { hash: Uint8Array, tipValue: bigint } {
 

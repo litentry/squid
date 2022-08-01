@@ -1,4 +1,6 @@
-import { Store } from '@subsquid/substrate-processor';
+
+import {In} from "typeorm"
+import { Store } from '@subsquid/typeorm-store';
 
 /**
  *
@@ -12,9 +14,7 @@ export async function getOrCreate<T extends { id: string }>(
   entityConstructor: EntityConstructor<T>,
   props: Partial<T> & { id: string }
 ): Promise<T> {
-  let e = await store.get<T>(entityConstructor, {
-    where: { id: props.id },
-  });
+  let e = await store.findBy(entityConstructor, {id: In([props.id])});
 
   if (e == null) {
     e = new entityConstructor(props);

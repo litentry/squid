@@ -3,22 +3,22 @@ import tipsStatusEvent from '../handlers/tips.status.event';
 import tipsTipCall from '../handlers/tips.tip.extrinsic';
 import tipsTipsNewEvent from '../handlers/tips.tips_new.event';
 import { SubstrateNetwork } from '../model';
+import { TypeormDatabase } from '@subsquid/typeorm-store'
+import { lookupArchive } from '@subsquid/archive-registry';
 
 
-const processor = new SubstrateProcessor('litentry_squid_tips_kusama');
+const processor = new SubstrateProcessor(new TypeormDatabase());
 
 processor.setTypesBundle('kusama');
 processor.setBatchSize(10);
-processor.setIsolationLevel('REPEATABLE READ');
 processor.setDataSource({
-  archive: 'https://kusama-squid-archive.litentry.io/graphql/v1/graphql',
-  chain: 'wss://kusama.api.onfinality.io/public-ws',
-});
+  archive: lookupArchive("kusama", { release: "FireSquid" })
+})
 processor.addEventHandler(
   'tips.NewTip',
   tipsTipsNewEvent(SubstrateNetwork.kusama)
 );
-processor.addExtrinsicHandler(
+processor.addCallHandler(
   'tips.Tip',
   tipsTipCall(SubstrateNetwork.kusama)
 );

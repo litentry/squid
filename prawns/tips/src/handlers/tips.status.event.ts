@@ -5,6 +5,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateTip } from '../model';
 import { SubstrateTipStatus } from '../model/generated/_substrateTipStatus';
 import getApi from '../utils/getApi';
+import {Store} from "@subsquid/typeorm-store"
 
 enum METHODS {
   TipClosed = 'TipClosed',
@@ -14,7 +15,7 @@ enum METHODS {
 }
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     const date = new Date(ctx.block.timestamp);
     const hash = ctx.event.params[0].value as string;
 
@@ -29,10 +30,10 @@ export default (network: SubstrateNetwork) =>
     await updateTip(ctx, network, hash, date);
   };
 
-async function updateTip(ctx: EventHandlerContext, network: SubstrateNetwork, hash: string, date: Date) {
+async function updateTip(ctx: EventHandlerContext<Store>, network: SubstrateNetwork, hash: string, date: Date) {
   switch (ctx.event.method) {
     case METHODS.TipClosed:
-      return await ctx.store.update(SubstrateTip, hash, {
+      return await ctx.store.save(SubstrateTip, hash, {
         status: SubstrateTipStatus.Closed,
         updatedAt: date,
       });
