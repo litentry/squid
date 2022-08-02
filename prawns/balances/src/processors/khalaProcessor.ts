@@ -1,11 +1,10 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
-import balanceTransferHandler from '../handlers/balances.transfer.event';
-import balanceEndowedHandler from '../handlers/balances.endowed.event';
-import treasuryDepositHandler from '../handlers/treasury.deposit.event';
-import treasuryAwardedHandler from '../handlers/treasury.awarded.event';
 import balanceSetHandler from '../handlers/balances.balanceset.event';
+import balanceDepositHandler from '../handlers/balances.deposit.event';
+import balanceEndowedHandler from '../handlers/balances.endowed.event';
+import balanceTransferHandler from '../handlers/balances.transfer.event';
+import treasuryAwardedHandler from '../handlers/treasury.awarded.event';
 import { SubstrateNetwork } from '../model';
-import balanceDepositHandler from "../handlers/balances.deposit.event";
 
 const processor = new SubstrateProcessor('litentry_squid_balances_khala');
 
@@ -19,10 +18,6 @@ processor.setDataSource({
 processor.addEventHandler(
   'balances.Transfer',
   balanceTransferHandler(SubstrateNetwork.phala, 0)
-);
-processor.addEventHandler(
-  'treasury.Deposit',
-  treasuryDepositHandler(SubstrateNetwork.phala, 0)
 );
 processor.addEventHandler(
   'treasury.Awarded',
