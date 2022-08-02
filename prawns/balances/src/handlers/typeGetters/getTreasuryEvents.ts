@@ -1,25 +1,17 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import {
-  TreasuryAwardedEvent as PolkadotTreasuryAwardedEvent,
-  TreasuryDepositEvent as PolkadotTreasuryDepositEvent
-} from '../../types/polkadot/events';
-import {
   TreasuryAwardedEvent as KhalaTreasuryAwardedEvent,
-  TreasuryDepositEvent as KhalaTreasuryDepositEvent
+  TreasuryDepositEvent as KhalaTreasuryDepositEvent,
 } from '../../types/khala/events';
 import {
-  TreasuryAwardedEvent as KusamaTreasuryAwardedEvent,
-  TreasuryDepositEvent as KusamaTreasuryDepositEvent
-} from '../../types/kusama/events';
-import {
   TreasuryAwardedEvent as LitentryTreasuryAwardedEvent,
-  TreasuryDepositEvent as LitentryTreasuryDepositEvent
+  TreasuryDepositEvent as LitentryTreasuryDepositEvent,
 } from '../../types/litentry/events';
 
 import {
   TreasuryAwardedEvent as LitmusTreasuryAwardedEvent,
-  TreasuryDepositEvent as LitmusTreasuryDepositEvent
+  TreasuryDepositEvent as LitmusTreasuryDepositEvent,
 } from '../../types/litmus/events';
 
 export function getTreasuryDepositEvent(
@@ -39,26 +31,6 @@ export function getTreasuryDepositEvent(
       }
     }
 
-    case SubstrateNetwork.polkadot: {
-      const event = new PolkadotTreasuryDepositEvent(ctx);
-
-      if (event.isV0) {
-        return event.asV0;
-      } else {
-        return event.asV9170.value;
-      }
-    }
-
-    case SubstrateNetwork.kusama: {
-      const event = new KusamaTreasuryDepositEvent(ctx);
-
-      if (event.isV1020) {
-        return event.asV1020;
-      } else {
-        return event.asV9160.value;
-      }
-    }
-    
     case SubstrateNetwork.litmus: {
       const event = new LitmusTreasuryDepositEvent(ctx);
 
@@ -93,7 +65,6 @@ export function getTreasuryDepositEvent(
   }
 }
 
-
 export function getTreasuryAwardedEvent(
   ctx: EventHandlerContext,
   network: SubstrateNetwork
@@ -109,7 +80,7 @@ export function getTreasuryAwardedEvent(
         const [, award, account] = event.asV1;
         return {
           award,
-          account
+          account,
         };
       } else if (event.isV1110) {
         return event.asV1110;
@@ -118,39 +89,6 @@ export function getTreasuryAwardedEvent(
       }
     }
 
-    case SubstrateNetwork.polkadot: {
-      const event = new PolkadotTreasuryAwardedEvent(ctx);
-
-      if (event.isV0) {
-        const [, award, account] = event.asV0;
-        return {
-          award,
-          account
-        };
-      } else if (event.isV9170) {
-        return event.asV9170;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.kusama: {
-      const event = new KusamaTreasuryAwardedEvent(ctx);
-
-      if (event.isV1020) {
-        const [, award, account] = event.asV1020;
-        return {
-          award,
-          account
-        };
-      } else if (event.isV9160) {
-        return event.asV9160;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-
     case SubstrateNetwork.litmus: {
       const event = new LitmusTreasuryAwardedEvent(ctx);
 
@@ -158,7 +96,7 @@ export function getTreasuryAwardedEvent(
         const [, award, account] = event.asV9020;
         return {
           award,
-          account
+          account,
         };
       }
 
@@ -176,7 +114,7 @@ export function getTreasuryAwardedEvent(
         const [, award, account] = event.asV9000;
         return {
           award,
-          account
+          account,
         };
       }
 
