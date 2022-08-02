@@ -34,14 +34,6 @@ FROM squid AS khalaProcessor
 EXPOSE 3000
 CMD ["yarn", "process:khala"]
 
-FROM squid AS kusamaProcessor
-EXPOSE 3000
-CMD ["yarn", "process:kusama"]
-
-FROM squid AS polkadotProcessor
-EXPOSE 3000
-CMD ["yarn", "process:polkadot"]
-
 FROM squid AS litmusProcessor
 EXPOSE 3000
 CMD ["yarn", "process:litmus"]
