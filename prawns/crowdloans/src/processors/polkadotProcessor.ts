@@ -1,20 +1,21 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import crowdloanContributedHandler from '../handlers/crowdloan.contributed.event';
 import { SubstrateNetwork } from '../model';
+import { TypeormDatabase } from '@subsquid/typeorm-store'
+import { lookupArchive } from '@subsquid/archive-registry';
 
-const processor = new SubstrateProcessor('litentry_squid_crowdloans_polkadot');
-
+const processor = new SubstrateProcessor(new TypeormDatabase());
 processor.setTypesBundle('polkadot');
 processor.setBatchSize(500);
-processor.setIsolationLevel('REPEATABLE READ');
 processor.setBlockRange({ from: 7554350 });
 processor.setDataSource({
-  archive: 'https://polkadot-squid-archive.litentry.io/graphql/v1/graphql',
-  chain: 'wss://polkadot.api.onfinality.io/public-ws',
+  archive: lookupArchive("polkadot", { release: "FireSquid" })
 });
+
 processor.addEventHandler(
-  'crowdloan.Contributed',
+  'Crowdloan.Contributed',
   crowdloanContributedHandler(SubstrateNetwork.polkadot, 0)
 );
 
 processor.run();
+

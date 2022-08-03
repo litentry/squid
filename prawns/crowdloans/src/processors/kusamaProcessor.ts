@@ -1,19 +1,18 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import crowdloanContributedHandler from '../handlers/crowdloan.contributed.event';
 import { SubstrateNetwork } from '../model';
+import { TypeormDatabase } from '@subsquid/typeorm-store'
+import { lookupArchive } from '@subsquid/archive-registry';
 
-const processor = new SubstrateProcessor('litentry_squid_crowdloans_kusama');
-
+const processor = new SubstrateProcessor(new TypeormDatabase());
 processor.setTypesBundle('kusama');
-processor.setBatchSize(500);
-processor.setIsolationLevel('REPEATABLE READ');
-processor.setBlockRange({ from: 7828000 });
+processor.setBatchSize(10);
 processor.setDataSource({
-  archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
-  chain: 'wss://kusama.api.onfinality.io/public-ws',
+  archive: lookupArchive("kusama", { release: "FireSquid" })
 });
+
 processor.addEventHandler(
-  'crowdloan.Contributed',
+  'Crowdloan.Contributed',
   crowdloanContributedHandler(SubstrateNetwork.kusama, 0)
 );
 
