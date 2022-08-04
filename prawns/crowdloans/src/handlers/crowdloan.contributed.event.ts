@@ -11,17 +11,18 @@ import {
   SubstrateNetwork,
 } from '../model';
 import { getContributedEvent } from './typeGetters/getContributedEvent';
+import {Store} from "@subsquid/typeorm-store"
 
 export default (network: SubstrateNetwork, tokenIndex: number) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const symbol = getRegistry(network).symbols[tokenIndex];
     const decimals = getRegistry(network).decimals[tokenIndex];
     const {
       amount,
-      paraId,
-      address: rawAddress,
+      fundIndex,
+      who: rawAddress,
     } = getContributedEvent(ctx, network);
 
     const address = encodeAddress(network, rawAddress);
@@ -49,7 +50,7 @@ export default (network: SubstrateNetwork, tokenIndex: number) =>
       symbol,
       decimals,
       amount,
-      paraId,
+      paraId: fundIndex,
       account,
       rootAccount,
     });

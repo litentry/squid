@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/kusama",
-  "chainVersions": "../../../metadata/kusamaVersions.json",
+  "specVersions": "https://kusama.archive.subsquid.io/graphql",
   "typesBundle": "kusama",
-  "events": ["crowdloan.Contributed"]
+  "events": ["Crowdloan.Contributed"]
 }

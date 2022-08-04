@@ -1,34 +1,46 @@
 import assert from 'assert'
-import {EventContext, Result, deprecateLatest} from './support'
-import * as v9110 from './v9110'
+import {Chain, ChainContext, EventContext, Event, Result} from './support'
 
 export class CrowdloanContributedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'crowdloan.Contributed')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Crowdloan.Contributed')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    * Contributed to a crowd sale. `[who, fund_index, amount]`
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getEventHash('crowdloan.Contributed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
+    return this._chain.getEventHash('Crowdloan.Contributed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
   }
 
   /**
    * Contributed to a crowd sale. `[who, fund_index, amount]`
    */
-  get asV9110(): [v9110.AccountId32, v9110.Id, bigint] {
+  get asV9110(): [Uint8Array, number, bigint] {
     assert(this.isV9110)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
+    return this._chain.decodeEvent(this.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9110
+  /**
+   * Contributed to a crowd sale.
+   */
+  get isV9230(): boolean {
+    return this._chain.getEventHash('Crowdloan.Contributed') === 'a09bba4441a47a7b463e5f26020197386183019a6130ce697a434ee31cc39482'
   }
 
-  get asLatest(): [v9110.AccountId32, v9110.Id, bigint] {
-    deprecateLatest()
-    return this.asV9110
+  /**
+   * Contributed to a crowd sale.
+   */
+  get asV9230(): {who: Uint8Array, fundIndex: number, amount: bigint} {
+    assert(this.isV9230)
+    return this._chain.decodeEvent(this.event)
   }
 }

@@ -2,13 +2,14 @@ import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { CrowdloanContributedEvent as PolkadotCrowdloanContributedEvent } from '../../types/polkadot/events';
 import { CrowdloanContributedEvent as KusamaCrowdloanContributedEvent } from '../../types/kusama/events';
+import {Store} from "@subsquid/typeorm-store"
 
 export function getContributedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
-  address: Uint8Array;
-  paraId: number;
+  who: Uint8Array;
+  fundIndex: number;
   amount: bigint;
 } {
   switch (network) {
@@ -18,15 +19,19 @@ export function getContributedEvent(
 
       if (event.isV9110) {
         eventData = event.asV9110;
-      } else {
-        eventData = event.asLatest;
+
+        return {
+          who: eventData[0],
+          fundIndex: eventData[1],
+          amount: eventData[2],
+        }
       }
 
-      return {
-        address: eventData[0],
-        paraId: eventData[1],
-        amount: eventData[2],
-      };
+      if (event.isV9230) {
+        return event.asV9230;
+      }
+
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -35,15 +40,19 @@ export function getContributedEvent(
 
       if (event.isV9010) {
         eventData = event.asV9010;
-      } else {
-        eventData = event.asLatest;
+
+        return {
+          who: eventData[0],
+          fundIndex: eventData[1],
+          amount: eventData[2],
+        };
       }
 
-      return {
-        address: eventData[0],
-        paraId: eventData[1],
-        amount: eventData[2],
-      };
+      if (event.isV9230) {
+        return event.asV9230;
+      }
+
+      throw new Error('Unexpected version');
     }
 
     default: {
