@@ -6,7 +6,8 @@ import { lookupArchive } from '@subsquid/archive-registry';
 
 const processor = new SubstrateProcessor(new TypeormDatabase());
 processor.setTypesBundle('kusama');
-processor.setBatchSize(10);
+processor.setBatchSize(500);
+processor.setBlockRange({ from: 7554350 });
 processor.setDataSource({
   archive: lookupArchive("kusama", { release: "FireSquid" })
 });
