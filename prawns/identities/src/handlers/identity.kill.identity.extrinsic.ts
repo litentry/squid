@@ -3,7 +3,7 @@ import { decodeAddress } from '../utils';
 import { SubstrateIdentity, SubstrateNetwork, SubstrateIdentityAction } from '../model';
 import { getManager } from 'typeorm';
 
-export default (network: SubstrateNetwork) =>
+const getHandler = (network: SubstrateNetwork) =>
   async (ctx: ExtrinsicHandlerContext) => {
 
     const blockNumber = BigInt(ctx.block.height);
@@ -28,3 +28,10 @@ export default (network: SubstrateNetwork) =>
 
     await ctx.store.save(identityModel);
   };
+
+export const getExtrinsicNames = () => ['identity.kill_identity'];
+
+export default {
+  getExtrinsicNames,
+  getHandler
+};

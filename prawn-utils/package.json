@@ -1,0 +1,13 @@
+{
+  "name": "prawn-utils",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "dependencies": {
+    "@subsquid/substrate-processor": "^0.4.1"
+  },
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "typecheck": "yarn tsc --noEmit",
+    "watch": "tsc --watch"
+  }
+}
