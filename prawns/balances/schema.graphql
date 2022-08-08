@@ -2,109 +2,60 @@ enum SubstrateNetwork {
   kusama
   polkadot
   phala
+  khala
+  litmus
+  litentry
+}
+
+enum SubstrateBalanceChangeEventType {
+  BalancesBalanceSet
+  BalancesDeposit
+  BalancesEndowed
+  BalancesTransfer
+  TreasuryAwarded
 }
 
 type SubstrateBalanceAccount @entity {
-  "address:tokenSymbol"
-  id: ID!
   "address"
-  account: String! @index
+  id: ID!
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork!
   symbol: String!
   decimals: Int!
-  balance: BigInt!
-  firstTransferInDate: DateTime
-  firstTransferInBlockNumber: BigInt
-  firstTransferOutDate: DateTime
-  firstTransferOutBlockNumber: BigInt
-  lastTransferInDate: DateTime
-  lastTransferInBlockNumber: BigInt
-  lastTransferOutDate: DateTime
-  lastTransferOutBlockNumber: BigInt
+  firstBalanceChangeEventDate: DateTime
+  firstBalanceChangeEventBlockNumber: BigInt
+  lastBalanceChangeEventDate: DateTime
+  lastBalanceChangeEventBlockNumber: BigInt
+  totalBalanceChangeEvents: Int!
   totalTransfers: Int!
+  balanceChangeEvents: [SubstrateBalanceChangeEvent]
+    @derivedFrom(field: "account")
   transfersTo: [SubstrateBalanceTransfer] @derivedFrom(field: "to")
   transfersFrom: [SubstrateBalanceTransfer] @derivedFrom(field: "from")
-  treasuryDeposits: [SubstrateTreasuryDeposit] @derivedFrom(field: "depositor")
+}
+
+type SubstrateBalanceChangeEvent @entity {
+  "network:block:index"
+  id: ID!
+  network: SubstrateNetwork!
+  account: SubstrateBalanceAccount!
+  type: SubstrateBalanceChangeEventType!
+  symbol: String!
+  decimals: Int!
+  amount: BigInt!
+  blockNumber: BigInt!
+  date: DateTime!
 }
 
 type SubstrateBalanceTransfer @entity {
   "network:block:index"
   id: ID!
   network: SubstrateNetwork!
-  symbol: String!
-  decimals: Int!
-  toAccountBalanceAtBlock: BigInt!
-  fromAccountBalanceAtBlock: BigInt!
   to: SubstrateBalanceAccount!
   from: SubstrateBalanceAccount!
-  amount: BigInt!
-  tip: BigInt!
-  blockNumber: BigInt!
-  date: DateTime!
-}
-
-type SubstrateTreasuryDeposit @entity {
-  "network:block:index"
-  id: ID!
-  depositor: SubstrateBalanceAccount!
-  network: SubstrateNetwork!
   symbol: String!
   decimals: Int!
-  accountBalanceAtBlock: BigInt!
-  amount: BigInt!
-  blockNumber: BigInt!
-  date: DateTime!
-}
-
-type SubstrateBalanceDeposit @entity {
-  "network:block:index"
-  id: ID!
-  depositor: SubstrateBalanceAccount!
-  depositee: SubstrateBalanceAccount!
-  network: SubstrateNetwork!
-  symbol: String!
-  decimals: Int!
-  amount: BigInt!
-  blockNumber: BigInt!
-  date: DateTime!
-}
-
-type SubstrateBalanceEndowed @entity {
-  "network:block:index"
-  id: ID!
-  account: SubstrateBalanceAccount!
-  network: SubstrateNetwork!
-  symbol: String!
-  decimals: Int!
-  accountBalanceAtBlock: BigInt!
-  amount: BigInt!
-  blockNumber: BigInt!
-  date: DateTime!
-}
-
-type SubstrateTreasuryAwarded @entity {
-  "network:block:index"
-  id: ID!
-  depositee: SubstrateBalanceAccount!
-  network: SubstrateNetwork!
-  symbol: String!
-  decimals: Int!
-  accountBalanceAtBlock: BigInt!
-  amount: BigInt!
-  blockNumber: BigInt!
-  date: DateTime!
-}
-
-type SubstrateBalanceSet @entity {
-  "network:block:index"
-  id: ID!
-  account: SubstrateBalanceAccount!
-  network: SubstrateNetwork!
-  symbol: String!
-  decimals: Int!
-  accountBalanceAtBlock: BigInt!
   amount: BigInt!
   blockNumber: BigInt!
   date: DateTime!

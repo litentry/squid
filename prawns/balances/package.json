@@ -4,35 +4,34 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && yarn build && yarn migrate",
-    "dev:khala": "node -r dotenv/config lib/processors/khalaProcessor.js",
-    "dev:litentry": "node -r dotenv/config lib/processors/litentryProcessor.js",
-    "dev:litmus": "node -r dotenv/config lib/processors/litmusProcessor.js",
-    "process:khala": "node lib/processors/khalaProcessor.js",
-    "process:litentry": "node lib/processors/litentryProcessor.js",
-    "process:litmus": "node lib/processors/litmusProcessor.js",
+    "reload-db": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d",
+    "db:init": "yarn reload-db && yarn build && yarn migrate",
+    "process:dev": "node -r dotenv/config lib/processor.js",
+    "process": "node lib/processor.js",
     "query-node": "squid-graphql-server",
     "build": "rm -rf lib && tsc",
     "codegen": "sqd codegen",
     "migrate": "sqd db:migrate",
-    "migrate:revert": "sqd db revert",
-    "migration": "sqd db:create-migration Data"
+    "migration": "yarn reload-db && rm -rf ./db/migrations/*.js && sqd db:create-migration Data"
   },
   "dependencies": {
-    "@polkadot/util-crypto": "^8.4.1",
-    "@subsquid/graphql-server": "^0.1.5",
-    "@subsquid/ss58": "^0.0.4",
-    "@subsquid/substrate-processor": "^0.4.1",
+    "@polkadot/util-crypto": "^8.7.1",
+    "@subsquid/archive-registry": "^1.0.7",
+    "@subsquid/cli": "^0.5.1",
+    "@subsquid/graphql-server": "^1.1.0",
+    "@subsquid/ss58": "^0.1.1",
+    "@subsquid/substrate-processor": "1.5.0",
+    "@subsquid/typeorm-migration": "0.1.1",
+    "@subsquid/typeorm-store": "0.1.1",
     "dotenv": "^10.0.0",
-    "pg": "^8.7.1",
-    "typeorm": "^0.2.41"
+    "pg": "^8.7.3",
+    "typeorm": "0.3.7"
   },
   "devDependencies": {
-    "@subsquid/cli": "^0.1.1",
-    "@types/node": "^16.11.17",
-    "@typescript-eslint/eslint-plugin": "^5.10.0",
-    "eslint": "7.26.0",
-    "prettier": "^2.3.2",
-    "typescript": "~4.5.4"
+    "@subsquid/substrate-metadata-explorer": "1.0.4",
+    "@subsquid/substrate-typegen": "1.2.0",
+    "@subsquid/typeorm-codegen": "0.1.0",
+    "@types/node": "16.11.45",
+    "typescript": "4.7.4"
   }
 }

@@ -1,0 +1,12 @@
+{
+  "outDir": "../src/types/polkadot",
+  "specVersions": "https://polkadot.archive.subsquid.io/graphql",
+  "typesBundle": "polkadot",
+  "events": [
+    "Balances.BalanceSet",
+    "Balances.Deposit",
+    "Balances.Endowed",
+    "Balances.Transfer",
+    "Treasury.Awarded"
+  ]
+}
