@@ -18,18 +18,6 @@ export class SubstrateBalanceTransfer {
   @Column_("varchar", {length: 8, nullable: false})
   network!: SubstrateNetwork
 
-  @Column_("text", {nullable: false})
-  symbol!: string
-
-  @Column_("integer", {nullable: false})
-  decimals!: number
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  toAccountBalanceAtBlock!: bigint
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  fromAccountBalanceAtBlock!: bigint
-
   @Index_()
   @ManyToOne_(() => SubstrateBalanceAccount, {nullable: false})
   to!: SubstrateBalanceAccount
@@ -38,11 +26,14 @@ export class SubstrateBalanceTransfer {
   @ManyToOne_(() => SubstrateBalanceAccount, {nullable: false})
   from!: SubstrateBalanceAccount
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  amount!: bigint
+  @Column_("text", {nullable: false})
+  symbol!: string
+
+  @Column_("int4", {nullable: false})
+  decimals!: number
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  tip!: bigint
+  amount!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint

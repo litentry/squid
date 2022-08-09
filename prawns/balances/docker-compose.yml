@@ -26,44 +26,12 @@ services:
       - web_network
       - db_network
 
-  khala-processor:
+  processor:
     profiles:
       - indexing
     build:
       context: .
-      target: khalaProcessor
-    environment:
-      DB_HOST: db
-    ports:
-      - 3000
-    restart: unless-stopped
-    depends_on:
-      - db
-    networks:
-      - db_network
-
-  litmus-processor:
-    profiles:
-      - indexing
-    build:
-      context: .
-      target: litmusProcessor
-    environment:
-      DB_HOST: db
-    ports:
-      - 3000
-    restart: unless-stopped
-    depends_on:
-      - db
-    networks:
-      - db_network
-
-  litentry-processor:
-    profiles:
-      - indexing
-    build:
-      context: .
-      target: litentryProcessor
+      target: processor
     environment:
       DB_HOST: db
     ports:

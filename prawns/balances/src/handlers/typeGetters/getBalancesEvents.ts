@@ -1,44 +1,39 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateNetwork } from '../../model';
 import {
-  BalancesBalanceSetEvent as KhalaBalancesBalanceSetEvent,
-  BalancesDepositEvent as KhalaBalancesDepositEvent,
-  BalancesDustLostEvent as KhalaBalancesDustLostEvent,
-  BalancesEndowedEvent as KhalaBalancesEndowedEvent,
-  BalancesReservedEvent as KhalaBalancesReservedEvent,
-  BalancesReserveRepatriatedEvent as KhalaBalancesReserveRepatriatedEvent,
-  BalancesSlashedEvent as KhalaBalancesSlashedEvent,
-  BalancesTransferEvent as KhalaBalancesTransferEvent,
-  BalancesUnreservedEvent as KhalaBalancesUnreservedEvent,
-  BalancesWithdrawEvent as KhalaBalancesWithdrawEvent,
-} from '../../types/khala/events';
+  BalancesBalanceSetEvent as KusamaBalancesBalanceSetEvent,
+  BalancesDepositEvent as KusamaBalancesDepositEvent,
+  BalancesEndowedEvent as KusamaBalancesEndowedEvent,
+  BalancesTransferEvent as KusamaBalancesTransferEvent,
+} from '../../types/kusama/events';
 import {
-  BalancesBalanceSetEvent as LitentryBalancesBalanceSetEvent,
-  BalancesDepositEvent as LitentryBalancesDepositEvent,
-  BalancesDustLostEvent as LitentryBalancesDustLostEvent,
-  BalancesEndowedEvent as LitentryBalancesEndowedEvent,
-  BalancesReservedEvent as LitentryBalancesReservedEvent,
-  BalancesReserveRepatriatedEvent as LitentryBalancesReserveRepatriatedEvent,
-  BalancesSlashedEvent as LitentryBalancesSlashedEvent,
-  BalancesTransferEvent as LitentryBalancesTransferEvent,
-  BalancesUnreservedEvent as LitentryBalancesUnreservedEvent,
-  BalancesWithdrawEvent as LitentryBalancesWithdrawEvent,
-} from '../../types/litentry/events';
-import {
-  BalancesBalanceSetEvent as LitmusBalancesBalanceSetEvent,
-  BalancesDepositEvent as LitmusBalancesDepositEvent,
-  BalancesDustLostEvent as LitmusBalancesDustLostEvent,
-  BalancesEndowedEvent as LitmusBalancesEndowedEvent,
-  BalancesReservedEvent as LitmusBalancesReservedEvent,
-  BalancesReserveRepatriatedEvent as LitmusBalancesReserveRepatriatedEvent,
-  BalancesSlashedEvent as LitmusBalancesSlashedEvent,
-  BalancesTransferEvent as LitmusBalancesTransferEvent,
-  BalancesUnreservedEvent as LitmusBalancesUnreservedEvent,
-  BalancesWithdrawEvent as LitmusBalancesWithdrawEvent,
-} from '../../types/litmus/events';
+  BalancesBalanceSetEvent as PolkadotBalancesBalanceSetEvent,
+  BalancesDepositEvent as PolkadotBalancesDepositEvent,
+  BalancesEndowedEvent as PolkadotBalancesEndowedEvent,
+  BalancesTransferEvent as PolkadotBalancesTransferEvent,
+} from '../../types/polkadot/events';
+// import {
+//   BalancesBalanceSetEvent as KhalaBalancesBalanceSetEvent,
+//   BalancesDepositEvent as KhalaBalancesDepositEvent,
+//   BalancesEndowedEvent as KhalaBalancesEndowedEvent,
+//   BalancesTransferEvent as KhalaBalancesTransferEvent,
+// } from '../../types/khala/events';
+// import {
+//   BalancesBalanceSetEvent as LitentryBalancesBalanceSetEvent,
+//   BalancesDepositEvent as LitentryBalancesDepositEvent,
+//   BalancesEndowedEvent as LitentryBalancesEndowedEvent,
+//   BalancesTransferEvent as LitentryBalancesTransferEvent,
+// } from '../../types/litentry/events';
+// import {
+//   BalancesBalanceSetEvent as LitmusBalancesBalanceSetEvent,
+//   BalancesDepositEvent as LitmusBalancesDepositEvent,
+//   BalancesEndowedEvent as LitmusBalancesEndowedEvent,
+//   BalancesTransferEvent as LitmusBalancesTransferEvent,
+// } from '../../types/litmus/events';
 
 export function getBalancesBalanceSetEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   who: Uint8Array;
@@ -46,41 +41,68 @@ export function getBalancesBalanceSetEvent(
   reserved: bigint;
 } {
   switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesBalanceSetEvent(ctx);
-
-      if (event.isV1) {
-        const [who, free, reserved] = event.asV1;
-        return { who, free, reserved };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesBalanceSetEvent(ctx);
-      if (event.isV9000) {
-        const [who, free, reserved] = event.asV9000;
+    case SubstrateNetwork.kusama: {
+      const event = new KusamaBalancesBalanceSetEvent(ctx);
+      if (event.isV1031) {
+        const [who, free, reserved] = event.asV1031;
         return { who, free, reserved };
       }
 
-      if (event.isV9071) {
-        return event.asV9071;
+      if (event.isV9130) {
+        return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesBalanceSetEvent(ctx);
-      if (event.isV9020) {
-        return event.asV9020;
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotBalancesBalanceSetEvent(ctx);
+      if (event.isV0) {
+        const [who, free, reserved] = event.asV0;
+        return { who, free, reserved };
       }
 
-      return event.asLatest;
+      if (event.isV9140) {
+        return event.asV9140;
+      }
+
+      throw new Error('Unexpected version');
     }
+    // case SubstrateNetwork.phala: {
+    //   const event = new KhalaBalancesBalanceSetEvent(ctx);
+
+    //   if (event.isV1) {
+    //     const [who, free, reserved] = event.asV1;
+    //     return { who, free, reserved };
+    //   } else if (event.isV1090) {
+    //     return event.asV1090;
+    //   } else {
+    //     return event.asLatest;
+    //   }
+    // }
+
+    // case SubstrateNetwork.litentry: {
+    //   const event = new LitentryBalancesBalanceSetEvent(ctx);
+    //   if (event.isV9000) {
+    //     const [who, free, reserved] = event.asV9000;
+    //     return { who, free, reserved };
+    //   }
+
+    //   if (event.isV9071) {
+    //     return event.asV9071;
+    //   }
+
+    //   return event.asLatest;
+    // }
+
+    // case SubstrateNetwork.litmus: {
+    //   const event = new LitmusBalancesBalanceSetEvent(ctx);
+    //   if (event.isV9020) {
+    //     return event.asV9020;
+    //   }
+
+    //   return event.asLatest;
+    // }
 
     default: {
       throw new Error('getBalancesBalanceSetEvent::network not supported');
@@ -89,48 +111,78 @@ export function getBalancesBalanceSetEvent(
 }
 
 export function getBalancesDepositEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   who: Uint8Array;
   amount: bigint;
 } {
   switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesDepositEvent(ctx);
+    case SubstrateNetwork.kusama: {
+      const event = new KusamaBalancesDepositEvent(ctx);
 
-      if (event.isV1) {
-        const [who, amount] = event.asV1;
-        return { who, amount };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesDepositEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesDepositEvent(ctx);
-      if (event.isV9000) {
-        const [who, amount] = event.asV9000;
+      if (event.isV1032) {
+        const [who, amount] = event.asV1032;
         return { who, amount };
       }
 
-      if (event.isV9071) {
-        return event.asV9071;
+      if (event.isV9130) {
+        return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
+
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotBalancesDepositEvent(ctx);
+
+      if (event.isV0) {
+        const [who, amount] = event.asV0;
+        return { who, amount };
+      }
+
+      if (event.isV9140) {
+        return event.asV9140;
+      }
+
+      throw new Error('Unexpected version');
+    }
+
+    // case SubstrateNetwork.phala: {
+    //   const event = new KhalaBalancesDepositEvent(ctx);
+
+    //   if (event.isV1) {
+    //     const [who, amount] = event.asV1;
+    //     return { who, amount };
+    //   } else if (event.isV1090) {
+    //     return event.asV1090;
+    //   } else {
+    //     return event.asLatest;
+    //   }
+    // }
+
+    // case SubstrateNetwork.litmus: {
+    //   const event = new LitmusBalancesDepositEvent(ctx);
+
+    //   if (event.isV9020) {
+    //     return event.asV9020;
+    //   }
+    //   return event.asLatest;
+    // }
+
+    // case SubstrateNetwork.litentry: {
+    //   const event = new LitentryBalancesDepositEvent(ctx);
+    //   if (event.isV9000) {
+    //     const [who, amount] = event.asV9000;
+    //     return { who, amount };
+    //   }
+
+    //   if (event.isV9071) {
+    //     return event.asV9071;
+    //   }
+
+    //   return event.asLatest;
+    // }
 
     default: {
       throw new Error('getBalancesDepositEvent::network not supported');
@@ -138,99 +190,79 @@ export function getBalancesDepositEvent(
   }
 }
 
-export function getBalancesDustLostEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork
-): {
-  account: Uint8Array;
-  amount: bigint;
-} {
-  switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesDustLostEvent(ctx);
-
-      if (event.isV1) {
-        const [account, amount] = event.asV1;
-        return { account, amount };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesDustLostEvent(ctx);
-      if (event.isV9000) {
-        const [account, amount] = event.asV9000;
-        return { account, amount };
-      }
-
-      if (event.isV9071) {
-        return event.asV9071;
-      }
-
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesDustLostEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    default: {
-      throw new Error('getBalancesDustLostEvent::network not supported');
-    }
-  }
-}
-
 export function getBalancesEndowedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   account: Uint8Array;
   freeBalance: bigint;
 } {
   switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesEndowedEvent(ctx);
+    case SubstrateNetwork.kusama: {
+      const event = new KusamaBalancesEndowedEvent(ctx);
 
-      if (event.isV1) {
-        const [account, freeBalance] = event.asV1;
-        return { account, freeBalance };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesEndowedEvent(ctx);
-      if (event.isV9000) {
-        const [account, freeBalance] = event.asV9000;
+      if (event.isV1050) {
+        const [account, freeBalance] = event.asV1050;
         return { account, freeBalance };
       }
 
-      if (event.isV9071) {
-        return event.asV9071;
+      if (event.isV9130) {
+        return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesEndowedEvent(ctx);
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotBalancesEndowedEvent(ctx);
 
-      if (event.isV9020) {
-        return event.asV9020;
+      if (event.isV0) {
+        const [account, freeBalance] = event.asV0;
+        return { account, freeBalance };
       }
-      return event.asLatest;
+
+      if (event.isV9140) {
+        return event.asV9140;
+      }
+
+      throw new Error('Unexpected version');
     }
+
+    // case SubstrateNetwork.phala: {
+    //   const event = new KhalaBalancesEndowedEvent(ctx);
+
+    //   if (event.isV1) {
+    //     const [account, freeBalance] = event.asV1;
+    //     return { account, freeBalance };
+    //   } else if (event.isV1090) {
+    //     return event.asV1090;
+    //   } else {
+    //     return event.asLatest;
+    //   }
+    // }
+
+    // case SubstrateNetwork.litentry: {
+    //   const event = new LitentryBalancesEndowedEvent(ctx);
+    //   if (event.isV9000) {
+    //     const [account, freeBalance] = event.asV9000;
+    //     return { account, freeBalance };
+    //   }
+
+    //   if (event.isV9071) {
+    //     return event.asV9071;
+    //   }
+
+    //   return event.asLatest;
+    // }
+
+    // case SubstrateNetwork.litmus: {
+    //   const event = new LitmusBalancesEndowedEvent(ctx);
+
+    //   if (event.isV9020) {
+    //     return event.asV9020;
+    //   }
+    //   return event.asLatest;
+    // }
 
     default: {
       throw new Error('getBalancesEndowedEvent::network not supported');
@@ -238,159 +270,8 @@ export function getBalancesEndowedEvent(
   }
 }
 
-export function getBalancesReservedEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork
-): {
-  who: Uint8Array;
-  amount: bigint;
-} {
-  switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesReservedEvent(ctx);
-
-      if (event.isV1) {
-        const [who, amount] = event.asV1;
-        return { who, amount };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesReservedEvent(ctx);
-      if (event.isV9000) {
-        const [who, amount] = event.asV9000;
-        return { who, amount };
-      }
-
-      if (event.isV9071) {
-        return event.asV9071;
-      }
-
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesReservedEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    default: {
-      throw new Error('getBalancesReservedEvent::network not supported');
-    }
-  }
-}
-
-export function getBalancesReserveRepatriatedEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork
-): {
-  from: Uint8Array;
-  to: Uint8Array;
-  amount: bigint;
-  destinationStatus: { __kind: 'Free' | 'Reserved' };
-} {
-  switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesReserveRepatriatedEvent(ctx);
-
-      if (event.isV1) {
-        const [from, to, amount, destinationStatus] = event.asV1;
-        return { from, to, amount, destinationStatus };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesReserveRepatriatedEvent(ctx);
-      if (event.isV9000) {
-        const [from, to, amount, destinationStatus] = event.asV9000;
-        return { from, to, amount, destinationStatus };
-      }
-
-      if (event.isV9071) {
-        return event.asV9071;
-      }
-
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesReserveRepatriatedEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    default: {
-      throw new Error(
-        'getBalancesReserveRepatriatedEvent::network not supported'
-      );
-    }
-  }
-}
-
-export function getBalancesSlashedEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork
-): {
-  who: Uint8Array;
-  amount: bigint;
-} {
-  switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesSlashedEvent(ctx);
-
-      if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesSlashedEvent(ctx);
-      if (event.isV9000) {
-        const [who, amount] = event.asV9000;
-        return { who, amount };
-      }
-
-      if (event.isV9071) {
-        return event.asV9071;
-      }
-
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesSlashedEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    default: {
-      throw new Error('getBalancesSlashedEvent::network not supported');
-    }
-  }
-}
-
 export function getBalancesTransferEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   from: Uint8Array;
@@ -398,141 +279,75 @@ export function getBalancesTransferEvent(
   amount: bigint;
 } {
   switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesTransferEvent(ctx);
+    case SubstrateNetwork.kusama: {
+      const event = new KusamaBalancesTransferEvent(ctx);
 
-      if (event.isV1) {
-        const [from, to, amount] = event.asV1;
-        return { from, to, amount };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesTransferEvent(ctx);
-      if (event.isV9000) {
-        const [from, to, amount] = event.asV9000;
+      if (event.isV1020) {
+        const [from, to, amount] = event.asV1020;
         return { from, to, amount };
       }
 
-      if (event.isV9071) {
-        return event.asV9071;
+      if (event.isV1050) {
+        const [from, to, amount] = event.asV1050;
+        return { from, to, amount };
       }
 
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesTransferEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
+      if (event.isV9130) {
+        return event.asV9130;
       }
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
+
+    case SubstrateNetwork.polkadot: {
+      const event = new PolkadotBalancesTransferEvent(ctx);
+
+      if (event.isV0) {
+        const [from, to, amount] = event.asV0;
+        return { from, to, amount };
+      } else if (event.isV9140) {
+        return event.asV9140;
+      }
+      throw new Error('Unexpected version');
+    }
+
+    // case SubstrateNetwork.phala: {
+    //   const event = new KhalaBalancesTransferEvent(ctx);
+
+    //   if (event.isV1) {
+    //     const [from, to, amount] = event.asV1;
+    //     return { from, to, amount };
+    //   } else if (event.isV1090) {
+    //     return event.asV1090;
+    //   } else {
+    //     return event.asLatest;
+    //   }
+    // }
+
+    // case SubstrateNetwork.litentry: {
+    //   const event = new LitentryBalancesTransferEvent(ctx);
+    //   if (event.isV9000) {
+    //     const [from, to, amount] = event.asV9000;
+    //     return { from, to, amount };
+    //   }
+
+    //   if (event.isV9071) {
+    //     return event.asV9071;
+    //   }
+
+    //   return event.asLatest;
+    // }
+
+    // case SubstrateNetwork.litmus: {
+    //   const event = new LitmusBalancesTransferEvent(ctx);
+
+    //   if (event.isV9020) {
+    //     return event.asV9020;
+    //   }
+    //   return event.asLatest;
+    // }
 
     default: {
       throw new Error('getBalancesTransferEvent::network not supported');
-    }
-  }
-}
-
-export function getBalancesUnreservedEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork
-): {
-  who: Uint8Array;
-  amount: bigint;
-} {
-  switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesUnreservedEvent(ctx);
-
-      if (event.isV1) {
-        const [who, amount] = event.asV1;
-        return { who, amount };
-      } else if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesUnreservedEvent(ctx);
-      if (event.isV9000) {
-        const [who, amount] = event.asV9000;
-        return { who, amount };
-      }
-
-      if (event.isV9071) {
-        return event.asV9071;
-      }
-
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesUnreservedEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    default: {
-      throw new Error('getBalancesUnreservedEvent::network not supported');
-    }
-  }
-}
-
-export function getBalancesWithdrawEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork
-): {
-  who: Uint8Array;
-  amount: bigint;
-} {
-  switch (network) {
-    case SubstrateNetwork.phala: {
-      const event = new KhalaBalancesWithdrawEvent(ctx);
-
-      if (event.isV1090) {
-        return event.asV1090;
-      } else {
-        return event.asLatest;
-      }
-    }
-
-    case SubstrateNetwork.litentry: {
-      const event = new LitentryBalancesWithdrawEvent(ctx);
-      if (event.isV9000) {
-        const [who, amount] = event.asV9000;
-        return { who, amount };
-      }
-
-      if (event.isV9071) {
-        return event.asV9071;
-      }
-
-      return event.asLatest;
-    }
-
-    case SubstrateNetwork.litmus: {
-      const event = new LitmusBalancesWithdrawEvent(ctx);
-
-      if (event.isV9020) {
-        return event.asV9020;
-      }
-      return event.asLatest;
-    }
-
-    default: {
-      throw new Error('getBalancesWithdrawEvent::network not supported');
     }
   }
 }
