@@ -15,30 +15,15 @@ if (!supportedNetworks.includes(network)) {
   throw Error('Network not supported');
 }
 
-const processor = new SubstrateProcessor(new TypeormDatabase());
-
-processor.setTypesBundle(network);
-processor.setBatchSize(500);
-processor.setDataSource({
-  archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
-});
-
-processor.addEventHandler(
-  'Balances.Transfer',
-  balanceTransferHandler(network, 0)
-);
-processor.addEventHandler('Balances.BalanceSet', balanceSetHandler(network, 0));
-processor.addEventHandler(
-  'Balances.Endowed',
-  balanceEndowedHandler(network, 0)
-);
-processor.addEventHandler(
-  'Balances.Deposit',
-  balanceDepositHandler(network, 0)
-);
-processor.addEventHandler(
-  'Treasury.Awarded',
-  treasuryAwardedHandler(network, 0)
-);
-
-processor.run();
+const processor = new SubstrateProcessor(new TypeormDatabase())
+  .setBatchSize(500)
+  .setTypesBundle(network)
+  .setDataSource({
+    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
+  })
+  .addEventHandler('Balances.Transfer', balanceTransferHandler(network, 0))
+  .addEventHandler('Balances.BalanceSet', balanceSetHandler(network, 0))
+  .addEventHandler('Balances.Endowed', balanceEndowedHandler(network, 0))
+  .addEventHandler('Balances.Deposit', balanceDepositHandler(network, 0))
+  .addEventHandler('Treasury.Awarded', treasuryAwardedHandler(network, 0))
+  .run();
