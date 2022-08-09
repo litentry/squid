@@ -4,6 +4,7 @@ import {
   SubstrateBalanceAccount,
   SubstrateBalanceChangeEvent,
   SubstrateBalanceChangeEventType,
+  SubstrateBalanceTransfer,
   SubstrateNetwork,
 } from '../model';
 import {
@@ -78,31 +79,47 @@ export default async ({
 
   await ctx.store.save(balanceAccount);
 
-  const balanceChangeEventModel = new SubstrateBalanceChangeEvent({
-    id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
-    network,
-    account: balanceAccount,
-    type,
-    symbol,
-    decimals,
-    amount,
-    blockNumber,
-    date,
-  });
-  await ctx.store.save(balanceChangeEventModel);
-
-  if (fromAccount) {
-    const balanceChangeEventModel2 = new SubstrateBalanceChangeEvent({
+  await ctx.store.save(
+    new SubstrateBalanceChangeEvent({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
-      account: fromAccount,
+      account: balanceAccount,
       type,
       symbol,
       decimals,
-      amount: -amount,
+      amount,
       blockNumber,
       date,
-    });
-    await ctx.store.save(balanceChangeEventModel2);
+    })
+  );
+
+  if (fromAccount) {
+    await ctx.store.save(
+      new SubstrateBalanceChangeEvent({
+        id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
+        network,
+        account: fromAccount,
+        type,
+        symbol,
+        decimals,
+        amount: -amount,
+        blockNumber,
+        date,
+      })
+    );
+
+    await ctx.store.save(
+      new SubstrateBalanceTransfer({
+        id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
+        network,
+        from: fromAccount,
+        to: balanceAccount,
+        symbol,
+        decimals,
+        amount,
+        blockNumber,
+        date,
+      })
+    );
   }
 };
