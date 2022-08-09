@@ -1,10 +1,10 @@
 {
   "outDir": "../src/types/kusama",
-  "chainVersions": "../../../metadata/kusamaVersions.json",
+  "specVersions": "https://kusama.archive.subsquid.io/graphql",
   "typesBundle": "kusama",
   "calls": [
-    "identity.set_identity",
-    "identity.clear_identity",
-    "identity.kill_identity"
+    "Identity.set_identity",
+    "Identity.clear_identity",
+    "Identity.kill_identity"
   ]
 }
