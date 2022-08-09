@@ -12,7 +12,7 @@
     "build": "rm -rf lib && tsc",
     "codegen": "sqd codegen",
     "migrate": "sqd db:migrate",
-    "migration": "yarn reload-db && rm -rf ./db/migrations/*.js && sqd db:create-migration Data"
+    "migration": "yarn reload-db && rm -rf ./db/migrations/*.js && sleep 1 && sqd db:create-migration Data"
   },
   "dependencies": {
     "@polkadot/util-crypto": "^8.7.1",

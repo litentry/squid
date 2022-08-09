@@ -23,6 +23,7 @@ export class SubstrateBalanceChangeEvent {
   @ManyToOne_(() => SubstrateBalanceAccount, {nullable: false})
   account!: SubstrateBalanceAccount
 
+  @Index_()
   @Column_("varchar", {length: 18, nullable: false})
   type!: SubstrateBalanceChangeEventType
 

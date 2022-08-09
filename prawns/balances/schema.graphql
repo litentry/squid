@@ -40,7 +40,7 @@ type SubstrateBalanceChangeEvent @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateBalanceAccount!
-  type: SubstrateBalanceChangeEventType!
+  type: SubstrateBalanceChangeEventType! @index
   symbol: String!
   decimals: Int!
   amount: BigInt!
