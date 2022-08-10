@@ -12,7 +12,10 @@ export default (network: SubstrateNetwork) =>
   async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const account = ctx.extrinsic.signer;
+    const account = ctx.extrinsic.signature?.address;
+    if (!account) {
+      throw new Error('No Address on extrinsic.');
+    }
     const rootAccount = decodeAddress(account);
 
     const entityManager = getManager();
@@ -24,7 +27,7 @@ export default (network: SubstrateNetwork) =>
     );
 
     const identityModel = new SubstrateIdentity({
-      id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
+      id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       account,
       rootAccount,
       network,
