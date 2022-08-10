@@ -1,5 +1,5 @@
-import * as ss58 from '@subsquid/ss58';
 import { decodeAddress as da } from '@polkadot/util-crypto';
+import * as ss58 from '@subsquid/ss58';
 import { SubstrateNetwork } from '../model';
 
 export const getRegistry = (network: SubstrateNetwork) => {

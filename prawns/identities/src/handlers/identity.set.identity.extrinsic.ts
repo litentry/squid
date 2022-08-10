@@ -1,13 +1,12 @@
 import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
 
-import { getManager } from 'typeorm';
 import {
   SubstrateIdentity,
   SubstrateIdentityAction,
   SubstrateNetwork,
 } from '../model';
-import { decodeAddress } from '../utils';
+import { encodeAddress } from '../utils';
 import { getIdentitySetIdentityCall } from './typeGetters/getIndentitySetIdentityCall';
 
 export default (network: SubstrateNetwork) =>
@@ -15,20 +14,24 @@ export default (network: SubstrateNetwork) =>
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const identity = getIdentitySetIdentityCall(ctx);
-    const account = ctx.extrinsic.signature?.address;
-    if (!account) {
-      throw new Error('No Address on extrinsic.');
+    const rootAccount = ctx.extrinsic.signature?.address.value;
+    if (rootAccount !== undefined) {
+      ctx.log.info(rootAccount);
+      // ctx.log.info('leaving', ctx.extrinsic);
+      // ctx.log.info(ctx.extrinsic);
+      return;
     }
 
-    const rootAccount = decodeAddress(account);
+    const account = encodeAddress(network, rootAccount);
 
-    const entityManager = getManager();
-    // We updated all other instances of the identity associated with that account to signal that they are not the latest and active one.
-    await entityManager.update(
-      SubstrateIdentity,
-      { account, current: true },
-      { current: false }
-    );
+    const oldIdentity = await ctx.store.findOneBy(SubstrateIdentity, {
+      account,
+      current: true,
+    });
+    if (oldIdentity !== undefined) {
+      oldIdentity.current = false;
+      ctx.store.save(oldIdentity);
+    }
 
     const identityModel = new SubstrateIdentity({
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,

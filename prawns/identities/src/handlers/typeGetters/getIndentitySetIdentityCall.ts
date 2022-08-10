@@ -16,7 +16,7 @@ interface IdentityInfo {
 export function getIdentitySetIdentityCall(
   ctx: CallHandlerContext<Store>
 ): IdentityInfo {
-  const info = ctx.call.args[0].value as any;
+  const info = ctx.call.args.info as any;
   return {
     display: info.display?.raw ? hexToString(info.display.raw) : null,
     email: info.email?.raw ? hexToString(info.email.raw) : null,

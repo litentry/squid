@@ -20,12 +20,13 @@ const processor = new SubstrateProcessor(new TypeormDatabase())
     archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
   })
   .addCallHandler(
-    'Identities.ClearIdentity',
+    'Identity.clear_identity',
     identityClearIdentityHandler(network)
   )
+  // .addCallHandler('Staking.nominate', identityClearIdentityHandler(network))
   .addCallHandler(
-    'Identities.KillIdentity',
+    'Identity.kill_identity',
     identityKillIdentityHandler(network)
   )
-  .addCallHandler('Identities.SetIdentity', identitySetIdentityHandler(network))
+  .addCallHandler('Identity.set_identity', identitySetIdentityHandler(network))
   .run();
