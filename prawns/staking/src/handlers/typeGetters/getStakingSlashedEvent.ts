@@ -7,33 +7,42 @@ import {
   StakingSlashedEvent as PolkadotStakingSlashedEvent
 } from '../../types/polkadot/events';
 import { encodeAddress } from '../../utils';
+import { Store } from '@subsquid/typeorm-store';
 
 
 export function getStakingSlashedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
   ): {validator: string, amount: bigint} {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaStakingSlashedEvent(ctx);
 
-      const [validator, amount] = event.isV9090 ? event.asV9090 : event.asLatest;
+      if (event.isV9090) {
+        const [validator, amount]  = event.asV9090;
 
-      return {
-        validator: encodeAddress(network, validator),
-        amount,
+        return {
+          validator: encodeAddress(network, validator),
+          amount,
+        }
       }
+
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotStakingSlashedEvent(ctx);
 
-      const [validator, amount] = event.isV9090 ? event.asV9090 : event.asLatest;
+      if (event.isV9090) {
+        const [validator, amount]  = event.asV9090;
 
-      return {
-        validator: encodeAddress(network, validator),
-        amount,
+        return {
+          validator: encodeAddress(network, validator),
+          amount,
+        }
       }
+
+      throw new Error('Unexpected version');
     }
 
     default: {

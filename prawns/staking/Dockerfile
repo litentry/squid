@@ -30,13 +30,9 @@ ADD schema.graphql .
 ENV PROCESSOR_PROMETHEUS_PORT 3000
 
 
-FROM squid AS kusamaProcessor
+FROM squid AS processor
 EXPOSE 3000
-CMD ["yarn", "process:kusama"]
-
-FROM squid AS polkadotProcessor
-EXPOSE 3000
-CMD ["yarn", "process:polkadot"]
+CMD ["yarn", "process"]
 
 FROM squid AS queryNode
 EXPOSE 4007
