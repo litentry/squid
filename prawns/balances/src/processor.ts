@@ -82,11 +82,7 @@ async function processBatch(ctx: Context): Promise<void> {
     { id: In(models.accounts.map((acc) => acc.id)) }
   );
   await ctx.store.save(mergeAccounts(models.accounts, existingAccounts));
-
-  await Promise.all([
-    ctx.store.save(models.transfers),
-    ctx.store.save(models.changeEvents),
-  ]);
+  await ctx.store.save([...models.transfers, ...models.changeEvents]);
 
   ctx.log.info(
     JSON.stringify(
