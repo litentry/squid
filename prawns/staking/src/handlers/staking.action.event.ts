@@ -1,6 +1,18 @@
 import { decodeHex, EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork, SubstrateStakingActionHistory, SubstrateStakingActionType, SubstrateStakingNominatorAccount, SubstrateStakingStashAccount, SubstrateStakingValidatorAccount } from '../model';
-import { decodeAddress, encodeAddress, getOrCreate, getRegistry } from '../utils';
+import {
+  SubstrateNetwork,
+  SubstrateStakingActionHistory,
+  SubstrateStakingActionType,
+  SubstrateStakingNominatorAccount,
+  SubstrateStakingStashAccount,
+  SubstrateStakingValidatorAccount,
+} from '../model';
+import {
+  decodeAddress,
+  encodeAddress,
+  getOrCreate,
+  getRegistry,
+} from '../utils';
 import { getStakingBondedEvent } from './typeGetters/getStakingBondedEvent';
 import { getStakingChilledEvent } from './typeGetters/getStakingChilledEvent';
 import { getStakingKickedEvent } from './typeGetters/getStakingKickedEvent';
@@ -12,14 +24,18 @@ import { getStakingWithdrawnEvent } from './typeGetters/getStakingWithdrawnEvent
 import { Store } from '@subsquid/typeorm-store';
 import assert from 'assert';
 
-export default (network: SubstrateNetwork, tokenIndex: number, action: SubstrateStakingActionType) =>
+export default (
+    network: SubstrateNetwork,
+    tokenIndex: number,
+    action: SubstrateStakingActionType
+  ) =>
   async (ctx: EventHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const symbol = getRegistry(network).symbols[tokenIndex];
 
     const data: any = {
-      amount: BigInt(0)
+      amount: BigInt(0),
     };
 
     switch (ctx.event.name.split('.')[1]) {
@@ -27,14 +43,26 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
         const stakingBondedEvent = getStakingBondedEvent(ctx, network);
 
         data.amount = stakingBondedEvent.amount;
-        data.stash = await getOrCreateStash(ctx, stakingBondedEvent.stash, symbol, network);
+        data.stash = await getOrCreateStash(
+          ctx,
+          stakingBondedEvent.stash,
+          symbol,
+          network
+        );
 
         if (ctx.event.extrinsic) {
           const callerId = getOriginAccountId(ctx.event.call.origin, network);
           assert(callerId, `Can't decode caller`);
-          data.nominator = await getOrCreateNominator(ctx, callerId, symbol, network);
+          data.nominator = await getOrCreateNominator(
+            ctx,
+            callerId,
+            symbol,
+            network
+          );
         } else {
-          throw new Error(`StakingActionEvent::bonded event does not have a extrinsic. Block number: ${blockNumber}`);
+          throw new Error(
+            `StakingActionEvent::bonded event does not have a extrinsic. Block number: ${blockNumber}`
+          );
         }
 
         break;
@@ -46,12 +74,18 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
         data.stash = await getStash(ctx, stakingUnbondedEvent.stash);
 
         if (ctx.event.extrinsic) {
-
           const callerId = getOriginAccountId(ctx.event.call.origin, network);
           assert(callerId, `Can't decode caller`);
-          data.nominator = await getOrCreateNominator(ctx, callerId, symbol, network);
+          data.nominator = await getOrCreateNominator(
+            ctx,
+            callerId,
+            symbol,
+            network
+          );
         } else {
-          throw new Error(`StakingActionEvent::unbonded event does not have a extrinsic. Block number: ${blockNumber}`);
+          throw new Error(
+            `StakingActionEvent::unbonded event does not have a extrinsic. Block number: ${blockNumber}`
+          );
         }
 
         break;
@@ -66,13 +100,21 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
       case SubstrateStakingActionType.Kicked:
         const stakingKickedEvent = getStakingKickedEvent(ctx, network);
 
-        data.nominator = await getOrCreateNominator(ctx, stakingKickedEvent.nominator, symbol, network);
+        data.nominator = await getOrCreateNominator(
+          ctx,
+          stakingKickedEvent.nominator,
+          symbol,
+          network
+        );
         data.stash = await getStash(ctx, stakingKickedEvent.stash);
 
         break;
 
       case SubstrateStakingActionType.PayoutStarted:
-        const stakingPayoutStartedEvent = getStakingPayoutStartedEvent(ctx, network);
+        const stakingPayoutStartedEvent = getStakingPayoutStartedEvent(
+          ctx,
+          network
+        );
 
         data.stash = await getStash(ctx, stakingPayoutStartedEvent.stash);
 
@@ -90,7 +132,12 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
         const stakingSlashedEvent = getStakingSlashedEvent(ctx, network);
 
         data.amount = stakingSlashedEvent.amount;
-        data.validator = await getOrCreateValidator(ctx, stakingSlashedEvent.validator, symbol, network);
+        data.validator = await getOrCreateValidator(
+          ctx,
+          stakingSlashedEvent.validator,
+          symbol,
+          network
+        );
 
         break;
 
@@ -120,30 +167,40 @@ export default (network: SubstrateNetwork, tokenIndex: number, action: Substrate
     await ctx.store.save(actionModel);
   };
 
-async function getOrCreateNominator(ctx: EventHandlerContext<Store>, account: string, symbol: string, network: SubstrateNetwork): Promise<SubstrateStakingNominatorAccount | undefined> {
+async function getOrCreateNominator(
+  ctx: EventHandlerContext<Store>,
+  account: string,
+  symbol: string,
+  network: SubstrateNetwork
+): Promise<SubstrateStakingNominatorAccount | undefined> {
   const nominatorModel = await getOrCreate(
     ctx.store,
     SubstrateStakingNominatorAccount,
     {
       id: `${account}:${symbol}`,
       account,
-      rootAccount: decodeAddress(account),
+      publicKey: decodeAddress(account),
       network,
     }
   );
 
-   await ctx.store.save(nominatorModel);
-   return nominatorModel;
+  await ctx.store.save(nominatorModel);
+  return nominatorModel;
 }
 
-async function getOrCreateValidator(ctx: EventHandlerContext<Store>, account: string, symbol: string, network: SubstrateNetwork): Promise<SubstrateStakingValidatorAccount | undefined> {
+async function getOrCreateValidator(
+  ctx: EventHandlerContext<Store>,
+  account: string,
+  symbol: string,
+  network: SubstrateNetwork
+): Promise<SubstrateStakingValidatorAccount | undefined> {
   const validatorModel = await getOrCreate(
     ctx.store,
     SubstrateStakingValidatorAccount,
     {
       id: `${account}:${symbol}`,
       account,
-      rootAccount: decodeAddress(account),
+      publicKey: decodeAddress(account),
       network,
     }
   );
@@ -152,14 +209,19 @@ async function getOrCreateValidator(ctx: EventHandlerContext<Store>, account: st
   return validatorModel;
 }
 
-async function getOrCreateStash(ctx: EventHandlerContext<Store>, account: string, symbol: string, network: SubstrateNetwork): Promise<SubstrateStakingStashAccount | undefined> {
+async function getOrCreateStash(
+  ctx: EventHandlerContext<Store>,
+  account: string,
+  symbol: string,
+  network: SubstrateNetwork
+): Promise<SubstrateStakingStashAccount | undefined> {
   const stashModel = await getOrCreate(
     ctx.store,
     SubstrateStakingStashAccount,
     {
       id: `${account}:${symbol}`,
       account,
-      rootAccount: decodeAddress(account),
+      publicKey: decodeAddress(account),
       network,
     }
   );
@@ -168,24 +230,24 @@ async function getOrCreateStash(ctx: EventHandlerContext<Store>, account: string
   return stashModel;
 }
 
-async function getStash(ctx: EventHandlerContext<Store>, account: string): Promise<SubstrateStakingStashAccount | undefined> {
-  return await ctx.store.get(
-    SubstrateStakingStashAccount,
-    account
-  );
+async function getStash(
+  ctx: EventHandlerContext<Store>,
+  account: string
+): Promise<SubstrateStakingStashAccount | undefined> {
+  return await ctx.store.get(SubstrateStakingStashAccount, account);
 }
 
 function getOriginAccountId(origin: any, network: SubstrateNetwork) {
-  if (!origin) return undefined
+  if (!origin) return undefined;
   switch (origin.__kind) {
     case 'system':
       switch (origin.value.__kind) {
         case 'Signed':
-          return encodeAddress(network, decodeHex(origin.value.value))
+          return encodeAddress(network, decodeHex(origin.value.value));
         default:
-          return undefined
+          return undefined;
       }
     default:
-      return undefined
+      return undefined;
   }
 }

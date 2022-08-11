@@ -13,38 +13,41 @@ if (!supportedNetworks.includes(network)) {
 }
 
 new SubstrateProcessor(new TypeormDatabase())
-  .setTypesBundle('kusama')
-  // .setBlockRange({from: 5000000})
   .setBatchSize(500)
   .setDataSource({
-    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' })
-})
-.addCallHandler(
-  'Staking.nominate',
-  stakingNominateCall(network, 0)
-).addEventHandler(
-  'Staking.Bonded',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Bonded)
-).addEventHandler(
-  'Staking.Unbonded',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Unbonded)
-).addEventHandler(
-  'Staking.Chilled',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Chilled)
-).addEventHandler(
-  'Staking.Kicked',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Kicked)
-).addEventHandler(
-  'Staking.PayoutStarted',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.PayoutStarted)
-).addEventHandler(
-  'Staking.Rewarded',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Rewarded)
-).addEventHandler(
-  'Staking.Slashed',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Slashed)
-).addEventHandler(
-  'Staking.Withdrawn',
-  stakingActionEvent(network, 0, SubstrateStakingActionType.Withdrawn)
-)
+    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
+  })
+  .addCallHandler('Staking.nominate', stakingNominateCall(network, 0))
+  .addEventHandler(
+    'Staking.Bonded',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Bonded)
+  )
+  .addEventHandler(
+    'Staking.Unbonded',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Unbonded)
+  )
+  .addEventHandler(
+    'Staking.Chilled',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Chilled)
+  )
+  .addEventHandler(
+    'Staking.Kicked',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Kicked)
+  )
+  .addEventHandler(
+    'Staking.PayoutStarted',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.PayoutStarted)
+  )
+  .addEventHandler(
+    'Staking.Rewarded',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Rewarded)
+  )
+  .addEventHandler(
+    'Staking.Slashed',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Slashed)
+  )
+  .addEventHandler(
+    'Staking.Withdrawn',
+    stakingActionEvent(network, 0, SubstrateStakingActionType.Withdrawn)
+  )
   .run();

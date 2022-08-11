@@ -1,19 +1,14 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
-import {
-  StakingBondedEvent as KusamaStakingBondedEvent
-} from '../../types/kusama/events';
-import {
-  StakingBondedEvent as PolkadotStakingBondedEvent
-} from '../../types/polkadot/events';
+import { StakingBondedEvent as KusamaStakingBondedEvent } from '../../types/kusama/events';
+import { StakingBondedEvent as PolkadotStakingBondedEvent } from '../../types/polkadot/events';
 import { encodeAddress } from '../../utils';
 import { Store } from '@subsquid/typeorm-store';
 
-
 export function getStakingBondedEvent(
   ctx: EventHandlerContext<Store>,
-  network: SubstrateNetwork,
-): {stash: string, amount: bigint} {
+  network: SubstrateNetwork
+): { stash: string; amount: bigint } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaStakingBondedEvent(ctx);
@@ -23,12 +18,10 @@ export function getStakingBondedEvent(
         return {
           stash: encodeAddress(network, stash),
           amount,
-        }
+        };
       }
 
       throw new Error('Unexpected version');
-
-
     }
 
     case SubstrateNetwork.polkadot: {
@@ -39,7 +32,7 @@ export function getStakingBondedEvent(
         return {
           stash: encodeAddress(network, stash),
           amount,
-        }
+        };
       }
 
       throw new Error('Unexpected version');

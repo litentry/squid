@@ -12,7 +12,5 @@
     "Staking.Slashed",
     "Staking.Withdrawn"
   ],
-  "calls": [
-    "Staking.nominate"
-  ]
+  "calls": ["Staking.nominate"]
 }

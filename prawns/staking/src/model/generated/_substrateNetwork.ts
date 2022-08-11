@@ -1,4 +1,4 @@
 export enum SubstrateNetwork {
-  kusama = "kusama",
-  polkadot = "polkadot",
+  kusama = 'kusama',
+  polkadot = 'polkadot',
 }
