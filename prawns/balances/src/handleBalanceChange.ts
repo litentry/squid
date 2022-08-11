@@ -121,34 +121,32 @@ function upsertAccount(
   },
   isTransfer = false
 ): SubstrateBalanceAccount {
-  // existing in this batch only... db check & merge done at the end
-  const existingAccountIndex = models.findIndex((acc) => acc.id === id);
+  let model = models.find((acc) => acc.id === id);
 
-  if (existingAccountIndex !== -1) {
-    models[existingAccountIndex].lastBalanceChangeEventDate = date;
-    models[existingAccountIndex].lastBalanceChangeEventBlockNumber =
-      blockNumber;
-    models[existingAccountIndex].totalBalanceChangeEvents += 1;
-    if (isTransfer) {
-      models[existingAccountIndex].totalTransfers += 1;
-    }
-  } else {
-    models.push(
-      new SubstrateBalanceAccount({
-        id,
-        publicKey,
-        network,
-        symbol,
-        decimals,
-        firstBalanceChangeEventDate: date,
-        firstBalanceChangeEventBlockNumber: blockNumber,
-        lastBalanceChangeEventDate: date,
-        lastBalanceChangeEventBlockNumber: blockNumber,
-        totalTransfers: isTransfer ? 1 : 0,
-        totalBalanceChangeEvents: 1,
-      })
-    );
+  if (!model) {
+    model = new SubstrateBalanceAccount({
+      id,
+      publicKey,
+      network,
+      symbol,
+      decimals,
+      firstBalanceChangeEventDate: date,
+      firstBalanceChangeEventBlockNumber: blockNumber,
+      lastBalanceChangeEventDate: date,
+      lastBalanceChangeEventBlockNumber: blockNumber,
+      totalTransfers: 0,
+      totalBalanceChangeEvents: 0,
+    });
+    models.push(model);
   }
 
-  return models.find((acc) => acc.id === id)!;
+  model.lastBalanceChangeEventDate = date;
+  model.lastBalanceChangeEventBlockNumber = blockNumber;
+  model.totalBalanceChangeEvents += 1;
+
+  if (isTransfer) {
+    model.totalTransfers += 1;
+  }
+
+  return model;
 }
