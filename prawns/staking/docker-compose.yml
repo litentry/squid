@@ -48,7 +48,7 @@ services:
       - indexing
     build:
       context: .
-      target: polkadotProcessor
+      target: processor
     environment:
       DB_HOST: db
       NETWORK: polkadot
