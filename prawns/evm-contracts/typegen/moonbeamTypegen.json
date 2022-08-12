@@ -1,6 +1,0 @@
-{
-  "outDir": "../src/types/moonbeam",
-  "chainVersions": "../../../metadata/moonbeamVersions.json",
-  "typesBundle": "../src/moonbeamTypesBundle.json",
-  "events": ["ethereum.Executed", "this is currently unused"]
-}
