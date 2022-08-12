@@ -16,7 +16,7 @@ type SubstrateIdentity @entity {
   "address"
   account: String! @index
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork! @index
   current: Boolean! @index
   blockNumber: BigInt!

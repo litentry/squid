@@ -1,5 +1,5 @@
 export enum SubstrateIdentityAction {
-  SET = "SET",
-  CLEAR = "CLEAR",
-  KILL = "KILL",
+  SET = 'SET',
+  CLEAR = 'CLEAR',
+  KILL = 'KILL',
 }
