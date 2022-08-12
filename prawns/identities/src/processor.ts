@@ -6,7 +6,7 @@ import identitySetHandler from './handlers/identity.set.identity.extrinsic';
 import identityClearHandler from './handlers/identity.clear.identity.extrinsic';
 import identityKillHandler from './handlers/identity.kill.identity.extrinsic';
 
-const supportedNetworks = ['kusama', 'polkadot', 'phala'];
+const supportedNetworks = ['kusama', 'polkadot', 'khala'];
 const network: SubstrateNetwork = process.env.NETWORK as SubstrateNetwork;
 
 if (!supportedNetworks.includes(network)) {
@@ -15,7 +15,6 @@ if (!supportedNetworks.includes(network)) {
 
 new SubstrateProcessor(new TypeormDatabase())
   .setBatchSize(500)
-  .setTypesBundle(network)
   .setDataSource({
     archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
   })
