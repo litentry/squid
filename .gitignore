@@ -13,4 +13,4 @@ data
 yarn-error.log
 
 prawns/**/model/
-prawns/**/types/
+prawns/**/types/*/
