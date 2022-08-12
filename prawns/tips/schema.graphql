@@ -17,11 +17,11 @@ type SubstrateTip @entity {
   "address"
   account: String! @index
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
   createdAt: DateTime!
-  updatedAt: DateTime! 
+  updatedAt: DateTime!
   status: SubstrateTipStatus!
   who: String!
   finder: String
@@ -45,4 +45,3 @@ type SubstrateTipper @entity {
   tip: SubstrateTip!
   tipValue: BigInt!
 }
-
