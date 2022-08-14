@@ -1,11 +1,12 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { PhragmenElectionVoteCall as KusamaPhragmenElectionVoteCall } from '../../types/kusama/calls';
 import { PhragmenElectionVoteCall as PolkadotPhragmenElectionVoteCall } from '../../types/polkadot/calls';
 import { PhragmenElectionVoteCall as KhalaPhragmenElectionVoteCall } from '../../types/khala/calls';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getPhragmenElectionVoteCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   votes: Uint8Array[];
@@ -19,7 +20,7 @@ export function getPhragmenElectionVoteCall(
         return event.asV9010;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -29,7 +30,7 @@ export function getPhragmenElectionVoteCall(
         return event.asV9050;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -39,7 +40,7 @@ export function getPhragmenElectionVoteCall(
         return event.asV14;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

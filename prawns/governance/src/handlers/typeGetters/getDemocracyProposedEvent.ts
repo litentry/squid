@@ -3,9 +3,10 @@ import { DemocracyProposedEvent as KusamaDemocracyProposedEvent } from '../../ty
 import { DemocracyProposedEvent as PolkadotDemocracyProposedEvent } from '../../types/polkadot/events';
 import { DemocracyProposedEvent as KhalaDemocracyProposedEvent } from '../../types/khala/events';
 import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracyProposedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   proposalIndex: number;
@@ -20,7 +21,7 @@ export function getDemocracyProposedEvent(
       } else if (event.isV9130) {
         return event.asV9130;
       } else {
-        return event.asLatest;
+        throw new Error('Unexpected version');
       }
     }
 
@@ -32,7 +33,7 @@ export function getDemocracyProposedEvent(
       } else if (event.isV9140) {
         return event.asV9140;
       } else {
-        return event.asLatest;
+        throw new Error('Unexpected version');
       }
     }
 
@@ -47,7 +48,7 @@ export function getDemocracyProposedEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

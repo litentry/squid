@@ -1,11 +1,12 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { DemocracySecondCall as KusamaDemocracySecondCall } from '../../types/kusama/calls';
 import { DemocracySecondCall as PolkadotDemocracySecondCall } from '../../types/polkadot/calls';
 import { DemocracySecondCall as KhalaDemocracySecondCall } from '../../types/khala/calls';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracySecondCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   proposal: number;
@@ -23,7 +24,7 @@ export function getDemocracySecondCall(
         return call.asV2005;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -33,7 +34,7 @@ export function getDemocracySecondCall(
         return call.asV0;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -43,7 +44,7 @@ export function getDemocracySecondCall(
         return call.asV1;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

@@ -1,19 +1,24 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress, encodeAddress } from '../utils';
 import { SubstrateElectionVote, SubstrateNetwork } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getPhragmenElectionVoteCall } from './typeGetters/getPhragmenElectionVoteCall';
+import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: ExtrinsicHandlerContext) => {
+  async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.extrinsic.signer);
+    const address = getCallOriginAccount(ctx.extrinsic.call.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
     const call = getPhragmenElectionVoteCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.extrinsic.signer,
-      rootAccount,
+      id: address,
+      publicKey,
       network,
     });
     account.totalElectionVotes = account.totalElectionVotes + 1;
@@ -23,7 +28,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       candidates: call.votes.map((candidate) =>

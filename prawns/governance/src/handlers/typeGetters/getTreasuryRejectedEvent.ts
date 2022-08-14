@@ -3,9 +3,10 @@ import { TreasuryRejectedEvent as KusamaTreasuryRejectedEvent } from '../../type
 import { TreasuryRejectedEvent as PolkadotTreasuryRejectedEvent } from '../../types/polkadot/events';
 import { TreasuryRejectedEvent as KhalaTreasuryRejectedEvent } from '../../types/khala/events';
 import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getTreasuryRejectedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   proposalIndex: number;
@@ -24,7 +25,7 @@ export function getTreasuryRejectedEvent(
         return event.asV9160;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -39,7 +40,7 @@ export function getTreasuryRejectedEvent(
         return event.asV9170;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -54,7 +55,7 @@ export function getTreasuryRejectedEvent(
         return event.asV1110;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

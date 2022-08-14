@@ -1,14 +1,14 @@
 import {
   EventHandlerContext,
-  ExtrinsicHandlerContext,
 } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { CouncilClosedEvent as KusamaCouncilClosedEvent } from '../../types/kusama/events';
 import { CouncilClosedEvent as PolkadotCouncilClosedEvent } from '../../types/polkadot/events';
 import { CouncilClosedEvent as KhalaCouncilClosedEvent } from '../../types/khala/events';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getCouncilClosedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): { proposalHash: Uint8Array; yes: number; no: number } {
   switch (network) {
@@ -22,7 +22,7 @@ export function getCouncilClosedEvent(
         return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -36,7 +36,7 @@ export function getCouncilClosedEvent(
         return event.asV9140;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -51,7 +51,7 @@ export function getCouncilClosedEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

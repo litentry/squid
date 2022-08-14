@@ -1,26 +1,30 @@
 import {
   EventHandlerContext,
-  ExtrinsicHandlerContext,
+  CallHandlerContext,
 } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
 import { SubstrateBountyProposal, SubstrateNetwork } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getBountiesBountyProposedEvent } from './typeGetters/getBountiesBountyProposedEvent';
 import { getBountiesProposedCall } from './typeGetters/getBountiesProposedCall';
+import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event.extrinsic) {
       return;
     }
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const address = getCallOriginAccount(ctx.event.call.origin, network);
+    assert(address);
     const event = getBountiesBountyProposedEvent(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: address,
+      publicKey: address,
       network,
     });
     account.totalBountyProposals++;
@@ -32,7 +36,7 @@ export default (network: SubstrateNetwork) =>
     // bounty info
     try {
       const call = getBountiesProposedCall(
-        <ExtrinsicHandlerContext>ctx,
+        ctx,
         network
       );
       description = Buffer.from(call.description).toString();
@@ -47,7 +51,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       proposalIndex: event.index,

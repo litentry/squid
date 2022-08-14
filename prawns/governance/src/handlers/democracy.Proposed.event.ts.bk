@@ -8,6 +8,7 @@ import {
 import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
 import subsquare from '../clients/subsquare';
 import substrateDemocracyPreimageRepository from '../repositories/substrateDemocracyPreimageRepository';
+import { Store } from '@subsquid/typeorm-store';
 
 const getProposalHash = (
   ctx: EventHandlerContext,
@@ -52,14 +53,14 @@ const getProposalHash = (
 };
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event || !ctx.event.extrinsic) {
       return;
     }
 
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
     const event = getDemocracyProposedEvent(ctx, network);
     const proposalHash = getProposalHash(ctx, network);
     const subsquareProposal = await subsquare.getDemocracyProposal(
@@ -68,8 +69,8 @@ export default (network: SubstrateNetwork) =>
     );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: getCallOriginAccount(ctx.event.call.origin, network),
+      publicKey,
       network,
     });
     account.totalDemocracyProposals = account.totalDemocracyProposals + 1;
@@ -86,7 +87,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${event.proposalIndex}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       updatedAt: date,

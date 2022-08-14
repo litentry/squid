@@ -3,9 +3,10 @@ import { CouncilProposedEvent as KusamaCouncilProposedEvent } from '../../types/
 import { CouncilProposedEvent as PolkadotCouncilProposedEvent } from '../../types/polkadot/events';
 import { CouncilProposedEvent as KhalaCouncilProposedEvent } from '../../types/khala/events';
 import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getCouncilProposedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   account: Uint8Array;
@@ -25,7 +26,7 @@ export function getCouncilProposedEvent(
         return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -39,7 +40,7 @@ export function getCouncilProposedEvent(
         return event.asV9140;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -52,7 +53,7 @@ export function getCouncilProposedEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

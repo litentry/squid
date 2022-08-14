@@ -7,9 +7,10 @@ import {
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 import { getDemocracyStartedEvent } from './typeGetters/getDemocracyStartedEvent';
 import subsquare from '../clients/subsquare';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }

@@ -3,9 +3,10 @@ import { SubstrateNetwork } from '../../model';
 import { DemocracyCancelledEvent as KusamaDemocracyCancelledEvent } from '../../types/kusama/events';
 import { DemocracyCancelledEvent as PolkadotDemocracyCancelledEvent } from '../../types/polkadot/events';
 import { DemocracyCancelledEvent as KhalaDemocracyCancelledEvent } from '../../types/khala/events';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracyCancelledEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ) {
   switch (network) {
@@ -18,7 +19,7 @@ export function getDemocracyCancelledEvent(
         return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -31,7 +32,7 @@ export function getDemocracyCancelledEvent(
         return event.asV9140;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -44,7 +45,7 @@ export function getDemocracyCancelledEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

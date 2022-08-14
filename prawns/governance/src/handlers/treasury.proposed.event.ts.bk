@@ -1,6 +1,6 @@
 import {
   EventHandlerContext,
-  ExtrinsicHandlerContext,
+  CallHandlerContext,
 } from '@subsquid/substrate-processor';
 import {
   decodeAddress,
@@ -15,15 +15,16 @@ import {
 import { getTreasuryProposedEvent } from './typeGetters/getTreasuryProposedEvent';
 import { getTreasuryProposedSpendCall } from './typeGetters/getTreasuryProposeSpendCall';
 import subsquare from '../clients/subsquare';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event.extrinsic) {
       return;
     }
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
     const event = getTreasuryProposedEvent(ctx, network);
     const subsquareProposal = await subsquare.getTreasuryProposal(
       network,
@@ -32,8 +33,8 @@ export default (network: SubstrateNetwork) =>
 
     // proposer
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: getCallOriginAccount(ctx.event.call.origin, network),
+      publicKey,
       network,
     });
     account.totalTreasurySpendProposals++;
@@ -46,14 +47,14 @@ export default (network: SubstrateNetwork) =>
     // beneficiary and value
     try {
       const call = getTreasuryProposedSpendCall(
-        <ExtrinsicHandlerContext>ctx,
+        <CallHandlerContext>ctx,
         network
       );
       value = call.value;
       beneficiary = decodeAddress(call.beneficiary);
       beneficiaryAccount = await getOrCreateGovernanceAccount(ctx.store, {
         id: encodeAddress(network, call.beneficiary),
-        rootAccount: beneficiary,
+        publicKey: beneficiary,
         network,
       });
       await ctx.store.save(beneficiaryAccount);
@@ -67,7 +68,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${event.proposalIndex}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       title: subsquareProposal.title,

@@ -3,9 +3,10 @@ import { BountiesBountyProposedEvent as KusamaBountiesProposeEvent } from '../..
 import { BountiesBountyProposedEvent as PolkadotBountiesProposeEvent } from '../../types/polkadot/events';
 import { BountiesBountyProposedEvent as KhalaBountiesProposeEvent } from '../../types/khala/events';
 import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getBountiesBountyProposedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   index: number;
@@ -21,7 +22,7 @@ export function getBountiesBountyProposedEvent(
       if (event.isV9130) {
         return event.asV9130;
       }
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -35,7 +36,7 @@ export function getBountiesBountyProposedEvent(
         return event.asV9140;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -49,7 +50,7 @@ export function getBountiesBountyProposedEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

@@ -1,11 +1,12 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { DemocracyCancelProposalCall as KusamaDemocracyCancelProposalCall } from '../../types/kusama/calls';
 import { DemocracyCancelProposalCall as PolkadotDemocracyCancelProposalCall } from '../../types/polkadot/calls';
 import { DemocracyCancelProposalCall as KhalaDemocracyCancelProposalCall } from '../../types/khala/calls';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracyCancelProposalCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
 ) {
   switch (network) {
@@ -16,7 +17,7 @@ export function getDemocracyCancelProposalCall(
         return call.asV2025;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -26,7 +27,7 @@ export function getDemocracyCancelProposalCall(
         return call.asV25;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -36,7 +37,7 @@ export function getDemocracyCancelProposalCall(
         return call.asV1;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

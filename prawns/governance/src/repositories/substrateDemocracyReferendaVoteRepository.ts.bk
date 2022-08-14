@@ -5,9 +5,10 @@ import {
   SubstrateNetwork,
 } from '../model';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 
 const getLastVoteByReferendaAndAccount = async (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
   democracyReferenda: SubstrateDemocracyReferenda,
   account: SubstrateGovernanceAccount

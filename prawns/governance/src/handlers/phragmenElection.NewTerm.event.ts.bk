@@ -10,9 +10,10 @@ import {
 } from '../model';
 import substratePhragmenElectionMemberTermRepository from '../repositories/substratePhragmenElectionMemberTermRepository';
 import { getPhragmenElectionNewTermEvent } from './typeGetters/getPhragmenElectionNewTermEvent';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }
@@ -33,7 +34,7 @@ export default (network: SubstrateNetwork) =>
     const newMemberTermPromises = event.newMembers.map(async (member, n) => {
       const account = await getOrCreateGovernanceAccount(ctx.store, {
         id: encodeAddress(network, member[0]),
-        rootAccount: decodeAddress(member[0]),
+        publicKey: decodeAddress(member[0]),
         network,
       });
 

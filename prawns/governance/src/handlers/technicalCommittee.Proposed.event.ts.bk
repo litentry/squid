@@ -6,20 +6,21 @@ import {
 } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getTechnicalCommitteeProposedEvent } from './typeGetters/getTechnicalCommitteeProposedEvent';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event || !ctx.event.extrinsic) {
       return;
     }
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
     const event = getTechnicalCommitteeProposedEvent(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: getCallOriginAccount(ctx.event.call.origin, network),
+      publicKey,
       network,
     });
     account.totalTechnicalCommitteeProposals =
@@ -30,7 +31,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       proposalIndex: event.proposalIndex,

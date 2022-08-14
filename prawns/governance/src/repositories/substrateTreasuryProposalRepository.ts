@@ -1,8 +1,9 @@
 import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 
 const getByProposalIndex = async (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
   proposalIndex: number
 ) => {

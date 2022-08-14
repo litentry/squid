@@ -1,8 +1,9 @@
-import { SubstrateDemocracyProposal, SubstrateNetwork } from '../model';
+import { SubstrateDemocracyProposal, SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 
 const getByProposalIndex = async (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
   proposalIndex: number
 ) => {
@@ -12,7 +13,7 @@ const getByProposalIndex = async (
 };
 
 const getByProposalHash = async (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
   proposalHash: string
 ) => {
@@ -22,7 +23,7 @@ const getByProposalHash = async (
 };
 
 const getByTabledAtBlock = async (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
   tabledAtBlock: bigint
 ) => {
@@ -32,13 +33,11 @@ const getByTabledAtBlock = async (
 };
 
 const findByStatus = async (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork,
-  status: string
+  status: SubstrateDemocracyProposalStatus
 ) => {
-  return ctx.store.find(SubstrateDemocracyProposal, {
-    where: { network, status },
-  }) as unknown as SubstrateDemocracyProposal[];
+  return ctx.store.findBy(SubstrateDemocracyProposal, { network, status }) as unknown as SubstrateDemocracyProposal[];
 };
 
 export default {

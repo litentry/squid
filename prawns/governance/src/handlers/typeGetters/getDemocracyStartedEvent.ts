@@ -3,9 +3,10 @@ import { SubstrateNetwork } from '../../model';
 import { DemocracyStartedEvent as KusamaDemocracyStartedEvent } from '../../types/kusama/events';
 import { DemocracyStartedEvent as PolkadotDemocracyStartedEvent } from '../../types/polkadot/events';
 import { DemocracyStartedEvent as KhalaDemocracyStartedEvent } from '../../types/khala/events';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracyStartedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): { refIndex: number; thresholdKind: string } {
   switch (network) {
@@ -13,7 +14,7 @@ export function getDemocracyStartedEvent(
       const event = new KusamaDemocracyStartedEvent(ctx);
 
       if (event.isV1020) {
-        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [
+        const [refIndexParam, thresholdParam] = ctx.event.args as unknown as [
           { value: number },
           { value: string }
         ];
@@ -34,17 +35,14 @@ export function getDemocracyStartedEvent(
         };
       }
 
-      return {
-        refIndex: event.asLatest.refIndex,
-        thresholdKind: event.asLatest.threshold.__kind,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotDemocracyStartedEvent(ctx);
 
       if (event.isV0) {
-        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [
+        const [refIndexParam, thresholdParam] = ctx.event.args as unknown as [
           { value: number },
           { value: string }
         ];
@@ -65,10 +63,7 @@ export function getDemocracyStartedEvent(
         };
       }
 
-      return {
-        refIndex: event.asLatest.refIndex,
-        thresholdKind: event.asLatest.threshold.__kind,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -86,10 +81,7 @@ export function getDemocracyStartedEvent(
         };
       }
 
-      return {
-        refIndex: event.asLatest.refIndex,
-        thresholdKind: event.asLatest.threshold.__kind,
-      };
+      throw new Error('Unexpected version');
     }
 
     default: {

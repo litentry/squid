@@ -3,9 +3,10 @@ import { SubstrateNetwork } from '../../model';
 import { PhragmenElectionNewTermEvent as KusamaPhragmenElectionNewTermEvent } from '../../types/kusama/events';
 import { PhragmenElectionNewTermEvent as PolkadotPhragmenElectionNewTermEvent } from '../../types/polkadot/events';
 import { PhragmenElectionNewTermEvent as KhalaPhragmenElectionNewTermEvent } from '../../types/khala/events';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getPhragmenElectionNewTermEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   newMembers: [Uint8Array, bigint][];
@@ -21,7 +22,7 @@ export function getPhragmenElectionNewTermEvent(
         return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -35,7 +36,7 @@ export function getPhragmenElectionNewTermEvent(
         return event.asV9140;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -49,7 +50,7 @@ export function getPhragmenElectionNewTermEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

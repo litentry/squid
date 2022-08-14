@@ -2,10 +2,11 @@ import { SubstrateNetwork } from '../../model';
 import { CouncilProposalOfStorage as KusamaCouncilProposalOfStorage } from '../../types/kusama/storage';
 import { CouncilProposalOfStorage as PolkadotCouncilProposalOfStorage } from '../../types/polkadot/storage';
 import { CouncilProposalOfStorage as KhalaCouncilProposalOfStorage } from '../../types/khala/storage';
-import { StorageContext } from '@subsquid/substrate-typegen/lib/support';
+import { Store } from '@subsquid/typeorm-store';
+import { StorageHandlerContext } from '@subsquid/substrate-processor';
 
 export async function getCouncilProposalOfStorage(
-  ctx: StorageContext,
+  ctx: StorageContext<Store>,
   network: SubstrateNetwork,
   proposalHash: Uint8Array
 ): Promise<

@@ -1,11 +1,12 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork, SubstrateTreasuryProposalStatus } from '../model';
-import { getTreasuryAwardedEvent } from './typeGetters/getTreasuryAwardedEvent';
+import { getTreasuryRejectedEvent } from './typeGetters/getTreasuryRejectedEvent';
 import substrateTreasuryProposalRepository from '../repositories/substrateTreasuryProposalRepository';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
-    const event = getTreasuryAwardedEvent(ctx, network);
+  async (ctx: EventHandlerContext<Store>) => {
+    const event = getTreasuryRejectedEvent(ctx, network);
 
     const proposal =
       await substrateTreasuryProposalRepository.getByProposalIndex(
@@ -18,7 +19,7 @@ export default (network: SubstrateNetwork) =>
       throw new Error(`Proposal not found`);
     }
 
-    proposal.status = SubstrateTreasuryProposalStatus.awarded;
+    proposal.status = SubstrateTreasuryProposalStatus.rejected;
 
     await ctx.store.save(proposal);
   };

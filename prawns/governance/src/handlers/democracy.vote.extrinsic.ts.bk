@@ -1,4 +1,4 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
 import {
   SubstrateDemocracyReferendaVote,
@@ -12,17 +12,18 @@ import {
 } from './typeGetters/getDemocracyVoteCall';
 import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
 import substrateDemocracyReferendaVoteRepository from '../repositories/substrateDemocracyReferendaVoteRepository';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: ExtrinsicHandlerContext) => {
+  async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.extrinsic.signer);
+    const publicKey = decodeAddress(ctx.extrinsic.signer);
     const call = getDemocracyVoteCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: ctx.extrinsic.signer,
-      rootAccount,
+      publicKey,
       network,
     });
     account.totalProposalVotes = account.totalProposalVotes + 1;
@@ -45,7 +46,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       refIndex: call.refIndex,
@@ -71,7 +72,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       democracyReferenda: referenda,
