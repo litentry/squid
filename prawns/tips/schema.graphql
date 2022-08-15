@@ -38,7 +38,7 @@ type SubstrateTipper @entity {
   "address"
   account: String! @index
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork! @index
   blockNumber: BigInt!
   createdAt: DateTime!

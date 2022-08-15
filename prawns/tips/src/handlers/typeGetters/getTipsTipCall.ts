@@ -1,20 +1,14 @@
 import { CallHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateNetwork } from '../../model';
-import {
-  TipsTipCall as KhalaTipsTipCall
-} from '../../types/khala/calls';
-import {
-  TipsTipCall as KusamaTipsTipCall
-} from '../../types/kusama/calls';
-import {
-  TipsTipCall as PolkadotTipsTipCall
-} from '../../types/polkadot/calls';
+import { TipsTipCall as KhalaTipsTipCall } from '../../types/khala/calls';
+import { TipsTipCall as KusamaTipsTipCall } from '../../types/kusama/calls';
+import { TipsTipCall as PolkadotTipsTipCall } from '../../types/polkadot/calls';
 
 export function getTipsTipCall(
-  ctx: CallHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
-): { hash: Uint8Array, tipValue: bigint } {
-
+): { hash: Uint8Array; tipValue: bigint } {
   switch (network) {
     case SubstrateNetwork.phala: {
       const call = new KhalaTipsTipCall(ctx);
@@ -22,8 +16,6 @@ export function getTipsTipCall(
       if (call.isV1060) {
         return call.asV1060;
       }
-
-      return call.asLatest;
     }
 
     case SubstrateNetwork.kusama: {
@@ -32,8 +24,6 @@ export function getTipsTipCall(
       if (call.isV2028) {
         return call.asV2028;
       }
-
-      return call.asLatest;
     }
 
     case SubstrateNetwork.polkadot: {
@@ -42,8 +32,6 @@ export function getTipsTipCall(
       if (call.isV28) {
         return call.asV28;
       }
-
-      return call.asLatest;
     }
 
     default: {
