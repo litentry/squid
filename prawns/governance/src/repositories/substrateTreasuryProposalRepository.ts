@@ -1,6 +1,6 @@
-import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
+import { SubstrateNetwork, SubstrateTreasuryProposal } from '../model';
 
 const getByProposalIndex = async (
   ctx: EventHandlerContext<Store>,
@@ -9,6 +9,7 @@ const getByProposalIndex = async (
 ) => {
   return ctx.store.get(SubstrateTreasuryProposal, {
     where: { id: `${network}:${proposalIndex}` },
+    relations: { account: true },
   }) as unknown as SubstrateTreasuryProposal | undefined;
 };
 

@@ -1,8 +1,8 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateNetwork, SubstrateTreasuryProposalStatus } from '../model';
-import { getTreasuryRejectedEvent } from './typeGetters/getTreasuryRejectedEvent';
-import substrateTreasuryProposalRepository from '../repositories/substrateTreasuryProposalRepository';
 import { Store } from '@subsquid/typeorm-store';
+import { SubstrateNetwork, SubstrateTreasuryProposalStatus } from '../model';
+import substrateTreasuryProposalRepository from '../repositories/substrateTreasuryProposalRepository';
+import { getTreasuryRejectedEvent } from './typeGetters/getTreasuryRejectedEvent';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
