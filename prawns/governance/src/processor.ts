@@ -1,19 +1,19 @@
 import { KnownArchives, lookupArchive } from '@subsquid/archive-registry';
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { TypeormDatabase } from '@subsquid/typeorm-store';
+import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
+import councilProposedHandler from './handlers/council.Proposed.event';
+import councilVoteHandler from './handlers/council.vote.extrinsic';
+import councilApprovedEventHandler from './handlers/council.Approved.event';
+import councilClosedEventHandler from './handlers/council.Closed.event';
+import councilExecutedEventHandler from './handlers/council.Executed.event';
 // import bountiesBountyProposedHandler from './handlers/Bounties.bountyProposed.event';
-// import councilProposedHandler from './handlers/Council.Proposed.event';
-// import councilVoteHandler from './handlers/Council.vote.extrinsic';
 // import democracyProposedHandler from './handlers/Democracy.Proposed.event';
 // import democracySecondHandler from './handlers/Democracy.second.extrinsic';
 // import democracyCancelProposalExtrinsicHandler from './handlers/Democracy.CancelProposal.extrinsic';
 // import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
-import electionVoteHandler from './handlers/PhragmenElection.vote.extrinsic';
 // import technicalCommitteeProposedHandler from './handlers/TechnicalCommittee.Proposed.event';
 // import treasuryProposedHandler from './handlers/Treasury.proposed.event';
-// import councilApprovedEventHandler from './handlers/Council.Approved.event';
-// import councilClosedEventHandler from './handlers/Council.Closed.event';
-// import councilExecutedEventHandler from './handlers/Council.Executed.event';
 // import democracyTabledEventHandler from './handlers/Democracy.Tabled.event';
 // import democracyStartedEventHandler from './handlers/Democracy.Started.event';
 // import democracyPassedEventHandler from './handlers/Democracy.Passed.event';
@@ -37,13 +37,27 @@ if (!supportedNetworks.includes(network)) {
 new SubstrateProcessor(new TypeormDatabase())
   .setBatchSize(500)
   .setDataSource({
-    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' })
+    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
+    chain: `wss://${network}.api.onfinality.io/public-ws`,
   })
   .addCallHandler(
-    'PhragmenElection.vote',
-    electionVoteHandler(network)
+    'PhragmenElection.vote', electionVoteHandler(network)
   )
-  // .addCallHandler('Council.vote', councilVoteHandler(network))
+  .addEventHandler(
+    'Council.Proposed', councilProposedHandler(network)
+  )
+  .addCallHandler(
+    'Council.vote', councilVoteHandler(network)
+  )
+  .addEventHandler(
+    'Council.Approved', councilApprovedEventHandler(network)
+  )
+  .addEventHandler(
+    'Council.Closed', councilClosedEventHandler(network)
+  )
+  .addEventHandler(
+  'Council.Executed', councilExecutedEventHandler(network)
+  )
   // .addCallHandler('Democracy.vote', democracyVoteHandler(network)).addEventHandler(
   // 'Democracy.Proposed',
   //   democracyProposedHandler(network)
@@ -52,7 +66,7 @@ new SubstrateProcessor(new TypeormDatabase())
   //   'TechnicalCommittee.Proposed',
   //   technicalCommitteeProposedHandler(network)
   // )
-  // .addEventHandler('Council.Proposed', councilProposedHandler(network)).addCallHandler(
+  // .addCallHandler(
   // 'Democracy.second',
   //   democracySecondHandler(network)
   // )
@@ -63,14 +77,6 @@ new SubstrateProcessor(new TypeormDatabase())
   // .addEventHandler(
   //   'Treasury.Proposed',
   //   treasuryProposedHandler(network)
-  // )
-  // .addEventHandler(
-  //   'Council.Approved',
-  //   councilApprovedEventHandler(network)
-  // )
-  // .addEventHandler('Council.Closed', councilClosedEventHandler(network)).addEventHandler(
-  // 'Council.Executed',
-  //   councilExecutedEventHandler(network)
   // )
   // .addEventHandler(
   //   'Democracy.Tabled',

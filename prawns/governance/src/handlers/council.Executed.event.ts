@@ -6,6 +6,7 @@ import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilProposalOfStorage } from './typeGetters/getCouncilProposalOfStorage';
 import { Store } from '@subsquid/typeorm-store';
 import assert from 'assert';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
@@ -17,8 +18,9 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
 
     const blockNumber = BigInt(ctx.block.height);
-    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
-    assert(publicKey);
+    const address = getCallOriginAccount(ctx.event.call.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
 
     const storage = await getCouncilProposalOfStorage(
       ctx,
@@ -27,7 +29,7 @@ export default (network: SubstrateNetwork) =>
     );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: getCallOriginAccount(ctx.event.call.origin, network),
+      id: address,
       publicKey,
       network,
     });
@@ -36,21 +38,22 @@ export default (network: SubstrateNetwork) =>
 
     let councilProposal =
       await substrateCouncilProposalRepository.getByProposalHash(
-        ctx,
+        ctx.store,
         network,
         event.proposalHash
       );
 
     if (!councilProposal) {
-      if (ctx.event.extrinsic.name !== 'council.propose') {
+      if (ctx.event.call.name !== 'council.propose') {
         throw new Error(
           'Council proposal not found and the extrinsic is not a proposal'
         );
       }
 
-      const proposalArgs = ctx.event.extrinsic.args as unknown as [
+      const proposalArgs = ctx.event.call.args as unknown as [
         { value: number }
       ];
+      console.log(proposalArgs);
 
       councilProposal = new SubstrateCouncilProposal({
         id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
