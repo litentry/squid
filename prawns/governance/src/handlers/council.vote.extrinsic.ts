@@ -5,16 +5,20 @@ import { getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilVoteCall } from './typeGetters/getCouncilVoteCall';
 import substrateCouncilProposalRepository from '../repositories/substrateCouncilProposalRepository';
 import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const publicKey = decodeAddress(ctx.extrinsic.signer);
+    const address = getCallOriginAccount(ctx.extrinsic.call.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
     const call = getCouncilVoteCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.extrinsic.signer,
+      id: address,
       publicKey,
       network,
     });
@@ -23,7 +27,7 @@ export default (network: SubstrateNetwork) =>
 
     const councilProposal =
       await substrateCouncilProposalRepository.getByProposalHash(
-        ctx,
+        ctx.store,
         network,
         call.proposal
       );
