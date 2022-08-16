@@ -10,7 +10,6 @@ import { TypeormDatabase } from '@subsquid/typeorm-store';
 // import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
 import electionVoteHandler from './handlers/PhragmenElection.vote.extrinsic';
 // import technicalCommitteeProposedHandler from './handlers/TechnicalCommittee.Proposed.event';
-// import treasuryProposedHandler from './handlers/Treasury.proposed.event';
 // import councilApprovedEventHandler from './handlers/Council.Approved.event';
 // import councilClosedEventHandler from './handlers/Council.Closed.event';
 // import councilExecutedEventHandler from './handlers/Council.Executed.event';
@@ -22,9 +21,10 @@ import electionVoteHandler from './handlers/PhragmenElection.vote.extrinsic';
 // import democracyExecutedEventHandler from './handlers/Democracy.Executed.event';
 // import democracyClearPublicProposalsExtrinsicHandler from './handlers/Democracy.ClearPublicProposals.extrinsic';
 // import democracyPreimageNotedEvent from './handlers/Democracy.PreimageNoted.event';
-// import treasuryAwardedEvent from './handlers/Treasury.awarded.event';
-// import treasuryRejectedEvent from './handlers/Treasury.rejected.event';
 import PhragmenElectionNewTermEvent from './handlers/PhragmenElection.NewTerm.event';
+import treasuryAwardedEvent from './handlers/Treasury.awarded.event';
+import treasuryProposedHandler from './handlers/Treasury.proposed.event';
+import treasuryRejectedEvent from './handlers/Treasury.rejected.event';
 import { SubstrateNetwork } from './model';
 
 const supportedNetworks = ['kusama', 'polkadot', 'khala'];
@@ -56,10 +56,6 @@ new SubstrateProcessor(new TypeormDatabase())
   // .addEventHandler(
   //   'Bounties.BountyProposed',
   //   bountiesBountyProposedHandler(network)
-  // )
-  // .addEventHandler(
-  //   'Treasury.Proposed',
-  //   treasuryProposedHandler(network)
   // )
   // .addEventHandler(
   //   'Council.Approved',
@@ -108,8 +104,9 @@ new SubstrateProcessor(new TypeormDatabase())
   //   'Democracy.PreimageNoted',
   //   democracyPreimageNotedEvent(network)
   // )
-  // .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
-  // .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
+  .addEventHandler('Treasury.Proposed', treasuryProposedHandler(network))
+  .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
+  .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
   .addEventHandler(
     'PhragmenElection.NewTerm',
     PhragmenElectionNewTermEvent(network)
