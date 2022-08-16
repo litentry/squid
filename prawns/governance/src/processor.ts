@@ -24,7 +24,7 @@ import electionVoteHandler from './handlers/PhragmenElection.vote.extrinsic';
 // import democracyPreimageNotedEvent from './handlers/Democracy.PreimageNoted.event';
 // import treasuryAwardedEvent from './handlers/Treasury.awarded.event';
 // import treasuryRejectedEvent from './handlers/Treasury.rejected.event';
-// import PhragmenElectionNewTermEvent from './handlers/PhragmenElection.NewTerm.event';
+import PhragmenElectionNewTermEvent from './handlers/PhragmenElection.NewTerm.event';
 import { SubstrateNetwork } from './model';
 
 const supportedNetworks = ['kusama', 'polkadot', 'khala'];
@@ -37,12 +37,9 @@ if (!supportedNetworks.includes(network)) {
 new SubstrateProcessor(new TypeormDatabase())
   .setBatchSize(500)
   .setDataSource({
-    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' })
+    archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
   })
-  .addCallHandler(
-    'PhragmenElection.vote',
-    electionVoteHandler(network)
-  )
+  .addCallHandler('PhragmenElection.vote', electionVoteHandler(network))
   // .addCallHandler('Council.vote', councilVoteHandler(network))
   // .addCallHandler('Democracy.vote', democracyVoteHandler(network)).addEventHandler(
   // 'Democracy.Proposed',
@@ -113,8 +110,8 @@ new SubstrateProcessor(new TypeormDatabase())
   // )
   // .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
   // .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
-  // .addEventHandler(
-  //   'PhragmenElection.NewTerm',
-  //   PhragmenElectionNewTermEvent(network)
-  // )
+  .addEventHandler(
+    'PhragmenElection.NewTerm',
+    PhragmenElectionNewTermEvent(network)
+  )
   .run();

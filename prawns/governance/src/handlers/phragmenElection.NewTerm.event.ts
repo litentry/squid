@@ -1,16 +1,16 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import {
-  encodeAddress,
-  decodeAddress,
-  getOrCreateGovernanceAccount,
-} from '../utils';
+import { Store } from '@subsquid/typeorm-store';
 import {
   SubstrateNetwork,
   SubstratePhragmenElectionMemberTerm,
 } from '../model';
 import substratePhragmenElectionMemberTermRepository from '../repositories/substratePhragmenElectionMemberTermRepository';
+import {
+  decodeAddress,
+  encodeAddress,
+  getOrCreateGovernanceAccount,
+} from '../utils';
 import { getPhragmenElectionNewTermEvent } from './typeGetters/getPhragmenElectionNewTermEvent';
-import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
@@ -54,5 +54,6 @@ export default (network: SubstrateNetwork) =>
     const newMemberTerms = await Promise.all(newMemberTermPromises);
     const accounts = newMemberTerms.map((nmt) => nmt.account);
 
-    await ctx.store.save([...accounts, ...oldMemberTerms, ...newMemberTerms]);
+    await ctx.store.save(accounts);
+    await ctx.store.save([...oldMemberTerms, ...newMemberTerms]);
   };
