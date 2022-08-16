@@ -1,26 +1,36 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
-import { SubstrateIdentity, SubstrateNetwork, SubstrateIdentityAction } from '../model';
+import {
+  SubstrateIdentity,
+  SubstrateNetwork,
+  SubstrateIdentityAction,
+} from '../model';
 import { getIdentitySetIdentityCall } from './typeGetters/getIndentitySetIdentityCall';
-import { getManager } from 'typeorm';
+import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
+import substrateIdentityRepository from '../repositories/substrateIdentityRepository';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: ExtrinsicHandlerContext) => {
-
+  async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
+    const account = getCallOriginAccount(ctx.call.origin, network);
+    assert(account);
+    const publicKey = decodeAddress(account);
     const identity = getIdentitySetIdentityCall(ctx);
-    const account = ctx.extrinsic.signer;
-    const rootAccount = decodeAddress(account);
 
-    const entityManager = getManager();
-    // We updated all other instances of the identity associated with that account to signal that they are not the latest and active one.
-    await entityManager.update(SubstrateIdentity, { account, current: true }, { current: false });
+    const oldIdentityModels = (
+      await substrateIdentityRepository.getActiveByAccount(ctx.store, account)
+    ).map((activeAccount) => {
+      activeAccount.current = false;
+      return activeAccount;
+    });
 
     const identityModel = new SubstrateIdentity({
-      id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
+      id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       account,
-      rootAccount, 
+      publicKey,
       network,
       current: true, // the last set_identity call we get is the current one
       blockNumber,
@@ -29,5 +39,5 @@ export default (network: SubstrateNetwork) =>
       ...identity,
     });
 
-    await ctx.store.save(identityModel);
+    await ctx.store.save([...oldIdentityModels, identityModel]);
   };

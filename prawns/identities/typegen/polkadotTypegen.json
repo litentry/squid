@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/polkadot",
-  "chainVersions": "../../../metadata/polkadotVersions.json",
+  "specVersions": "https://polkadot.archive.subsquid.io/graphql",
   "typesBundle": "polkadot",
   "calls": [
     "identity.set_identity",
