@@ -24,29 +24,9 @@ const getProposalHash = (
     );
   }
 
-  const args = call.args;
-
-  if (call.name === 'batchAll') {
-    const calls = args[0].value as { args: { [key: string]: any } }[];
-    const batchProposeArgs = calls.filter(
-      (call) => call.args && call.args.proposal_hash
-    );
-    if (batchProposeArgs.length === 0) {
-      throw new Error(
-        `Unable to find propose args in batch in block ${ctx.block.height}`
-      );
-    }
-    if (batchProposeArgs.length > 1) {
-      throw new Error(
-        `Found multiple proposal_hash args in batch in block ${ctx.block.height}`
-      );
-    }
-    return batchProposeArgs[0].args.proposal_hash;
-  } else {
-    const proposalHashArg = args.proposal_hash || args.proposalHash;
-    if (proposalHashArg) {
-      return proposalHashArg;
-    }
+  const proposalHashArg = call.args.proposal_hash || call.args.proposalHash;
+  if (proposalHashArg) {
+    return proposalHashArg;
   }
 
   if (
