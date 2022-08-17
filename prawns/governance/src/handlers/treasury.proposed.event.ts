@@ -38,7 +38,7 @@ export default (network: SubstrateNetwork) =>
 
     // proposer
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: publicKey,
+      id: accountAddress,
       publicKey,
       network,
     });
