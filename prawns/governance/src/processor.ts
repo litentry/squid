@@ -56,7 +56,7 @@ new SubstrateProcessor(new TypeormDatabase())
     'Council.Closed', councilClosedEventHandler(network)
   )
   .addEventHandler(
-  'Council.Executed', councilExecutedEventHandler(network)
+    'Council.Executed', councilExecutedEventHandler(network)
   )
   // .addCallHandler('Democracy.vote', democracyVoteHandler(network)).addEventHandler(
   // 'Democracy.Proposed',
