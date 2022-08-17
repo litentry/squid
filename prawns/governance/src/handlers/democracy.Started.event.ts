@@ -21,7 +21,7 @@ export default (network: SubstrateNetwork) =>
 
     const democracyProposal =
       await substrateDemocracyProposalRepository.getByTabledAtBlock(
-        ctx,
+        ctx.store,
         network,
         blockNumber
       );

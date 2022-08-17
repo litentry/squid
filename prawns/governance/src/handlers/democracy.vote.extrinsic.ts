@@ -85,7 +85,7 @@ export default (network: SubstrateNetwork) =>
     // If the same user voted previously then their previous vote is discounted
     const lastVote =
       await substrateDemocracyReferendaVoteRepository.getLastVoteByReferendaAndAccount(
-        ctx,
+        ctx.store,
         network,
         referenda,
         account

@@ -8,12 +8,12 @@ import {
 } from '../model';
 
 const getLastVoteByReferendaAndAccount = async (
-  ctx: CommonHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   democracyReferenda: SubstrateDemocracyReferenda,
   account: SubstrateGovernanceAccount
 ) => {
-  return ctx.store.findOne(SubstrateDemocracyReferendaVote, {
+  return store.findOne(SubstrateDemocracyReferendaVote, {
     where: { network, account, democracyReferenda },
     order: { blockNumber: 'DESC' },
   }) as unknown as SubstrateDemocracyReferendaVote | undefined;

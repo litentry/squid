@@ -17,21 +17,21 @@ const getByProposalIndex = async (
 };
 
 const getByProposalHash = async (
-  ctx: CommonHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   proposalHash: string
 ) => {
-  return ctx.store.get(SubstrateDemocracyProposal, {
+  return store.get(SubstrateDemocracyProposal, {
     where: { id: `${network}:${proposalHash}` },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
 const getByTabledAtBlock = async (
-  ctx: CommonHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   tabledAtBlock: bigint
 ) => {
-  return ctx.store.get(SubstrateDemocracyProposal, {
+  return store.get(SubstrateDemocracyProposal, {
     where: { tabledAtBlock, network },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };

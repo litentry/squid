@@ -1,19 +1,17 @@
 import { KnownArchives, lookupArchive } from '@subsquid/archive-registry';
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { TypeormDatabase } from '@subsquid/typeorm-store';
+import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
+import councilProposedHandler from './handlers/council.Proposed.event';
+import councilVoteHandler from './handlers/council.vote.extrinsic';
 import councilApprovedEventHandler from './handlers/council.Approved.event';
 import councilClosedEventHandler from './handlers/council.Closed.event';
 import councilExecutedEventHandler from './handlers/council.Executed.event';
-import councilProposedHandler from './handlers/council.Proposed.event';
-import councilVoteHandler from './handlers/council.vote.extrinsic';
-import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
 import democracyProposedHandler from './handlers/Democracy.Proposed.event';
 import democracySecondHandler from './handlers/Democracy.second.extrinsic';
 import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
 import technicalCommitteeProposedHandler from './handlers/technicalCommittee.Proposed.event';
 import bountiesBountyProposedHandler from './handlers/bounties.bountyProposed.event';
-// import democracyProposedHandler from './handlers/Democracy.Proposed.event';
-// import democracySecondHandler from './handlers/Democracy.second.extrinsic';
 import democracyCancelProposalExtrinsicHandler from './handlers/democracy.CancelProposal.extrinsic';
 // import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
 // import democracyTabledEventHandler from './handlers/Democracy.Tabled.event';
@@ -106,6 +104,14 @@ new SubstrateProcessor(new TypeormDatabase())
   .addEventHandler(
     'Treasury.Rejected',
     treasuryRejectedEvent(network)
+  )
+  .addEventHandler(
+    'TechnicalCommittee.Proposed',
+    technicalCommitteeProposedHandler(network)
+  )
+  .addEventHandler(
+    'Bounties.BountyProposed',
+    bountiesBountyProposedHandler(network)
   )
   .addEventHandler(
     'PhragmenElection.NewTerm',

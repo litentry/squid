@@ -24,7 +24,7 @@ export default (network: SubstrateNetwork) =>
 
     const oldMemberTerms = (
       await substratePhragmenElectionMemberTermRepository.findActiveMembers(
-        ctx,
+        ctx.store,
         network
       )
     ).map((oldMemberTerm) => {

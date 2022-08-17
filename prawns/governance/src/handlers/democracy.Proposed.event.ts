@@ -87,7 +87,7 @@ export default (network: SubstrateNetwork) =>
 
     const preimage =
       await substrateDemocracyPreimageRepository.getByProposalHash(
-        ctx,
+        ctx.store,
         network,
         proposalHash
       );
