@@ -10,6 +10,7 @@ import { Store } from '@subsquid/typeorm-store';
 import getCallOriginAccount from '../utils/getCallOriginAccount';
 import assert from 'assert';
 import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { createCallHandlerFromEventHandler } from '../utils/createCallHandlerFromEventHandler';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
@@ -29,12 +30,10 @@ export default (network: SubstrateNetwork) =>
     account.totalBountyProposals++;
     await ctx.store.save(account);
 
+    const callHandler = createCallHandlerFromEventHandler(ctx);
+    assert(callHandler);
     const call = getBountiesProposedCall(
-      {
-        ...ctx,
-        call: ctx.event.call,
-        extrinsic: ctx.event.extrinsic
-      } as CallHandlerContext<Store>,
+      callHandler,
       network
     );
 
