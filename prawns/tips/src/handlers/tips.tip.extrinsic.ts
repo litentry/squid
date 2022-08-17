@@ -14,7 +14,7 @@ export default (network: SubstrateNetwork) =>
     if (!tipModel) {
       // NOTE: We don't break here because there can be old tippers or tips that are created through the treasury.NewTip.
       // For now we don't need to index those events.
-      console.log(
+      ctx.log.info(
         `tips.tip.extrinsic::Tip not found: ${u8aToHex(tipCall.hash)}`
       );
       return;

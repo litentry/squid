@@ -16,6 +16,8 @@ export function getTipsTipCall(
       if (call.isV1060) {
         return call.asV1060;
       }
+
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.kusama: {
@@ -24,6 +26,8 @@ export function getTipsTipCall(
       if (call.isV2028) {
         return call.asV2028;
       }
+
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -32,6 +36,8 @@ export function getTipsTipCall(
       if (call.isV28) {
         return call.asV28;
       }
+
+      throw new Error('Unexpected version');
     }
 
     default: {
