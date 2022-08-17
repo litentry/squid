@@ -1,30 +1,35 @@
-import {
-  EventHandlerContext,
-  CallHandlerContext,
-} from '@subsquid/substrate-processor';
-import {
-  decodeAddress,
-  encodeAddress,
-  getOrCreateGovernanceAccount,
-} from '../utils';
+import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
+import subsquare from '../clients/subsquare';
 import {
   SubstrateNetwork,
   SubstrateTreasuryProposal,
   SubstrateTreasuryProposalStatus,
 } from '../model';
+import {
+  decodeAddress,
+  encodeAddress,
+  getOrCreateGovernanceAccount,
+} from '../utils';
+import { createCallHandlerFromEventHandler } from '../utils/createCallHandlerFromEventHandler';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
 import { getTreasuryProposedEvent } from './typeGetters/getTreasuryProposedEvent';
 import { getTreasuryProposedSpendCall } from './typeGetters/getTreasuryProposeSpendCall';
-import subsquare from '../clients/subsquare';
-import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
-    if (!ctx.event.extrinsic) {
+    const substrateCall = ctx.event.call;
+    if (!substrateCall) {
       return;
     }
+
+    const accountAddress = getCallOriginAccount(substrateCall.origin, network);
+    assert(accountAddress);
+    const publicKey = decodeAddress(accountAddress);
+
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
     const event = getTreasuryProposedEvent(ctx, network);
     const subsquareProposal = await subsquare.getTreasuryProposal(
       network,
@@ -33,7 +38,7 @@ export default (network: SubstrateNetwork) =>
 
     // proposer
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: getCallOriginAccount(ctx.event.call.origin, network),
+      id: accountAddress,
       publicKey,
       network,
     });
@@ -46,21 +51,25 @@ export default (network: SubstrateNetwork) =>
 
     // beneficiary and value
     try {
-      const call = getTreasuryProposedSpendCall(
-        <CallHandlerContext>ctx,
-        network
-      );
-      value = call.value;
-      beneficiary = decodeAddress(call.beneficiary);
+      const callHandler = createCallHandlerFromEventHandler(ctx);
+      if (!callHandler) {
+        throw new Error(
+          'Could not create callHandlerContext from EventHandlerContext'
+        );
+      }
+
+      const callArgs = getTreasuryProposedSpendCall(callHandler, network);
+      value = callArgs.value;
+      beneficiary = decodeAddress(callArgs.beneficiary);
       beneficiaryAccount = await getOrCreateGovernanceAccount(ctx.store, {
-        id: encodeAddress(network, call.beneficiary),
+        id: encodeAddress(network, callArgs.beneficiary),
         publicKey: beneficiary,
         network,
       });
       await ctx.store.save(beneficiaryAccount);
     } catch (e) {
       console.warn(
-        `treasury.proposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`
+        `treasury.proposed event: extrinsic hidden in wrapped call - ${substrateCall.name}, not setting beneficiary or value fields`
       );
     }
 

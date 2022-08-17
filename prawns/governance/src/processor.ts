@@ -1,19 +1,18 @@
 import { KnownArchives, lookupArchive } from '@subsquid/archive-registry';
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { TypeormDatabase } from '@subsquid/typeorm-store';
-import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
-import councilProposedHandler from './handlers/council.Proposed.event';
-import councilVoteHandler from './handlers/council.vote.extrinsic';
 import councilApprovedEventHandler from './handlers/council.Approved.event';
 import councilClosedEventHandler from './handlers/council.Closed.event';
 import councilExecutedEventHandler from './handlers/council.Executed.event';
+import councilProposedHandler from './handlers/council.Proposed.event';
+import councilVoteHandler from './handlers/council.vote.extrinsic';
+import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
 // import bountiesBountyProposedHandler from './handlers/Bounties.bountyProposed.event';
 // import democracyProposedHandler from './handlers/Democracy.Proposed.event';
 // import democracySecondHandler from './handlers/Democracy.second.extrinsic';
 // import democracyCancelProposalExtrinsicHandler from './handlers/Democracy.CancelProposal.extrinsic';
 // import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
 // import technicalCommitteeProposedHandler from './handlers/TechnicalCommittee.Proposed.event';
-// import treasuryProposedHandler from './handlers/Treasury.proposed.event';
 // import democracyTabledEventHandler from './handlers/Democracy.Tabled.event';
 // import democracyStartedEventHandler from './handlers/Democracy.Started.event';
 // import democracyPassedEventHandler from './handlers/Democracy.Passed.event';
@@ -22,9 +21,10 @@ import councilExecutedEventHandler from './handlers/council.Executed.event';
 // import democracyExecutedEventHandler from './handlers/Democracy.Executed.event';
 // import democracyClearPublicProposalsExtrinsicHandler from './handlers/Democracy.ClearPublicProposals.extrinsic';
 // import democracyPreimageNotedEvent from './handlers/Democracy.PreimageNoted.event';
-// import treasuryAwardedEvent from './handlers/Treasury.awarded.event';
-// import treasuryRejectedEvent from './handlers/Treasury.rejected.event';
-// import PhragmenElectionNewTermEvent from './handlers/PhragmenElection.NewTerm.event';
+import PhragmenElectionNewTermEvent from './handlers/PhragmenElection.NewTerm.event';
+import treasuryAwardedEvent from './handlers/Treasury.awarded.event';
+import treasuryProposedHandler from './handlers/Treasury.proposed.event';
+import treasuryRejectedEvent from './handlers/Treasury.rejected.event';
 import { SubstrateNetwork } from './model';
 
 const supportedNetworks = ['kusama', 'polkadot', 'khala'];
@@ -38,7 +38,7 @@ new SubstrateProcessor(new TypeormDatabase())
   .setBatchSize(500)
   .setDataSource({
     archive: lookupArchive(network as KnownArchives, { release: 'FireSquid' }),
-    chain: `wss://${network}.api.onfinality.io/public-ws`,
+    chain: `wss://${network}.api.onfinality.io/public-ws`,,
   })
   .addCallHandler(
     'PhragmenElection.vote', electionVoteHandler(network)
@@ -56,7 +56,7 @@ new SubstrateProcessor(new TypeormDatabase())
     'Council.Closed', councilClosedEventHandler(network)
   )
   .addEventHandler(
-  'Council.Executed', councilExecutedEventHandler(network)
+    'Council.Executed', councilExecutedEventHandler(network)
   )
   // .addCallHandler('Democracy.vote', democracyVoteHandler(network)).addEventHandler(
   // 'Democracy.Proposed',
@@ -73,10 +73,6 @@ new SubstrateProcessor(new TypeormDatabase())
   // .addEventHandler(
   //   'Bounties.BountyProposed',
   //   bountiesBountyProposedHandler(network)
-  // )
-  // .addEventHandler(
-  //   'Treasury.Proposed',
-  //   treasuryProposedHandler(network)
   // )
   // .addEventHandler(
   //   'Democracy.Tabled',
@@ -117,10 +113,11 @@ new SubstrateProcessor(new TypeormDatabase())
   //   'Democracy.PreimageNoted',
   //   democracyPreimageNotedEvent(network)
   // )
-  // .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
-  // .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
-  // .addEventHandler(
-  //   'PhragmenElection.NewTerm',
-  //   PhragmenElectionNewTermEvent(network)
-  // )
+  .addEventHandler('Treasury.Proposed', treasuryProposedHandler(network))
+  .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
+  .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
+  .addEventHandler(
+    'PhragmenElection.NewTerm',
+    PhragmenElectionNewTermEvent(network)
+  )
   .run();
