@@ -7,11 +7,11 @@ import {
 } from '../model';
 
 const getByProposalIndex = async (
-  ctx: CommonHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   proposalIndex: number
 ) => {
-  return ctx.store.get(SubstrateDemocracyProposal, {
+  return store.get(SubstrateDemocracyProposal, {
     where: { id: `${network}:${proposalIndex}` },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
@@ -37,14 +37,11 @@ const getByTabledAtBlock = async (
 };
 
 const findByStatus = async (
-  ctx: CommonHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   status: SubstrateDemocracyProposalStatus
 ) => {
-  return ctx.store.findBy(SubstrateDemocracyProposal, {
-    network,
-    status,
-  }) as unknown as SubstrateDemocracyProposal[];
+  return store.findBy(SubstrateDemocracyProposal, { network, status }) as unknown as SubstrateDemocracyProposal[];
 };
 
 export default {

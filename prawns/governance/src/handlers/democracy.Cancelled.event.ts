@@ -15,7 +15,7 @@ export default (network: SubstrateNetwork) =>
 
     const referenda =
       await substrateDemocracyReferendaRepository.getByReferendaIndex(
-        ctx,
+        ctx.store,
         network,
         event.refIndex
       );

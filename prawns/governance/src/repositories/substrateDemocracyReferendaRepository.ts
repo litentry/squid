@@ -3,12 +3,13 @@ import { Store } from '@subsquid/typeorm-store';
 import { SubstrateDemocracyReferenda, SubstrateNetwork } from '../model';
 
 const getByReferendaIndex = async (
-  ctx: CommonHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   referendaIndex: number
 ) => {
-  return ctx.store.get(SubstrateDemocracyReferenda, {
+  return store.findOne(SubstrateDemocracyReferenda, {
     where: { id: `${network}:${referendaIndex}` },
+    relations: { democracyProposal: true }
   }) as unknown as SubstrateDemocracyReferenda | undefined;
 };
 
