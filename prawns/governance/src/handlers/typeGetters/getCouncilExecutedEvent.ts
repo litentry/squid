@@ -101,6 +101,13 @@ export function getCouncilExecutedEvent(
           originalResult: result,
         };
       }
+      if (event.isV9190) {
+        return {
+          proposalHash: event.asV9190.proposalHash,
+          result: event.asV9190.result.__kind === 'Ok',
+          originalResult: event.asV9190.result,
+        };
+      }
 
       throw new Error('Unexpected version');
     }
