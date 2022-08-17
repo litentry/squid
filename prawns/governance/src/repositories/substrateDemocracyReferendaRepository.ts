@@ -1,9 +1,9 @@
-import { SubstrateDemocracyReferenda, SubstrateNetwork } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { CommonHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
+import { SubstrateDemocracyReferenda, SubstrateNetwork } from '../model';
 
 const getByReferendaIndex = async (
-  ctx: EventHandlerContext<Store>,
+  ctx: CommonHandlerContext<Store>,
   network: SubstrateNetwork,
   referendaIndex: number
 ) => {

@@ -1,14 +1,14 @@
+import { CommonHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import {
-  SubstrateDemocracyReferendaVote,
   SubstrateDemocracyReferenda,
+  SubstrateDemocracyReferendaVote,
   SubstrateGovernanceAccount,
   SubstrateNetwork,
 } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { Store } from '@subsquid/typeorm-store';
 
 const getLastVoteByReferendaAndAccount = async (
-  ctx: EventHandlerContext<Store>,
+  ctx: CommonHandlerContext<Store>,
   network: SubstrateNetwork,
   democracyReferenda: SubstrateDemocracyReferenda,
   account: SubstrateGovernanceAccount

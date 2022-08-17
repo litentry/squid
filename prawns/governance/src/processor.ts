@@ -8,10 +8,10 @@ import councilProposedHandler from './handlers/council.Proposed.event';
 import councilVoteHandler from './handlers/council.vote.extrinsic';
 import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
 // import bountiesBountyProposedHandler from './handlers/Bounties.bountyProposed.event';
+import democracyCancelProposalExtrinsicHandler from './handlers/Democracy.CancelProposal.extrinsic';
 import democracyProposedHandler from './handlers/Democracy.Proposed.event';
-// import democracySecondHandler from './handlers/Democracy.second.extrinsic';
-// import democracyCancelProposalExtrinsicHandler from './handlers/Democracy.CancelProposal.extrinsic';
-// import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
+import democracySecondHandler from './handlers/Democracy.second.extrinsic';
+import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
 // import technicalCommitteeProposedHandler from './handlers/TechnicalCommittee.Proposed.event';
 // import democracyTabledEventHandler from './handlers/Democracy.Tabled.event';
 // import democracyStartedEventHandler from './handlers/Democracy.Started.event';
@@ -46,15 +46,16 @@ new SubstrateProcessor(new TypeormDatabase())
   .addEventHandler('Council.Approved', councilApprovedEventHandler(network))
   .addEventHandler('Council.Closed', councilClosedEventHandler(network))
   .addEventHandler('Council.Executed', councilExecutedEventHandler(network))
-  // .addCallHandler('Democracy.vote', democracyVoteHandler(network))
   .addEventHandler('Democracy.Proposed', democracyProposedHandler(network))
+  .addCallHandler('Democracy.vote', democracyVoteHandler(network))
+  .addCallHandler('Democracy.second', democracySecondHandler(network))
+  .addCallHandler(
+    'Democracy.cancel_proposal',
+    democracyCancelProposalExtrinsicHandler(network)
+  )
   // .addEventHandler(
   //   'TechnicalCommittee.Proposed',
   //   technicalCommitteeProposedHandler(network)
-  // )
-  // .addCallHandler(
-  // 'Democracy.second',
-  //   democracySecondHandler(network)
   // )
   // .addEventHandler(
   //   'Bounties.BountyProposed',
@@ -67,10 +68,6 @@ new SubstrateProcessor(new TypeormDatabase())
   // .addEventHandler(
   //   'Democracy.Started',
   //   democracyStartedEventHandler(network)
-  // )
-  // .addCallHandler(
-  //   'Democracy.cancel_proposal',
-  //   democracyCancelProposalExtrinsicHandler(network)
   // )
   // .addCallHandler(
   //   'Democracy.clear_public_proposals',
