@@ -1,20 +1,14 @@
 import { CallHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateNetwork } from '../../model';
-import {
-  TipsTipCall as KhalaTipsTipCall
-} from '../../types/khala/calls';
-import {
-  TipsTipCall as KusamaTipsTipCall
-} from '../../types/kusama/calls';
-import {
-  TipsTipCall as PolkadotTipsTipCall
-} from '../../types/polkadot/calls';
+import { TipsTipCall as KhalaTipsTipCall } from '../../types/khala/calls';
+import { TipsTipCall as KusamaTipsTipCall } from '../../types/kusama/calls';
+import { TipsTipCall as PolkadotTipsTipCall } from '../../types/polkadot/calls';
 
 export function getTipsTipCall(
-  ctx: CallHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
-): { hash: Uint8Array, tipValue: bigint } {
-
+): { hash: Uint8Array; tipValue: bigint } {
   switch (network) {
     case SubstrateNetwork.phala: {
       const call = new KhalaTipsTipCall(ctx);
@@ -23,7 +17,7 @@ export function getTipsTipCall(
         return call.asV1060;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.kusama: {
@@ -33,7 +27,7 @@ export function getTipsTipCall(
         return call.asV2028;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -43,7 +37,7 @@ export function getTipsTipCall(
         return call.asV28;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

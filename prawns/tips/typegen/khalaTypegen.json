@@ -1,11 +1,7 @@
 {
   "outDir": "../src/types/khala",
-  "chainVersions": "../../../metadata/khalaVersions.json",
+  "specVersions": "https://khala.archive.subsquid.io/graphql",
   "typesBundle": "khala",
-  "events": [
-    "tips.NewTip"
-  ],
-  "calls": [
-    "tips.tip"
-  ]
+  "events": ["Tips.NewTip"],
+  "calls": ["Tips.tip"]
 }
