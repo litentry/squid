@@ -1,20 +1,23 @@
 import { CallHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress } from '../utils';
-import { SubstrateNetwork, SubstrateDemocracyProposalSecond } from '../model';
-import { getOrCreateGovernanceAccount } from '../utils';
-import { getDemocracySecondCall } from './typeGetters/getDemocracySecondCall';
-import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
+import { SubstrateDemocracyProposalSecond, SubstrateNetwork } from '../model';
+import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
+import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import { getDemocracySecondCall } from './typeGetters/getDemocracySecondCall';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const publicKey = decodeAddress(ctx.extrinsic.signer);
+    const accountAddress = getCallOriginAccount(ctx.call.origin, network);
+    assert(accountAddress);
+    const publicKey = decodeAddress(accountAddress);
     const call = getDemocracySecondCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.extrinsic.signer,
+      id: accountAddress,
       publicKey,
       network,
     });
