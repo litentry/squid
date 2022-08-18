@@ -18,9 +18,6 @@ export default (network: SubstrateNetwork) =>
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
     const event = getDemocracyStartedEvent(ctx, network);
-    ctx.log.info(event);
-    ctx.log.info(ctx.event.args);
-    ctx.log.info(ctx._chain.getEventHash('Democracy.Started'));
 
     const democracyProposal =
       await substrateDemocracyProposalRepository.getByTabledAtBlock(
