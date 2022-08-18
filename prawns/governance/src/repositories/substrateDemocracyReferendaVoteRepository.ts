@@ -13,7 +13,11 @@ const getLastVoteByReferendaAndAccount = async (
   account: SubstrateGovernanceAccount
 ) => {
   return store.findOne(SubstrateDemocracyReferendaVote, {
-    where: { network, account, democracyReferenda },
+    where: {
+      network,
+      account: { id: account.id },
+      democracyReferenda: { id: democracyReferenda.id },
+    },
     order: { blockNumber: 'DESC' },
   }) as unknown as SubstrateDemocracyReferendaVote | undefined;
 };
