@@ -6,10 +6,10 @@ import {
 } from '../model';
 
 const findActiveMembers = async (
-  ctx: EventHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork
 ) => {
-  return ctx.store.find(SubstratePhragmenElectionMemberTerm, {
+  return store.find(SubstratePhragmenElectionMemberTerm, {
     where: { network, isCurrentTerm: true },
     relations: { account: true },
   }) as unknown as SubstratePhragmenElectionMemberTerm[];

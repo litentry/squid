@@ -7,6 +7,8 @@ import {
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getTechnicalCommitteeProposedEvent } from './typeGetters/getTechnicalCommitteeProposedEvent';
 import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
@@ -15,11 +17,13 @@ export default (network: SubstrateNetwork) =>
     }
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
+    const address = getCallOriginAccount(ctx.event.call.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
     const event = getTechnicalCommitteeProposedEvent(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: getCallOriginAccount(ctx.event.call.origin, network),
+      id: address,
       publicKey,
       network,
     });

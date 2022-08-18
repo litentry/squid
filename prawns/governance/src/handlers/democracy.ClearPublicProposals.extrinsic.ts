@@ -7,9 +7,9 @@ export default (network: SubstrateNetwork) =>
   async (ctx: CallHandlerContext<Store>) => {
     const proposedProposals =
       await substrateDemocracyProposalRepository.findByStatus(
-        ctx,
+        ctx.store,
         network,
-        'proposed'
+        SubstrateDemocracyProposalStatus.proposed
       );
     await Promise.all(
       proposedProposals.map((proposal) => {

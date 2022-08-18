@@ -1,8 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import {
   SubstrateDemocracyPreimage,
-  SubstrateDemocracyReferenda,
-  SubstrateDemocracyReferendaStatus,
   SubstrateNetwork,
 } from '../model';
 import { getDemocracyPreimageNotedEvent } from './typeGetters/getDemocracyPreimageNotedEvent';
@@ -35,7 +33,7 @@ export default (network: SubstrateNetwork) =>
     );
 
     if (!storagePreimage) {
-      console.error('Unable to find preimage');
+      ctx.log.error('Unable to find preimage');
       return;
     }
 

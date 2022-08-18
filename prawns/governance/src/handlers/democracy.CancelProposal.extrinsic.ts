@@ -9,7 +9,7 @@ export default (network: SubstrateNetwork) =>
     const call = getDemocracyCancelProposalCall(ctx, network);
     const proposal =
       await substrateDemocracyProposalRepository.getByProposalIndex(
-        ctx,
+        ctx.store,
         network,
         call.propIndex
       );
