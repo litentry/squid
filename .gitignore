@@ -11,3 +11,6 @@ data
 .deployments
 
 yarn-error.log
+
+prawns/**/model/
+prawns/**/types/*/
