@@ -28,7 +28,7 @@ export default (network: SubstrateNetwork) =>
 
     const proposal =
       await substrateDemocracyProposalRepository.getByProposalIndex(
-        ctx,
+        ctx.store,
         network,
         call.proposal
       );

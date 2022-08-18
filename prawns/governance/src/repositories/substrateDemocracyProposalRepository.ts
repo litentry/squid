@@ -1,4 +1,3 @@
-import { CommonHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
 import {
   SubstrateDemocracyProposal,
@@ -13,6 +12,7 @@ const getByProposalIndex = async (
 ) => {
   return store.get(SubstrateDemocracyProposal, {
     where: { id: `${network}:${proposalIndex}` },
+    relations: { account: true },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
@@ -23,6 +23,7 @@ const getByProposalHash = async (
 ) => {
   return store.get(SubstrateDemocracyProposal, {
     where: { id: `${network}:${proposalHash}` },
+    relations: { account: true },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
@@ -33,6 +34,7 @@ const getByTabledAtBlock = async (
 ) => {
   return store.get(SubstrateDemocracyProposal, {
     where: { tabledAtBlock, network },
+    relations: { account: true },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
@@ -41,7 +43,10 @@ const findByStatus = async (
   network: SubstrateNetwork,
   status: SubstrateDemocracyProposalStatus
 ) => {
-  return store.findBy(SubstrateDemocracyProposal, { network, status }) as unknown as SubstrateDemocracyProposal[];
+  return store.findBy(SubstrateDemocracyProposal, {
+    network,
+    status,
+  }) as unknown as SubstrateDemocracyProposal[];
 };
 
 export default {

@@ -1,8 +1,8 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
-import { getDemocracyTabledEvent } from './typeGetters/getDemocracyTabledEvent';
-import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 import { Store } from '@subsquid/typeorm-store';
+import { SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
+import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
+import { getDemocracyTabledEvent } from './typeGetters/getDemocracyTabledEvent';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
@@ -16,7 +16,7 @@ export default (network: SubstrateNetwork) =>
 
     const proposal =
       await substrateDemocracyProposalRepository.getByProposalIndex(
-        ctx,
+        ctx.store,
         network,
         event.proposalIndex
       );

@@ -1,4 +1,3 @@
-import { CommonHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
 import {
   SubstrateDemocracyReferenda,

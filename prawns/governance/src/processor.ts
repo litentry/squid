@@ -1,27 +1,26 @@
 import { KnownArchives, lookupArchive } from '@subsquid/archive-registry';
 import { SubstrateProcessor } from '@subsquid/substrate-processor';
 import { TypeormDatabase } from '@subsquid/typeorm-store';
-import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
-import councilProposedHandler from './handlers/council.Proposed.event';
-import councilVoteHandler from './handlers/council.vote.extrinsic';
+import bountiesBountyProposedHandler from './handlers/bounties.bountyProposed.event';
 import councilApprovedEventHandler from './handlers/council.Approved.event';
 import councilClosedEventHandler from './handlers/council.Closed.event';
 import councilExecutedEventHandler from './handlers/council.Executed.event';
+import councilProposedHandler from './handlers/council.Proposed.event';
+import councilVoteHandler from './handlers/council.vote.extrinsic';
+import democracyCancelProposalExtrinsicHandler from './handlers/democracy.CancelProposal.extrinsic';
 import democracyProposedHandler from './handlers/Democracy.Proposed.event';
 import democracySecondHandler from './handlers/Democracy.second.extrinsic';
-import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
+import electionVoteHandler from './handlers/phragmenElection.vote.extrinsic';
 import technicalCommitteeProposedHandler from './handlers/technicalCommittee.Proposed.event';
-import bountiesBountyProposedHandler from './handlers/bounties.bountyProposed.event';
-import democracyCancelProposalExtrinsicHandler from './handlers/democracy.CancelProposal.extrinsic';
 // import democracyVoteHandler from './handlers/Democracy.vote.extrinsic';
-// import democracyTabledEventHandler from './handlers/Democracy.Tabled.event';
-import democracyStartedEventHandler from './handlers/democracy.Started.event';
-import democracyPassedEventHandler from './handlers/democracy.Passed.event';
-import democracyNotPassedEventHandler from './handlers/democracy.NotPassed.event';
 import democracyCancelledEventHandler from './handlers/democracy.Cancelled.event';
-import democracyExecutedEventHandler from './handlers/democracy.Executed.event';
 import democracyClearPublicProposalsExtrinsicHandler from './handlers/Democracy.ClearPublicProposals.extrinsic';
+import democracyExecutedEventHandler from './handlers/democracy.Executed.event';
+import democracyNotPassedEventHandler from './handlers/democracy.NotPassed.event';
+import democracyPassedEventHandler from './handlers/democracy.Passed.event';
 import democracyPreimageNotedEvent from './handlers/democracy.PreimageNoted.event';
+import democracyStartedEventHandler from './handlers/democracy.Started.event';
+import democracyTabledEventHandler from './handlers/Democracy.Tabled.event';
 import PhragmenElectionNewTermEvent from './handlers/phragmenElection.NewTerm.event';
 import treasuryAwardedEvent from './handlers/treasury.awarded.event';
 import treasuryProposedHandler from './handlers/treasury.proposed.event';
@@ -48,23 +47,17 @@ new SubstrateProcessor(new TypeormDatabase())
   .addEventHandler('Council.Closed', councilClosedEventHandler(network))
   .addEventHandler('Council.Executed', councilExecutedEventHandler(network))
   .addEventHandler('Democracy.Proposed', democracyProposedHandler(network))
-  .addCallHandler('Democracy.vote', democracyVoteHandler(network))
+  // .addCallHandler('Democracy.vote', democracyVoteHandler(network))
   .addCallHandler('Democracy.second', democracySecondHandler(network))
   .addCallHandler(
     'Democracy.cancel_proposal',
     democracyCancelProposalExtrinsicHandler(network)
   )
-  // .addEventHandler(
-  //   'Democracy.Tabled',
-  //   democracyTabledEventHandler(network)
-  // )
+  .addEventHandler('Democracy.Tabled', democracyTabledEventHandler(network))
   .addEventHandler('Treasury.Proposed', treasuryProposedHandler(network))
   .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
   .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
-  .addEventHandler(
-    'Democracy.Started',
-    democracyStartedEventHandler(network)
-  )
+  .addEventHandler('Democracy.Started', democracyStartedEventHandler(network))
   .addCallHandler(
     'Democracy.cancel_proposal',
     democracyCancelProposalExtrinsicHandler(network)
@@ -73,10 +66,7 @@ new SubstrateProcessor(new TypeormDatabase())
     'Democracy.clear_public_proposals',
     democracyClearPublicProposalsExtrinsicHandler(network)
   )
-  .addEventHandler(
-    'Democracy.Passed',
-    democracyPassedEventHandler(network)
-  )
+  .addEventHandler('Democracy.Passed', democracyPassedEventHandler(network))
   .addEventHandler(
     'Democracy.NotPassed',
     democracyNotPassedEventHandler(network)
@@ -85,26 +75,14 @@ new SubstrateProcessor(new TypeormDatabase())
     'Democracy.Cancelled',
     democracyCancelledEventHandler(network)
   )
-  .addEventHandler(
-    'Democracy.Executed',
-    democracyExecutedEventHandler(network)
-  )
+  .addEventHandler('Democracy.Executed', democracyExecutedEventHandler(network))
   .addEventHandler(
     'Democracy.PreimageNoted',
     democracyPreimageNotedEvent(network)
   )
-  .addEventHandler(
-    'Treasury.Proposed',
-    treasuryProposedHandler(network)
-  )
-  .addEventHandler(
-    'Treasury.Awarded',
-    treasuryAwardedEvent(network)
-  )
-  .addEventHandler(
-    'Treasury.Rejected',
-    treasuryRejectedEvent(network)
-  )
+  .addEventHandler('Treasury.Proposed', treasuryProposedHandler(network))
+  .addEventHandler('Treasury.Awarded', treasuryAwardedEvent(network))
+  .addEventHandler('Treasury.Rejected', treasuryRejectedEvent(network))
   .addEventHandler(
     'TechnicalCommittee.Proposed',
     technicalCommitteeProposedHandler(network)
