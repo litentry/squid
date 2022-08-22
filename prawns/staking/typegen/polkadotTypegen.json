@@ -1,15 +1,16 @@
 {
   "outDir": "../src/types/polkadot",
-  "chainVersions": "../../../metadata/polkadotVersions.json",
+  "specVersions": "https://polkadot.archive.subsquid.io/graphql",
   "typesBundle": "polkadot",
   "events": [
-    "staking.Bonded",
-    "staking.Unbonded",
-    "staking.Chilled",
-    "staking.Kicked",
-    "staking.PayoutStarted",
-    "staking.Rewarded",
-    "staking.Slashed",
-    "staking.Withdrawn"
-  ]
+    "Staking.Bonded",
+    "Staking.Unbonded",
+    "Staking.Chilled",
+    "Staking.Kicked",
+    "Staking.PayoutStarted",
+    "Staking.Rewarded",
+    "Staking.Slashed",
+    "Staking.Withdrawn"
+  ],
+  "calls": ["Staking.nominate"]
 }

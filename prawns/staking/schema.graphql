@@ -20,9 +20,10 @@ type SubstrateStakingNominatorAccount @entity {
   "address"
   account: String! @index
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork! @index
-  stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "nominator")
+  stakingActionHistory: [SubstrateStakingActionHistory]!
+    @derivedFrom(field: "nominator")
 }
 
 type SubstrateStakingValidatorAccount @entity {
@@ -31,9 +32,10 @@ type SubstrateStakingValidatorAccount @entity {
   "address"
   account: String! @index
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork! @index
-  stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "validator")
+  stakingActionHistory: [SubstrateStakingActionHistory]!
+    @derivedFrom(field: "validator")
 }
 
 type SubstrateStakingStashAccount @entity {
@@ -42,9 +44,10 @@ type SubstrateStakingStashAccount @entity {
   "address"
   account: String! @index
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork! @index
-  stakingActionHistory: [SubstrateStakingActionHistory]! @derivedFrom(field: "stash")
+  stakingActionHistory: [SubstrateStakingActionHistory]!
+    @derivedFrom(field: "stash")
 }
 
 type SubstrateStakingActionHistory @entity {

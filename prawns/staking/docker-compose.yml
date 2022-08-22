@@ -31,9 +31,10 @@ services:
       - indexing
     build:
       context: .
-      target: kusamaProcessor
+      target: processor
     environment:
       DB_HOST: db
+      NETWORK: kusama
     ports:
       - 3000
     restart: unless-stopped
@@ -47,9 +48,10 @@ services:
       - indexing
     build:
       context: .
-      target: polkadotProcessor
+      target: processor
     environment:
       DB_HOST: db
+      NETWORK: polkadot
     ports:
       - 3000
     restart: unless-stopped

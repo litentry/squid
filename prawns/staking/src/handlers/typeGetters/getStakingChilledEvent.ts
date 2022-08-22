@@ -1,37 +1,37 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
-import {
-  StakingChilledEvent as KusamaStakingChilledEvent
-} from '../../types/kusama/events';
-import {
-  StakingChilledEvent as PolkadotStakingChilledEvent
-} from '../../types/polkadot/events';
+import { StakingChilledEvent as KusamaStakingChilledEvent } from '../../types/kusama/events';
+import { StakingChilledEvent as PolkadotStakingChilledEvent } from '../../types/polkadot/events';
 import { encodeAddress } from '../../utils';
-
+import { Store } from '@subsquid/typeorm-store';
 
 export function getStakingChilledEvent(
-  ctx: EventHandlerContext,
-  network: SubstrateNetwork,
-): {stash: string} {
+  ctx: EventHandlerContext<Store>,
+  network: SubstrateNetwork
+): { stash: string } {
   switch (network) {
     case SubstrateNetwork.kusama: {
       const event = new KusamaStakingChilledEvent(ctx);
 
-      const stash = event.isV9090 ? event.asV9090 : event.asLatest;
-
-      return {
-        stash: encodeAddress(network, stash)
+      if (event.isV9090) {
+        return {
+          stash: encodeAddress(network, event.asV9090),
+        };
       }
+
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotStakingChilledEvent(ctx);
 
-      const stash = event.isV9090 ? event.asV9090 : event.asLatest;
-
-      return {
-        stash: encodeAddress(network, stash)
+      if (event.isV9090) {
+        return {
+          stash: encodeAddress(network, event.asV9090),
+        };
       }
+
+      throw new Error('Unexpected version');
     }
 
     default: {
