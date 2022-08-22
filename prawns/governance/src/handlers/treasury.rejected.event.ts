@@ -10,7 +10,7 @@ export default (network: SubstrateNetwork) =>
 
     const proposal =
       await substrateTreasuryProposalRepository.getByProposalIndex(
-        ctx,
+        ctx.store,
         network,
         event.proposalIndex
       );

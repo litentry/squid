@@ -1,9 +1,9 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateNetwork } from '../../model';
+import { DemocracyStartedEvent as KhalaDemocracyStartedEvent } from '../../types/khala/events';
 import { DemocracyStartedEvent as KusamaDemocracyStartedEvent } from '../../types/kusama/events';
 import { DemocracyStartedEvent as PolkadotDemocracyStartedEvent } from '../../types/polkadot/events';
-import { DemocracyStartedEvent as KhalaDemocracyStartedEvent } from '../../types/khala/events';
-import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracyStartedEvent(
   ctx: EventHandlerContext<Store>,
@@ -15,12 +15,12 @@ export function getDemocracyStartedEvent(
 
       if (event.isV1020) {
         const [refIndexParam, thresholdParam] = ctx.event.args as unknown as [
-          { value: number },
-          { value: string }
+          number,
+          { __kind: string }
         ];
         return {
-          refIndex: refIndexParam.value,
-          thresholdKind: thresholdParam.value,
+          refIndex: refIndexParam,
+          thresholdKind: thresholdParam.__kind,
         };
 
         // Subsquid is  choking on a type - workaround above
@@ -43,12 +43,12 @@ export function getDemocracyStartedEvent(
 
       if (event.isV0) {
         const [refIndexParam, thresholdParam] = ctx.event.args as unknown as [
-          { value: number },
-          { value: string }
+          number,
+          { __kind: string }
         ];
         return {
-          refIndex: refIndexParam.value,
-          thresholdKind: thresholdParam.value,
+          refIndex: refIndexParam,
+          thresholdKind: thresholdParam.__kind,
         };
 
         // Subsquid is  choking on a type - workaround above

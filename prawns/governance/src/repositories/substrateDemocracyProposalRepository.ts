@@ -1,43 +1,52 @@
-import { SubstrateDemocracyProposal, SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
+import {
+  SubstrateDemocracyProposal,
+  SubstrateDemocracyProposalStatus,
+  SubstrateNetwork,
+} from '../model';
 
 const getByProposalIndex = async (
-  ctx: EventHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   proposalIndex: number
 ) => {
-  return ctx.store.get(SubstrateDemocracyProposal, {
+  return store.get(SubstrateDemocracyProposal, {
     where: { id: `${network}:${proposalIndex}` },
+    relations: { account: true },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
 const getByProposalHash = async (
-  ctx: EventHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   proposalHash: string
 ) => {
-  return ctx.store.get(SubstrateDemocracyProposal, {
+  return store.get(SubstrateDemocracyProposal, {
     where: { id: `${network}:${proposalHash}` },
+    relations: { account: true },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
 const getByTabledAtBlock = async (
-  ctx: EventHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   tabledAtBlock: bigint
 ) => {
-  return ctx.store.get(SubstrateDemocracyProposal, {
+  return store.get(SubstrateDemocracyProposal, {
     where: { tabledAtBlock, network },
+    relations: { account: true },
   }) as unknown as SubstrateDemocracyProposal | undefined;
 };
 
 const findByStatus = async (
-  ctx: EventHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   status: SubstrateDemocracyProposalStatus
 ) => {
-  return ctx.store.findBy(SubstrateDemocracyProposal, { network, status }) as unknown as SubstrateDemocracyProposal[];
+  return store.findBy(SubstrateDemocracyProposal, {
+    network,
+    status,
+  }) as unknown as SubstrateDemocracyProposal[];
 };
 
 export default {

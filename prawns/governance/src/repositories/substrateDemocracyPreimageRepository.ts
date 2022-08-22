@@ -1,9 +1,8 @@
-import { SubstrateDemocracyPreimage, SubstrateNetwork } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { Store } from '@subsquid/typeorm-store';
+import { SubstrateDemocracyPreimage, SubstrateNetwork } from '../model';
 
 const getByProposalHash = async (
-  ctx: EventHandlerContext<Store>,
+  store: Store,
   network: SubstrateNetwork,
   proposalHash: Uint8Array | string
 ) => {
@@ -11,8 +10,9 @@ const getByProposalHash = async (
     typeof proposalHash === 'string'
       ? proposalHash
       : '0x' + Buffer.from(proposalHash).toString('hex');
-  return ctx.store.findOneBy(SubstrateDemocracyPreimage, { id: `${network}:${proposalHashString}` },
-  ) as unknown as SubstrateDemocracyPreimage | undefined;
+  return store.findOneBy(SubstrateDemocracyPreimage, {
+    id: `${network}:${proposalHashString}`,
+  }) as unknown as SubstrateDemocracyPreimage | undefined;
 };
 
 export default {

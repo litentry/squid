@@ -1,45 +1,32 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
+import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
+import subsquare from '../clients/subsquare';
 import {
   SubstrateDemocracyProposal,
   SubstrateDemocracyProposalStatus,
   SubstrateNetwork,
 } from '../model';
-import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
-import subsquare from '../clients/subsquare';
 import substrateDemocracyPreimageRepository from '../repositories/substrateDemocracyPreimageRepository';
-import { Store } from '@subsquid/typeorm-store';
+import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import { getDemocracyProposedEvent } from './typeGetters/getDemocracyProposedEvent';
 
 const getProposalHash = (
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ) => {
-  const args = ctx.event!.extrinsic!.args;
+  const call = ctx.event.call;
 
-  if (ctx.event.extrinsic?.method === 'batchAll') {
-    const calls = args[0].value as { args: { [key: string]: any } }[];
-    const batchProposeArgs = calls.filter(
-      (call) => call.args && call.args.proposal_hash
+  if (!call) {
+    throw new Error(
+      `Expected to have a call in the event context in block ${ctx.block.height}`
     );
-    if (batchProposeArgs.length === 0) {
-      throw new Error(
-        `Unable to find propose args in batch in block ${ctx.block.height}`
-      );
-    }
-    if (batchProposeArgs.length > 1) {
-      throw new Error(
-        `Found multiple proposal_hash args in batch in block ${ctx.block.height}`
-      );
-    }
-    return batchProposeArgs[0].args.proposal_hash;
-  } else {
-    const proposalHashArg = args.find(
-      (arg) => arg.name === 'proposal_hash' || arg.name === 'proposalHash'
-    );
+  }
 
-    if (proposalHashArg) {
-      return proposalHashArg.value as string;
-    }
+  const proposalHashArg = call.args.proposal_hash || call.args.proposalHash;
+  if (proposalHashArg) {
+    return proposalHashArg;
   }
 
   if (
@@ -54,13 +41,15 @@ const getProposalHash = (
 
 export default (network: SubstrateNetwork) =>
   async (ctx: EventHandlerContext<Store>) => {
-    if (!ctx.event || !ctx.event.extrinsic) {
+    if (!ctx.event || !ctx.event.call) {
       return;
     }
 
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const publicKey = decodeAddress(getCallOriginAccount(ctx.event.call.origin, network));
+    const accountAddress = getCallOriginAccount(ctx.event.call.origin, network);
+    assert(accountAddress);
+    const publicKey = decodeAddress(accountAddress);
     const event = getDemocracyProposedEvent(ctx, network);
     const proposalHash = getProposalHash(ctx, network);
     const subsquareProposal = await subsquare.getDemocracyProposal(
@@ -69,7 +58,7 @@ export default (network: SubstrateNetwork) =>
     );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: getCallOriginAccount(ctx.event.call.origin, network),
+      id: accountAddress,
       publicKey,
       network,
     });
@@ -78,7 +67,7 @@ export default (network: SubstrateNetwork) =>
 
     const preimage =
       await substrateDemocracyPreimageRepository.getByProposalHash(
-        ctx,
+        ctx.store,
         network,
         proposalHash
       );

@@ -1,28 +1,31 @@
 import { CallHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress } from '../utils';
+import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
 import {
   SubstrateDemocracyReferendaVote,
   SubstrateNetwork,
   SubstrateProposalVote,
 } from '../model';
-import { getOrCreateGovernanceAccount } from '../utils';
+import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
+import substrateDemocracyReferendaVoteRepository from '../repositories/substrateDemocracyReferendaVoteRepository';
+import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
 import {
   AccountVote,
   getDemocracyVoteCall,
 } from './typeGetters/getDemocracyVoteCall';
-import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
-import substrateDemocracyReferendaVoteRepository from '../repositories/substrateDemocracyReferendaVoteRepository';
-import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
   async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const publicKey = decodeAddress(ctx.extrinsic.signer);
+    const accountAddress = getCallOriginAccount(ctx.call.origin, network);
+    assert(accountAddress);
+    const publicKey = decodeAddress(accountAddress);
     const call = getDemocracyVoteCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.extrinsic.signer,
+      id: accountAddress,
       publicKey,
       network,
     });
@@ -33,7 +36,7 @@ export default (network: SubstrateNetwork) =>
 
     const referenda =
       await substrateDemocracyReferendaRepository.getByReferendaIndex(
-        ctx,
+        ctx.store,
         network,
         call.refIndex
       );
@@ -82,7 +85,7 @@ export default (network: SubstrateNetwork) =>
     // If the same user voted previously then their previous vote is discounted
     const lastVote =
       await substrateDemocracyReferendaVoteRepository.getLastVoteByReferendaAndAccount(
-        ctx,
+        ctx.store,
         network,
         referenda,
         account
