@@ -5,10 +5,8 @@
   "private": true,
   "scripts": {
     "db:init": "docker-compose -f ../../docker-compose.dev.yml down && docker-compose -f ../../docker-compose.dev.yml up -d && yarn build && yarn migrate",
-    "dev:polkadot": "node -r dotenv/config lib/processors/polkadotProcessor.js",
-    "dev:kusama": "node -r dotenv/config lib/processors/kusamaProcessor.js",
-    "process:polkadot": "node lib/processors/polkadotProcessor.js",
-    "process:kusama": "node lib/processors/kusamaProcessor.js",
+    "dev:polkadot": "NETWORK=polkadot node -r dotenv/config lib/processor.js",
+    "dev:kusama": "NETWORK=kusama node -r dotenv/config lib/processor.js",
     "query-node": "squid-graphql-server",
     "build": "rm -rf lib && tsc",
     "codegen": "sqd codegen",
