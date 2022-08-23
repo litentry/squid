@@ -18,6 +18,6 @@ new SubstrateProcessor(new TypeormDatabase())
   })
   .addEventHandler(
     'Crowdloan.Contributed',
-    crowdloanContributedHandler(SubstrateNetwork.polkadot, 0)
+    crowdloanContributedHandler(network, 0)
   )
   .run();
