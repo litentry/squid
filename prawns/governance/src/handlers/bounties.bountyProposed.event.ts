@@ -24,7 +24,7 @@ export default (network: SubstrateNetwork) =>
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: address,
-      publicKey: address,
+      publicKey,
       network,
     });
     account.totalBountyProposals++;
