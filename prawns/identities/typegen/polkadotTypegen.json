@@ -3,8 +3,8 @@
   "specVersions": "https://polkadot.archive.subsquid.io/graphql",
   "typesBundle": "polkadot",
   "calls": [
-    "identity.set_identity",
-    "identity.clear_identity",
-    "identity.kill_identity"
+    "Identity.set_identity",
+    "Identity.clear_identity",
+    "Identity.kill_identity"
   ]
 }
