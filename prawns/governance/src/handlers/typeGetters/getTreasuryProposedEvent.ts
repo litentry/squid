@@ -3,9 +3,10 @@ import { TreasuryProposedEvent as KusamaTreasuryProposedEvent } from '../../type
 import { TreasuryProposedEvent as PolkadotTreasuryProposedEvent } from '../../types/polkadot/events';
 import { TreasuryProposedEvent as KhalaTreasuryProposedEvent } from '../../types/khala/events';
 import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getTreasuryProposedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   proposalIndex: number;
@@ -22,7 +23,7 @@ export function getTreasuryProposedEvent(
         return event.asV9160;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -36,7 +37,7 @@ export function getTreasuryProposedEvent(
         return event.asV9170;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -50,7 +51,7 @@ export function getTreasuryProposedEvent(
         return event.asV1110;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

@@ -30,7 +30,7 @@ type SubstrateGovernanceAccount @entity {
   "address"
   id: ID!
   "hex address"
-  rootAccount: String! @index
+  publicKey: String! @index
   network: SubstrateNetwork!
   "Deprecated in favour of totalDemocracyProposalSeconds"
   totalProposalSeconds: Int!
@@ -62,7 +62,7 @@ type SubstrateElectionVote @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   candidates: [String!]!
@@ -74,7 +74,7 @@ type SubstrateDemocracyProposal @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   proposalHash: String! @index
@@ -112,7 +112,7 @@ type SubstrateCouncilProposal @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   lastUpdate: DateTime!
@@ -133,7 +133,7 @@ type SubstrateTechnicalCommitteeProposal @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
@@ -146,7 +146,7 @@ type SubstrateCouncilVote @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
@@ -159,7 +159,7 @@ type SubstrateProposalVote @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   refIndex: Int! @index
@@ -172,7 +172,7 @@ type SubstrateDemocracyReferendaVote @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   democracyReferenda: SubstrateDemocracyReferenda!
@@ -185,7 +185,7 @@ type SubstrateDemocracyProposalSecond @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   proposal: SubstrateDemocracyProposal!
@@ -197,7 +197,7 @@ type SubstrateBountyProposal @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   proposalIndex: Int! @index
@@ -210,7 +210,7 @@ type SubstrateTreasuryProposal @entity {
   id: ID!
   network: SubstrateNetwork!
   account: SubstrateGovernanceAccount!
-  rootAccount: String! @index
+  publicKey: String! @index
   blockNumber: BigInt!
   date: DateTime!
   title: String

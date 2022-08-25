@@ -1,11 +1,12 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { BountiesProposeBountyCall as KusamaBountiesProposeCall } from '../../types/kusama/calls';
 import { BountiesProposeBountyCall as PolkadotBountiesProposeCall } from '../../types/polkadot/calls';
 import { BountiesProposeBountyCall as KhalaBountiesProposeCall } from '../../types/khala/calls';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getBountiesProposedCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   value: bigint;
@@ -19,7 +20,7 @@ export function getBountiesProposedCall(
         return call.asV2028;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -29,7 +30,7 @@ export function getBountiesProposedCall(
         return call.asV28;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -39,7 +40,7 @@ export function getBountiesProposedCall(
         return call.asV1;
       }
 
-      return call.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

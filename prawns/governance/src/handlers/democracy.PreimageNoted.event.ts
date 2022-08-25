@@ -1,17 +1,15 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
 import {
   SubstrateDemocracyPreimage,
-  SubstrateDemocracyReferenda,
-  SubstrateDemocracyReferendaStatus,
   SubstrateNetwork,
 } from '../model';
-
 import { getDemocracyPreimageNotedEvent } from './typeGetters/getDemocracyPreimageNotedEvent';
 import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { getDemocracyPreimagesStorage } from './typeGetters/getDemocracyPreimageStorage';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }
@@ -22,7 +20,7 @@ export default (network: SubstrateNetwork) =>
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
       id: '0x' + Buffer.from(event.who).toString('hex'),
-      rootAccount: decodeAddress(event.who),
+      publicKey: decodeAddress(event.who),
       network,
     });
     await ctx.store.save(account);
@@ -35,7 +33,7 @@ export default (network: SubstrateNetwork) =>
     );
 
     if (!storagePreimage) {
-      console.error('Unable to find preimage');
+      ctx.log.error('Unable to find preimage');
       return;
     }
 

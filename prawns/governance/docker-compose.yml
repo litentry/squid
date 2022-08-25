@@ -29,11 +29,12 @@ services:
   khala-processor:
     build:
       context: .
-      target: khalaProcessor
+      target: processor
     profiles:
       - indexing
     environment:
       DB_HOST: db
+      NETWORK: khala
     ports:
       - 3000
     restart: unless-stopped
@@ -45,11 +46,12 @@ services:
   kusama-processor:
     build:
       context: .
-      target: kusamaProcessor
+      target: processor
     profiles:
       - indexing
     environment:
       DB_HOST: db
+      NETWORK: kusama
     ports:
       - 3000
     restart: unless-stopped
@@ -61,11 +63,12 @@ services:
   polkadot-processor:
     build:
       context: .
-      target: polkadotProcessor
+      target: processor
     profiles:
       - indexing
     environment:
       DB_HOST: db
+      NETWORK: polkadot
     ports:
       - 3000
     restart: unless-stopped

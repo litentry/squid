@@ -2,7 +2,7 @@ import { SubstrateNetwork } from '../../model';
 import { CouncilProposalOfStorage as KusamaCouncilProposalOfStorage } from '../../types/kusama/storage';
 import { CouncilProposalOfStorage as PolkadotCouncilProposalOfStorage } from '../../types/polkadot/storage';
 import { CouncilProposalOfStorage as KhalaCouncilProposalOfStorage } from '../../types/khala/storage';
-import { StorageContext } from '@subsquid/substrate-typegen/lib/support';
+import { BlockContext as StorageContext } from '@subsquid/substrate-typegen/lib/support';
 
 export async function getCouncilProposalOfStorage(
   ctx: StorageContext,
@@ -91,6 +91,10 @@ export async function getCouncilProposalOfStorage(
 
       if (call.isV9230) {
         return await call.getAsV9230(proposalHash);
+      }
+
+      if (call.isV9250) {
+        return await call.getAsV9250(proposalHash);
       }
 
       throw new Error('Unexpected version');

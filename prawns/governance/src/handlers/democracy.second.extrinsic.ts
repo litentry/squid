@@ -1,20 +1,24 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
-import { decodeAddress } from '../utils';
-import { SubstrateNetwork, SubstrateDemocracyProposalSecond } from '../model';
-import { getOrCreateGovernanceAccount } from '../utils';
-import { getDemocracySecondCall } from './typeGetters/getDemocracySecondCall';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
+import { SubstrateDemocracyProposalSecond, SubstrateNetwork } from '../model';
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
+import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import { getDemocracySecondCall } from './typeGetters/getDemocracySecondCall';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: ExtrinsicHandlerContext) => {
+  async (ctx: CallHandlerContext<Store>) => {
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.extrinsic.signer);
+    const accountAddress = getCallOriginAccount(ctx.call.origin, network);
+    assert(accountAddress);
+    const publicKey = decodeAddress(accountAddress);
     const call = getDemocracySecondCall(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.extrinsic.signer,
-      rootAccount,
+      id: accountAddress,
+      publicKey,
       network,
     });
     account.totalDemocracyProposalSeconds =
@@ -24,7 +28,7 @@ export default (network: SubstrateNetwork) =>
 
     const proposal =
       await substrateDemocracyProposalRepository.getByProposalIndex(
-        ctx,
+        ctx.store,
         network,
         call.proposal
       );
@@ -37,7 +41,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.extrinsic.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       proposal,

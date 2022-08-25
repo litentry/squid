@@ -2,9 +2,10 @@ import { EventHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateDemocracyReferendaStatus, SubstrateNetwork } from '../model';
 import { getDemocracyPassedEvent } from './typeGetters/getDemocracyPassedEvent';
 import substrateDemocracyReferendaRepository from '../repositories/substrateDemocracyReferendaRepository';
+import { Store } from '@subsquid/typeorm-store';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }
@@ -14,7 +15,7 @@ export default (network: SubstrateNetwork) =>
 
     const referenda =
       await substrateDemocracyReferendaRepository.getByReferendaIndex(
-        ctx,
+        ctx.store,
         network,
         event.refIndex
       );

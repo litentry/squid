@@ -4,9 +4,12 @@ import substrateCouncilProposalRepository from '../repositories/substrateCouncil
 import { getCouncilExecutedEvent } from './typeGetters/getCouncilExecutedEvent';
 import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { getCouncilProposalOfStorage } from './typeGetters/getCouncilProposalOfStorage';
+import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event || !ctx.event.extrinsic) {
       return;
     }
@@ -15,7 +18,9 @@ export default (network: SubstrateNetwork) =>
     const date = new Date(ctx.block.timestamp);
 
     const blockNumber = BigInt(ctx.block.height);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const address = getCallOriginAccount(ctx.event.call.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
 
     const storage = await getCouncilProposalOfStorage(
       ctx,
@@ -24,8 +29,8 @@ export default (network: SubstrateNetwork) =>
     );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: address,
+      publicKey,
       network,
     });
     account.totalCouncilProposals = account.totalCouncilProposals + 1;
@@ -33,27 +38,28 @@ export default (network: SubstrateNetwork) =>
 
     let councilProposal =
       await substrateCouncilProposalRepository.getByProposalHash(
-        ctx,
+        ctx.store,
         network,
         event.proposalHash
       );
 
     if (!councilProposal) {
-      if (ctx.event.extrinsic.name !== 'council.propose') {
+      if (ctx.event.call.name !== 'council.propose') {
         throw new Error(
           'Council proposal not found and the extrinsic is not a proposal'
         );
       }
 
-      const proposalArgs = ctx.event.extrinsic.args as unknown as [
+      const proposalArgs = ctx.event.call.args as unknown as [
         { value: number }
       ];
+      console.log(proposalArgs);
 
       councilProposal = new SubstrateCouncilProposal({
         id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
         network,
         account,
-        rootAccount,
+        publicKey,
         blockNumber,
         date,
         lastUpdate: date,

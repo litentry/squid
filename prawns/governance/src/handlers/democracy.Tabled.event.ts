@@ -1,10 +1,11 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateDemocracyProposalStatus, SubstrateNetwork } from '../model';
-import { getDemocracyTabledEvent } from './typeGetters/getDemocracyTabledEvent';
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
+import { getDemocracyTabledEvent } from './typeGetters/getDemocracyTabledEvent';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }
@@ -15,7 +16,7 @@ export default (network: SubstrateNetwork) =>
 
     const proposal =
       await substrateDemocracyProposalRepository.getByProposalIndex(
-        ctx,
+        ctx.store,
         network,
         event.proposalIndex
       );

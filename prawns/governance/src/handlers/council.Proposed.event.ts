@@ -3,15 +3,21 @@ import { decodeAddress, getOrCreateGovernanceAccount } from '../utils';
 import { SubstrateCouncilProposal, SubstrateNetwork } from '../model';
 import { getCouncilProposedEvent } from './typeGetters/getCouncilProposedEvent';
 import { getCouncilProposalOfStorage } from './typeGetters/getCouncilProposalOfStorage';
+import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event || !ctx.event.extrinsic) {
       return;
     }
+
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const address = getCallOriginAccount(ctx.event.call.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
     const event = getCouncilProposedEvent(ctx, network);
 
     const storage = await getCouncilProposalOfStorage(
@@ -21,10 +27,11 @@ export default (network: SubstrateNetwork) =>
     );
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: address,
+      publicKey,
       network,
     });
+
     account.totalCouncilProposals = account.totalCouncilProposals + 1;
     await ctx.store.save(account);
 
@@ -32,7 +39,7 @@ export default (network: SubstrateNetwork) =>
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       lastUpdate: date,

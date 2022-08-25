@@ -1,53 +1,50 @@
 import {
-  EventHandlerContext,
-  ExtrinsicHandlerContext,
+  CallHandlerContext,
 } from '@subsquid/substrate-processor';
 import { decodeAddress } from '../utils';
 import { SubstrateBountyProposal, SubstrateNetwork } from '../model';
 import { getOrCreateGovernanceAccount } from '../utils';
 import { getBountiesBountyProposedEvent } from './typeGetters/getBountiesBountyProposedEvent';
 import { getBountiesProposedCall } from './typeGetters/getBountiesProposedCall';
+import { Store } from '@subsquid/typeorm-store';
+import getCallOriginAccount from '../utils/getCallOriginAccount';
+import assert from 'assert';
+import { EventHandlerContext } from '@subsquid/substrate-processor/lib';
+import { createCallHandlerFromEventHandler } from '../utils/createCallHandlerFromEventHandler';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
-    if (!ctx.event.extrinsic) {
-      return;
-    }
+  async (ctx: EventHandlerContext<Store>) => {
+
     const blockNumber = BigInt(ctx.block.height);
     const date = new Date(ctx.block.timestamp);
-    const rootAccount = decodeAddress(ctx.event.extrinsic.signer);
+    const address = getCallOriginAccount(ctx.event.call?.origin, network);
+    assert(address);
+    const publicKey = decodeAddress(address);
     const event = getBountiesBountyProposedEvent(ctx, network);
 
     const account = await getOrCreateGovernanceAccount(ctx.store, {
-      id: ctx.event.extrinsic.signer,
-      rootAccount,
+      id: address,
+      publicKey,
       network,
     });
     account.totalBountyProposals++;
     await ctx.store.save(account);
 
-    let value;
-    let description;
+    const callHandler = createCallHandlerFromEventHandler(ctx);
+    assert(callHandler);
+    const call = getBountiesProposedCall(
+      callHandler,
+      network
+    );
 
-    // bounty info
-    try {
-      const call = getBountiesProposedCall(
-        <ExtrinsicHandlerContext>ctx,
-        network
-      );
-      description = Buffer.from(call.description).toString();
-      value = call.value;
-    } catch (e) {
-      console.warn(
-        `bounties.bountyProposed event: extrinsic hidden in wrapped call - ${ctx.extrinsic?.name}, not setting beneficiary or value fields`
-      );
-    }
+    const description = Buffer.from(call.description).toString();
+    const value = call.value;
 
     const proposal = new SubstrateBountyProposal({
       id: `${network}:${blockNumber.toString()}:${ctx.event.indexInBlock}`,
       network,
       account,
-      rootAccount,
+      publicKey,
       blockNumber,
       date,
       proposalIndex: event.index,

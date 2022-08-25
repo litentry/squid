@@ -1,15 +1,17 @@
+import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import {
   SubstrateNetwork,
   SubstratePhragmenElectionMemberTerm,
 } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
 
 const findActiveMembers = async (
-  ctx: EventHandlerContext,
+  store: Store,
   network: SubstrateNetwork
 ) => {
-  return ctx.store.find(SubstratePhragmenElectionMemberTerm, {
+  return store.find(SubstratePhragmenElectionMemberTerm, {
     where: { network, isCurrentTerm: true },
+    relations: { account: true },
   }) as unknown as SubstratePhragmenElectionMemberTerm[];
 };
 

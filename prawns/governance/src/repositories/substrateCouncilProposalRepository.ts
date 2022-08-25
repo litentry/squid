@@ -1,14 +1,15 @@
 import { SubstrateCouncilProposal, SubstrateNetwork } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 
 const getByProposalHash = async (
-  ctx: EventHandlerContext,
+  store: Store,
   network: SubstrateNetwork,
   proposalHashArr: Uint8Array
 ) => {
   const proposalHash = '0x' + Buffer.from(proposalHashArr).toString('hex');
-  return ctx.store.get(SubstrateCouncilProposal, {
-    where: { proposalHash, network },
+  return store.findOne(SubstrateCouncilProposal, {
+    where:{ proposalHash, network },
+    relations: {'account': true}
   }) as unknown as SubstrateCouncilProposal | undefined;
 };
 

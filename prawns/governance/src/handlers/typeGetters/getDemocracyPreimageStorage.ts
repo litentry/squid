@@ -2,7 +2,7 @@ import { SubstrateNetwork } from '../../model';
 import { DemocracyPreimagesStorage as PolkadotDemocracyPreimagesStorage } from '../../types/polkadot/storage';
 import { DemocracyPreimagesStorage as KhalaDemocracyPreimagesStorage } from '../../types/khala/storage';
 import { DemocracyPreimagesStorage as KusamaDemocracyPreimagesStorage } from '../../types/kusama/storage';
-import { StorageContext } from '@subsquid/substrate-typegen/lib/support';
+import { BlockContext as StorageContext } from '@subsquid/substrate-typegen/lib/support';
 import {
   PreimageStatus_Available,
   PreimageStatus_Missing,

@@ -1,18 +1,19 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
-import {
-  encodeAddress,
-  decodeAddress,
-  getOrCreateGovernanceAccount,
-} from '../utils';
+import { Store } from '@subsquid/typeorm-store';
 import {
   SubstrateNetwork,
   SubstratePhragmenElectionMemberTerm,
 } from '../model';
 import substratePhragmenElectionMemberTermRepository from '../repositories/substratePhragmenElectionMemberTermRepository';
+import {
+  decodeAddress,
+  encodeAddress,
+  getOrCreateGovernanceAccount,
+} from '../utils';
 import { getPhragmenElectionNewTermEvent } from './typeGetters/getPhragmenElectionNewTermEvent';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }
@@ -23,7 +24,7 @@ export default (network: SubstrateNetwork) =>
 
     const oldMemberTerms = (
       await substratePhragmenElectionMemberTermRepository.findActiveMembers(
-        ctx,
+        ctx.store,
         network
       )
     ).map((oldMemberTerm) => {
@@ -33,7 +34,7 @@ export default (network: SubstrateNetwork) =>
     const newMemberTermPromises = event.newMembers.map(async (member, n) => {
       const account = await getOrCreateGovernanceAccount(ctx.store, {
         id: encodeAddress(network, member[0]),
-        rootAccount: decodeAddress(member[0]),
+        publicKey: decodeAddress(member[0]),
         network,
       });
 
@@ -53,5 +54,6 @@ export default (network: SubstrateNetwork) =>
     const newMemberTerms = await Promise.all(newMemberTermPromises);
     const accounts = newMemberTerms.map((nmt) => nmt.account);
 
-    await ctx.store.save([...accounts, ...oldMemberTerms, ...newMemberTerms]);
+    await ctx.store.save(accounts);
+    await ctx.store.save([...oldMemberTerms, ...newMemberTerms]);
   };

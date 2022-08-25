@@ -3,9 +3,10 @@ import { SubstrateNetwork } from '../../model';
 import { CouncilExecutedEvent as KusamaCouncilExecutedEvent } from '../../types/kusama/events';
 import { CouncilExecutedEvent as PolkadotCouncilExecutedEvent } from '../../types/polkadot/events';
 import { CouncilExecutedEvent as KhalaCouncilExecutedEvent } from '../../types/khala/events';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getCouncilExecutedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): { proposalHash: Uint8Array; result: boolean; originalResult: any } {
   switch (network) {
@@ -64,11 +65,7 @@ export function getCouncilExecutedEvent(
         };
       }
 
-      return {
-        proposalHash: event.asLatest.proposalHash,
-        result: event.asLatest.result.__kind === 'Ok',
-        originalResult: event.asLatest.result,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -104,12 +101,15 @@ export function getCouncilExecutedEvent(
           originalResult: result,
         };
       }
+      if (event.isV9190) {
+        return {
+          proposalHash: event.asV9190.proposalHash,
+          result: event.asV9190.result.__kind === 'Ok',
+          originalResult: event.asV9190.result,
+        };
+      }
 
-      return {
-        proposalHash: event.asLatest.proposalHash,
-        result: event.asLatest.result.__kind === 'Ok',
-        originalResult: event.asLatest.result,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -156,11 +156,7 @@ export function getCouncilExecutedEvent(
         };
       }
 
-      return {
-        proposalHash: event.asLatest.proposalHash,
-        result: event.asLatest.result.__kind === 'Ok',
-        originalResult: event.asLatest.result,
-      };
+      throw new Error('Unexpected version');
     }
 
     default: {

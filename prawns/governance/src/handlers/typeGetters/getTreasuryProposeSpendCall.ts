@@ -1,12 +1,14 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { TreasuryProposeSpendCall as KusamaTreasuryProposedSpendCall } from '../../types/kusama/calls';
 import { TreasuryProposeSpendCall as PolkadotTreasuryProposedSpendCall } from '../../types/polkadot/calls';
 import { TreasuryProposeSpendCall as KhalaTreasuryProposedSpendCall } from '../../types/khala/calls';
-import { Type_17_AccountId } from '../../types/kusama/v1020';
+import { Store } from '@subsquid/typeorm-store';
+import assert from 'assert';
+import { LookupSource_AccountId } from '../../types/kusama/v1020';
 
 export function getTreasuryProposedSpendCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   value: bigint;
@@ -20,7 +22,7 @@ export function getTreasuryProposedSpendCall(
         const ret = call.asV1020;
         return {
           value: ret.value,
-          beneficiary: (ret.beneficiary as Type_17_AccountId).value,
+          beneficiary: (ret.beneficiary as LookupSource_AccountId).value,
         };
       }
 
@@ -42,10 +44,7 @@ export function getTreasuryProposedSpendCall(
         };
       }
 
-      return {
-        ...call.asLatest,
-        beneficiary: <Uint8Array>call.asLatest.beneficiary.value,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -69,10 +68,7 @@ export function getTreasuryProposedSpendCall(
         };
       }
 
-      return {
-        ...call.asLatest,
-        beneficiary: <Uint8Array>call.asLatest.beneficiary.value,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -92,10 +88,7 @@ export function getTreasuryProposedSpendCall(
         };
       }
 
-      return {
-        ...call.asLatest,
-        beneficiary: <Uint8Array>call.asLatest.beneficiary.value,
-      };
+      throw new Error('Unexpected version');
     }
 
     default: {

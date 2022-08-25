@@ -1,16 +1,16 @@
-import { Store } from '@subsquid/substrate-processor';
 import { getOrCreate } from './store';
 import { SubstrateGovernanceAccount, SubstrateNetwork } from '../model';
+import { Store } from '@subsquid/typeorm-store';
 
 export async function getOrCreateGovernanceAccount(
   store: Store,
   params: {
     id: string;
-    rootAccount: string;
+    publicKey: string;
     network: SubstrateNetwork;
   }
 ): Promise<SubstrateGovernanceAccount> {
-  const account = await getOrCreate(store, SubstrateGovernanceAccount, {
+  return getOrCreate(store, SubstrateGovernanceAccount, {
     ...params,
     totalElectionVotes: 0,
     totalProposalVotes: 0, // Deprecated
@@ -27,6 +27,4 @@ export async function getOrCreateGovernanceAccount(
     democracyReferendaVotes: [],
     democracyProposalSeconds: [],
   });
-
-  return account;
 }

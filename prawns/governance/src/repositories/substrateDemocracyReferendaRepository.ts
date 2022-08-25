@@ -1,13 +1,15 @@
+import { CommonHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateDemocracyReferenda, SubstrateNetwork } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
 
 const getByReferendaIndex = async (
-  ctx: EventHandlerContext,
+  store: Store,
   network: SubstrateNetwork,
   referendaIndex: number
 ) => {
-  return ctx.store.get(SubstrateDemocracyReferenda, {
+  return store.findOne(SubstrateDemocracyReferenda, {
     where: { id: `${network}:${referendaIndex}` },
+    relations: { democracyProposal: true }
   }) as unknown as SubstrateDemocracyReferenda | undefined;
 };
 

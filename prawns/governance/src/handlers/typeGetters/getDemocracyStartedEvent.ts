@@ -1,11 +1,12 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
 import { SubstrateNetwork } from '../../model';
+import { DemocracyStartedEvent as KhalaDemocracyStartedEvent } from '../../types/khala/events';
 import { DemocracyStartedEvent as KusamaDemocracyStartedEvent } from '../../types/kusama/events';
 import { DemocracyStartedEvent as PolkadotDemocracyStartedEvent } from '../../types/polkadot/events';
-import { DemocracyStartedEvent as KhalaDemocracyStartedEvent } from '../../types/khala/events';
 
 export function getDemocracyStartedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ): { refIndex: number; thresholdKind: string } {
   switch (network) {
@@ -13,13 +14,13 @@ export function getDemocracyStartedEvent(
       const event = new KusamaDemocracyStartedEvent(ctx);
 
       if (event.isV1020) {
-        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [
-          { value: number },
-          { value: string }
+        const [refIndexParam, thresholdParam] = ctx.event.args as unknown as [
+          number,
+          { __kind: string }
         ];
         return {
-          refIndex: refIndexParam.value,
-          thresholdKind: thresholdParam.value,
+          refIndex: refIndexParam,
+          thresholdKind: thresholdParam.__kind,
         };
 
         // Subsquid is  choking on a type - workaround above
@@ -34,23 +35,20 @@ export function getDemocracyStartedEvent(
         };
       }
 
-      return {
-        refIndex: event.asLatest.refIndex,
-        thresholdKind: event.asLatest.threshold.__kind,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
       const event = new PolkadotDemocracyStartedEvent(ctx);
 
       if (event.isV0) {
-        const [refIndexParam, thresholdParam] = ctx.event.params as unknown as [
-          { value: number },
-          { value: string }
+        const [refIndexParam, thresholdParam] = ctx.event.args as unknown as [
+          number,
+          { __kind: string }
         ];
         return {
-          refIndex: refIndexParam.value,
-          thresholdKind: thresholdParam.value,
+          refIndex: refIndexParam,
+          thresholdKind: thresholdParam.__kind,
         };
 
         // Subsquid is  choking on a type - workaround above
@@ -65,10 +63,7 @@ export function getDemocracyStartedEvent(
         };
       }
 
-      return {
-        refIndex: event.asLatest.refIndex,
-        thresholdKind: event.asLatest.threshold.__kind,
-      };
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -86,10 +81,7 @@ export function getDemocracyStartedEvent(
         };
       }
 
-      return {
-        refIndex: event.asLatest.refIndex,
-        thresholdKind: event.asLatest.threshold.__kind,
-      };
+      throw new Error('Unexpected version');
     }
 
     default: {

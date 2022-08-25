@@ -1,9 +1,9 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor';
+import { CallHandlerContext } from '@subsquid/substrate-processor';
 import { SubstrateNetwork } from '../../model';
 import { DemocracyVoteCall as KusamaDemocracyVoteCall } from '../../types/kusama/calls';
 import { DemocracyVoteCall as PolkadotDemocracyVoteCall } from '../../types/polkadot/calls';
 import { DemocracyVoteCall as KhalaDemocracyVoteCall } from '../../types/khala/calls';
-
+import { Store } from '@subsquid/typeorm-store';
 /*
 TODO: figure out how to interpret votes. Original Kusama votes are just numbers (they appear to always be 0 or 128).
 
@@ -34,7 +34,7 @@ interface AccountVoteSplit {
 }
 
 export function getDemocracyVoteCall(
-  ctx: ExtrinsicHandlerContext,
+  ctx: CallHandlerContext<Store>,
   network: SubstrateNetwork
 ): {
   refIndex: number;
@@ -69,7 +69,7 @@ export function getDemocracyVoteCall(
         return event.asV9111;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -87,7 +87,7 @@ export function getDemocracyVoteCall(
         return event.asV9110;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -105,7 +105,7 @@ export function getDemocracyVoteCall(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

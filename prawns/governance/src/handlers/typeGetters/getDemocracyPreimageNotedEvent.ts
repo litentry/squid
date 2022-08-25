@@ -3,9 +3,10 @@ import { SubstrateNetwork } from '../../model';
 import { DemocracyPreimageNotedEvent as KusamaDemocracyPreimageNotedEvent } from '../../types/kusama/events';
 import { DemocracyPreimageNotedEvent as PolkadotDemocracyPreimageNotedEvent } from '../../types/polkadot/events';
 import { DemocracyPreimageNotedEvent as KhalaDemocracyPreimageNotedEvent } from '../../types/khala/events';
+import { Store } from '@subsquid/typeorm-store';
 
 export function getDemocracyPreimageNotedEvent(
-  ctx: EventHandlerContext,
+  ctx: EventHandlerContext<Store>,
   network: SubstrateNetwork
 ) {
   switch (network) {
@@ -19,7 +20,7 @@ export function getDemocracyPreimageNotedEvent(
         return event.asV9130;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.polkadot: {
@@ -33,7 +34,7 @@ export function getDemocracyPreimageNotedEvent(
         return event.asV9140;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     case SubstrateNetwork.phala: {
@@ -47,7 +48,7 @@ export function getDemocracyPreimageNotedEvent(
         return event.asV1090;
       }
 
-      return event.asLatest;
+      throw new Error('Unexpected version');
     }
 
     default: {

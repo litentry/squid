@@ -1,4 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor';
+import { Store } from '@subsquid/typeorm-store';
+import subsquare from '../clients/subsquare';
 import {
   SubstrateDemocracyReferenda,
   SubstrateDemocracyReferendaStatus,
@@ -6,10 +8,9 @@ import {
 } from '../model';
 import substrateDemocracyProposalRepository from '../repositories/substrateDemocracyProposalRepository';
 import { getDemocracyStartedEvent } from './typeGetters/getDemocracyStartedEvent';
-import subsquare from '../clients/subsquare';
 
 export default (network: SubstrateNetwork) =>
-  async (ctx: EventHandlerContext) => {
+  async (ctx: EventHandlerContext<Store>) => {
     if (!ctx.event) {
       return;
     }
@@ -20,7 +21,7 @@ export default (network: SubstrateNetwork) =>
 
     const democracyProposal =
       await substrateDemocracyProposalRepository.getByTabledAtBlock(
-        ctx,
+        ctx.store,
         network,
         blockNumber
       );

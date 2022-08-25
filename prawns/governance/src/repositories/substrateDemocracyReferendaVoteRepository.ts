@@ -1,19 +1,23 @@
+import { Store } from '@subsquid/typeorm-store';
 import {
-  SubstrateDemocracyReferendaVote,
   SubstrateDemocracyReferenda,
+  SubstrateDemocracyReferendaVote,
   SubstrateGovernanceAccount,
   SubstrateNetwork,
 } from '../model';
-import { EventHandlerContext } from '@subsquid/substrate-processor';
 
 const getLastVoteByReferendaAndAccount = async (
-  ctx: EventHandlerContext,
+  store: Store,
   network: SubstrateNetwork,
   democracyReferenda: SubstrateDemocracyReferenda,
   account: SubstrateGovernanceAccount
 ) => {
-  return ctx.store.findOne(SubstrateDemocracyReferendaVote, {
-    where: { network, account, democracyReferenda },
+  return store.findOne(SubstrateDemocracyReferendaVote, {
+    where: {
+      network,
+      account: { id: account.id },
+      democracyReferenda: { id: democracyReferenda.id },
+    },
     order: { blockNumber: 'DESC' },
   }) as unknown as SubstrateDemocracyReferendaVote | undefined;
 };
